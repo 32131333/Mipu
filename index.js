@@ -19,7 +19,6 @@ const limiter = rateLimit({
 
 app.use(/*limiter, */cookieParser(), compression());
 
-// Custom libs
 const main = require("./main.js");
 main(app);
 
