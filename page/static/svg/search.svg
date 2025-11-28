@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" xmlns:bx="https://boxy-svg.com">
+  <path style="stroke-width: 60px; stroke-linecap: round;" d="M 30.15 469.894 L 156.224 348.329" bx:d="M 30.15 469.894 R 156.224 348.329 1@eb1ee0e3"/>
+  <ellipse style="stroke-width: 60px;" cx="295" cy="205" rx="175" ry="175"/>
+</svg>

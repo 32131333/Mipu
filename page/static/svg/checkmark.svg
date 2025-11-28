@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <defs/>
+  <rect x="82.934" y="572.482" width="60" height="505.896" style="stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 30px; paint-order: stroke; fill: rgb(67, 255, 0); transform-box: fill-box; transform-origin: 50% 50%;" rx="21.091" ry="21.091" transform="matrix(0.848048, 0.529919, -0.529919, 0.848048, 214.96056, -574.749556)"/>
+  <path d="M 104.025 277.899 L 121.843 277.899 C 133.491 277.899 142.934 287.342 142.934 298.99 L 142.934 437.804 C 129.353 445.765 106.225 459.991 82.934 475.086 L 82.934 298.99 C 82.934 287.342 92.377 277.899 104.025 277.899 Z" style="stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 30px; paint-order: stroke; fill: rgb(67, 255, 0); transform-origin: 112.934px 400.686px;" transform="matrix(0.848048, -0.529919, 0.529919, 0.848048, 44.38737, -40.055188)"/>
+  <rect x="429.567" y="298.987" width="71.635" height="59.478" style="fill: rgb(67, 255, 0); transform-box: fill-box; transform-origin: 50% 50%;" transform="matrix(0.529919, 0.848048, -0.848048, 0.529919, -275.328498, 84.128881)"/>
+  <rect x="429.567" y="124.254" width="71.635" height="24.718" style="fill: rgb(67, 255, 0); transform-origin: 465.385px 136.613px;" transform="matrix(0.529919, -0.848048, 0.848048, 0.529919, -238.267938, 243.025355)"/>
+</svg>

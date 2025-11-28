@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <ellipse style="fill: none; stroke-width: 60px;" cx="256" cy="256" rx="145" ry="145"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 256 80 L 256 40"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 256 80 L 256 40" transform="matrix(0, 1, -1, 0, 0.00002, -0.000014)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 256 80 L 256 40" transform="matrix(-0.000001, -1, 1, -0.000001, 0.000014, 0.00002)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 256 79.999 L 256 40" transform="matrix(-1, 0, 0, -1, 0.000034, 0.000006)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 256 80 L 256 40" transform="matrix(0.866025, 0.5, -0.5, 0.866025, 0.000004, -0.000008)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 408.42 168 L 443.061 148"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 408.42 168 L 443.061 148" transform="matrix(0.5, 0.866025, -0.866025, 0.5, 0.000011, -0.000013)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 408.42 168 L 443.061 148" transform="matrix(0, 1, -1, 0, 0.00002, -0.000014)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 195.805 421.387 L 182.124 458.974" transform="matrix(0.984808, 0.173648, -0.173648, 0.984808, 0.000001, -0.000003)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 195.805 421.387 L 182.124 458.974" transform="matrix(0.766045, 0.642787, -0.642787, 0.766045, 0.000006, -0.00001)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 256 80 L 256 40" transform="matrix(0.499999, -0.866026, 0.866026, 0.499999, 0.000006, 0.000016)"/>
+  <path style="stroke-linecap: round; stroke-width: 60px; transform-origin: 256px 256px;" d="M 256 80 L 256 40" transform="matrix(0.866025, -0.500001, 0.500001, 0.866025, 0.000001, 0.000009)"/>
+</svg>

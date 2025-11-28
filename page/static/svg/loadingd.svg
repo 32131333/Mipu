@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 100 100" width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <defs></defs>
+  <g style="transform-origin: 50px 50px;">
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="-95" x="-60" data-idx="18" opacity="0.980005" transform="matrix(-1, 0, 0, -1, 0, 0)">
+    </rect>
+    <rect fill="#000000" height="20" width="20" y="5" x="40" data-idx="15" opacity="0.880005" transform="matrix(-0.809017, 0.587785, -0.587785, -0.809017, 119.840113, 61.061589)" rx="10" ry="10">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="12" opacity="0.780005" transform="matrix(-0.309017, 0.951057, -0.951057, -0.309017, 113.003679, 17.898024)">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="9" opacity="0.680005" transform="matrix(0.309017, 0.951057, -0.951057, 0.309017, 82.101976, -13.003679)">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="6" opacity="0.580005" transform="matrix(0.809017, 0.587785, -0.587785, 0.809017, 38.938412, -19.840113)">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="3" opacity="0.480005">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="30" opacity="0.380005" transform="matrix(0.809017, -0.587785, 0.587785, 0.809017, -19.840113, 38.938412)">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="27" opacity="0.280005" transform="matrix(0.309017, -0.951057, 0.951057, 0.309017, -13.003679, 82.101976)">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="24" opacity="0.180005" transform="matrix(-0.309017, -0.951057, 0.951057, -0.309017, 17.898024, 113.003679)">
+    </rect>
+    <rect fill="#000000" height="20" width="20" ry="10" rx="10" y="5" x="40" data-idx="21" opacity="0.080005" transform="matrix(-0.809017, -0.587785, 0.587785, -0.809017, 61.061589, 119.840113)">
+    </rect>
+    <animateTransform id="anim1" type="rotate" additive="sum" attributeName="transform" values="0;40;80;120;160;200;240;280;320" begin="0;anim1.end" dur="0.5s" fill="freeze" end="anim10.begin" calcMode="discrete"></animateTransform>
+  </g>
+</svg>

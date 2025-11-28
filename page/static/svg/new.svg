@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" xmlns:bx="https://boxy-svg.com">
+  <path style="stroke-linecap: round; stroke-linejoin: round; stroke-width: 70px;" d="M 243.38 35 L 243.4 465" bx:d="M 243.38 35 R 243.4 465 1@fa56aac3"/>
+  <path style="stroke-linecap: round; stroke-linejoin: round; transform-box: fill-box; transform-origin: 50% 50%; stroke-width: 70px;" d="M 249.99 39.01 L 250.01 469.01" bx:d="M 249.99 39.01 R 250.01 469.01 1@c75d044f" transform="matrix(0, 1, -1, 0, 0.000015, -0.000007)"/>
+</svg>

@@ -1,0 +1,106 @@
+{children: {
+    "id": 1,
+    "author": {
+        "id": 3,
+        "created": 1701447402125,
+        "name": "✨ mipu_kit ✨",
+        "description": "Привеетик!! Я Мипи!! 🌠\n$[{\"id\":\"image\",\"url\":\"/3/b1image.png\"}]",
+        "tag": "mipu_kit",
+        "avatar": {
+            "media": "avatar1B00C41C42",
+            "options": {
+                "shadow": false,
+                "borderRadiusType": 0
+            }
+        },
+        "badges": [
+            {
+                "id": "verified",
+                "type": 1
+            },
+            {
+                "id": "official",
+                "type": 1
+            }
+        ],
+        "mainPage": [
+            {
+                "type": "pinnedpost",
+                "title": "",
+                "content": 140
+            },
+            {
+                "type": "pinnedpost",
+                "title": "",
+                "content": 91
+            },
+            {
+                "type": "pinnedpost",
+                "title": "",
+                "content": 89
+            },
+            {
+                "type": "pinnedpost",
+                "title": "",
+                "content": 59
+            },
+            {
+                "type": "pinnedpost",
+                "title": "",
+                "content": 53
+            },
+            {
+                "type": "pinnedpost",
+                "title": "",
+                "content": 42
+            }
+        ],
+        "links": [
+            {
+                "link": "https://t.me/mipu_kit"
+            },
+            {
+                "link": "https://youtube.com/@mipu_kit",
+                "text": "Мой YT :3"
+            }
+        ],
+        "subs_count": 6,
+        "me": null
+    },
+    "edited": null,
+    "content": [
+        {
+            "id": "video",
+            "url": "/test/content.mp4"
+        },
+        {
+            "id": "image",
+            "url": "/test/content.png"
+        },
+        {
+            "id": "image",
+            "url": "/3/IMG_20240210_215803.jpg"
+        },
+        {
+            "id": "image",
+            "url": "/3/b1image.png"
+        }
+    ],
+    "created": 1760424982498,
+    "preview": "/test/content.png",
+    "visibility": "1",
+    "description": "Hewwo Wurld! :3\nСамый первый пост на свете этой платформы UwU\n\n\n#mipu #helloworld #webcoding #мипу #fyp #kit #test #cats #cat #animation #art #uwu",
+    "rating": {
+        "liked": 0,
+        "disliked": 0,
+        "comments": 0,
+        "myRating": null,
+        "reactions": [],
+        "myReactions": [],
+        "tooManyReactions": false,
+        "authorId": null,
+        "threadAuthorId": null,
+        "commentedByAuthor": false,
+        "ratedByAuthor": false
+    }
+}}

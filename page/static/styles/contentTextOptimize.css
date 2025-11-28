@@ -1,0 +1,59 @@
+.contentify p, .contentify span, .contentify a, .contentify h1, .contentify h2, .contentify h3, .contentify h4, .contentify h5, .contentify h6 {
+	padding: 0;
+}
+.contentify * {
+	margin: 0;
+	outline: none;
+}
+.contentify li::marker {
+	right: 5px;
+}
+.contentify ul, .contentify ol {
+	margin: 0;
+	padding: 0 0 0 20px;
+}
+
+.contentify h1, .contentify h2, .contentify h3, .contentify h4, .contentify h5, .contentify h6 {
+    font-weight: bold;
+	margin: 0 0 5px;
+}
+
+.contentify h1 {
+    font-size: 2.5em;  /* Для заголовка первого уровня */
+}
+
+.contentify h2 {
+    font-size: 2em;    /* Для заголовка второго уровня */
+}
+
+.contentify h3 {
+    font-size: 1.75em; /* Для заголовка третьего уровня */
+}
+
+.contentify h4 {
+    font-size: 1.5em;  /* Для заголовка четвертого уровня */
+}
+
+.contentify h5 {
+    font-size: 1.25em;  /* Для заголовка пятого уровня */
+}
+
+.contentify h6 {
+    font-size: 1em;    /* Для заголовка шестого уровня */
+}
+
+.contentify p, .contentify li {
+    font-size: 1.2em;  /* Размер шрифта для параграфов */
+    line-height: 1.5;  /* Высота строки */
+}
+
+
+.contentify.onlyEmojis * {
+	margin: 0 !important;
+	padding: 0 !important;
+	font-size: 1.5em !important;
+	line-height: 0 !important;
+}
+.contentify.onlyEmojis {
+	font-size: 1.5em !important;
+}

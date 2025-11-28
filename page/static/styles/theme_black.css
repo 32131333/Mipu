@@ -1,0 +1,41 @@
+:root {
+	--buttonsAndTextColor: white;
+	--buttonsAndTextSecondaryColor: #f0f0f0;
+	--primaryColor: #222223;
+	--secondaryColor: #1f1f1f;
+	--secondarySecondaryColor: #1f1f1f;
+	--thirdColor: #111111;
+	--selectedColor: #FFFFFF0f;
+	--transparencyColor: #0000008c;
+	--iconColor: white;
+}
+
+body {
+	/*background-color: var(--primaryColor);*/
+	color: #e6e6e6;
+}
+
+/*body > .header, body > .page-root > .mobile-header {
+	background-color: var(--secondaryColor);
+}*/
+
+body > .container333 > .page-root > .mobile-header > a/*.active*/ {
+	color: #FFFFFF;
+	fill: #FFFFFF;
+}
+
+/* Только для стандартных элементов */
+input, textarea, button {
+	color: black;
+}
+
+legend {
+	color: #f5f5f5;
+}
+
+/* Фиксит стиль в темном теме, при котром кнопка становится просто не видным на фоне */
+/* Касается только для темной темы. В белой теме она более нормально смотрится */
+.app-button1:disabled {
+	color: rgba(80, 80, 80, .3);
+	background: #0A66C230;
+}
