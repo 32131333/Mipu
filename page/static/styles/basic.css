@@ -1518,9 +1518,9 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	overflow: hidden;
 	display: flex;
 	align-items: center;
-	/*touch-action: none;*/
 	touch-action: pan-y;
 }
+
 .app-mipuadvpostplayer > .playerlayer > #content > * {
 	width: 100%;
 	min-width: 100%;
