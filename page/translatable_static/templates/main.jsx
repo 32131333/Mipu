@@ -215,6 +215,7 @@ export default function MainPage() {
 			`}
 			</style>
 			<div className="btns" hidden={isMobile}>
+				<Link className="navbutton" to="/feed"><app.components.react.FixedSVG className="alphaicon a" children={app.___svgs.sparks}/> #MipuadvpostsName#</Link>
 				{typeof me == "object" && <SubsInNav />}
 			</div>
 			<div className="root">

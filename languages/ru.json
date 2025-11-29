@@ -8,6 +8,7 @@
 	"langCode": "ru",
 	"langEmoji": "🇷🇺",
 	"helloworld": "Hello World!",
+	"MipuadvpostsName": "Sparks",
 	"apis": {
 		"api": "http://localhost:6382/",
 		"mediastorage": "http://localhost:6383/"
@@ -407,7 +408,7 @@
 			"tabs": {
 				"posts": "Посты",
 				"main": "Главное",
-				"mipuadv_posts": "Спарксы",
+				"mipuadv_posts": "#MipuadvpostsName#",
 				"comments": "Обсуждение"
 			},
 			"emptypostspage": "Пользователь никогда не постил",

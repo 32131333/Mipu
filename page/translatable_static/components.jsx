@@ -554,7 +554,7 @@ app.components.Username = function ({user, href}) {
 	if (!user) return null;
 	const { name, tag, badges } = user;
 	
-	if (href) return <app.components.react.UnderRouterLink className={"app-usertag" + (user.unvaliable ? "app-nonAvaliable" : "")} to={`/user/${user.id}`}>{name ? name : "@"+(tag || "-")} <app.components.Badges badges={badges}/></app.components.react.UnderRouterLink>
+	if (href) return <app.components.react.UnderRouterLink className={"app-usertag app-dontModifyLink" + (user.unvaliable ? "app-nonAvaliable" : "")} to={`/user/${user.id}`}>{name ? name : "@"+(tag || "-")} <app.components.Badges badges={badges}/></app.components.react.UnderRouterLink>
 	else return <span className={"app-usertag" + (user.unvaliable ? "app-nonAvaliable" : "")}>{name ? name : "@"+(tag || "-")} <app.components.Badges badges={badges}/></span>;
 };
 
@@ -3202,7 +3202,7 @@ app.components.MipuAdvPostSearchCard = function ({ children }) {
 			<app.components.Avatar user={author} style={{height: 50}}/>
 			<div>
 				{description && <><span>{app.functions.microDesc(description, 15)}</span><br /></> }
-				<b><app.components.Username user={author}/></b>
+				<b><app.components.Username href user={author}/></b>
 			</div>
 		</div>
 	</div>;
