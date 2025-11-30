@@ -848,6 +848,9 @@ app.components.Content.preparseContent.syntax = [
 		//return <span style={{color: "red"}}>{children}</span>;
 		return <app.components.Mention symbol="@">{children.slice(1)}</app.components.Mention>
 	}],
+	[/#[A-Za-z0-9\-_А-Яа-я]+/g, function ({children}) {
+		return <app.components.react.UnderRouterLink to={`/search?query=${children}`}>{children}</app.components.react.UnderRouterLink>
+	}],
 	[/\$\[.+\]/g, function ({children, fromContent: content}) {
 		const [failed, setFailed] = useState(null);
 		
