@@ -524,7 +524,6 @@ app.components.SubButton = function ({modify, user}) {
 					user.subs_count--;
 				});
 				//return NaN;
-				return "ignore";
 			};
 		} else {
 			const response = await app.f.patch(`sub/${user.id}`, {notify: true});
@@ -534,9 +533,9 @@ app.components.SubButton = function ({modify, user}) {
 					user.subs_count++;
 				});
 				//return NaN;
-				return "ignore";
 			};
 		};
+		return "ignore";
 	}/*)*/;
 	if (!user.me) return null
 	else {
