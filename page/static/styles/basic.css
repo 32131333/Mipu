@@ -1515,22 +1515,31 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 .app-mipuadvpostplayer > .playerlayer > #content {
 	height: 100%;
 	width: 100%;
-	overflow: hidden;
+	overflow: auto;
 	display: flex;
 	align-items: center;
-	touch-action: pan-y;
+	/* touch-action: pan-y; */
+	scroll-snap-type: x mandatory;
+	overflow-anchor: none;
+	scroll-snap-stop: always;
 }
 
 .app-mipuadvpostplayer > .playerlayer > #content > * {
+	scroll-snap-align: start;
+	scroll-snap-stop: always;
 	width: 100%;
+	height: 100%;
 	min-width: 100%;
 	max-width: 100%;
+	align-items: center;
+	align-content: center;
 }
-.app-mipuadvpostplayer > .playerlayer > #content > img, 
-.app-mipuadvpostplayer > .playerlayer > #content > video {
+.app-mipuadvpostplayer > .playerlayer > #content > * > img, 
+.app-mipuadvpostplayer > .playerlayer > #content > * > video {
 	object-fit: contain;
 	max-width: 100%;
 	max-height: 100%;
+	width: 100%;
 	display: block;
 	margin: auto;
 }
@@ -1629,9 +1638,9 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	height: 100%;
 	min-height: 100%;
 	max-height: 100%;
-	scroll-snap-type: y mandatory;
 	overflow-y: scroll;
 	height: 100dvh;
+	scroll-snap-type: y mandatory;
 	overflow-anchor: none;
 	background-color: black;
 }

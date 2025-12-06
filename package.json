@@ -1,6 +1,6 @@
 {
   "name": "MipuClient",
-  "version": "1.0.0",
+  "version": "0.2a",
   "description": "Better days will never come",
   "main": "index.js",
   "scripts": {

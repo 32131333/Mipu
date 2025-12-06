@@ -31,8 +31,10 @@ if (app.isProxy) {
 
 for (const key in app.apis) {
 	let url = app.apis[key];
-	if (url && url.startsWith('http://localhost')) {
-		app.apis[key] = url.replace('http://localhost', document.location.origin);
+	if (url && url.includes('://localhost')) {
+		app.apis[key] = url.replace(/localhost/g, document.location.hostname)
+						.replace("http:", document.location.protocol); // На случай, если это HTTPs
+		
 	};
 };
 

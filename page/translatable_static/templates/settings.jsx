@@ -606,6 +606,7 @@ pages.info = {
 			<ul>
 				<h3>Благодарность :3</h3>
 				<li>@d32131333 - гл. основатель #clientName# с 2022г.</li>
+				<li>@damskiyugodnik217 - перви юзер и альфа тестер</li>
 				<li>OpenAI/ChatGPT - лучший помощник с 2023г.</li>
 				<li>Google/Gemini - неплохой помощник с 2025г.</li>
 				<li>DeepSeek - неплохой помощник с 2025г.</li>

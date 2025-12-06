@@ -47,7 +47,7 @@ function MediaCarouselContent({children, index, contentId}) {
 };
 MediaCarouselContent.Objects = {
 	image({ url, Info, index }) {
-		return <img draggable="false" src={url}/>;
+		return <div><img draggable="false" src={url}/></div>;
 	},
 	video({ url, info, index, isFocused }) {
 		const videoRef = useRef();
@@ -68,7 +68,7 @@ MediaCarouselContent.Objects = {
 			};
 		}, [isFocused]);
 		
-		return <video ref={videoRef} controls loop src={url} />;
+		return <div><video ref={videoRef} controls loop src={url} /></div>;
 	}
 };
 
@@ -84,7 +84,7 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 	
 	useEffect(function () {
 		const current = contentRef.current;
-		let isNowScrolling = false;
+		/*let isNowScrolling = false;
 		
 		let scrollingNow = 0;
 		let startX = 0;
@@ -150,7 +150,22 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 			current.removeEventListener("pointerdown", onMouseDown);
 			current.removeEventListener("pointerup", onMouseUp);
 			current.removeEventListener("pointermove", onMouseMove); 
-		}; // События с mouse заменены на события с pointer
+		};*/ // События с mouse заменены на события с pointer
+		
+		function onScroll(e) {
+			let scrollLeft = current.scrollLeft;
+			let containerWidth = current.clientWidth;
+			
+			const closestIndex = Math.round(scrollLeft / containerWidth);
+			if (children[closestIndex]) {
+				updateInfo(d=>{
+					d.active = closestIndex;
+				});
+			};
+		};
+		current.addEventListener("scroll", onScroll);
+		
+		return ()=>current.removeEventListener("scroll", onScroll);
 	}, [children]);
 	useEffect(function () {
 		if (active !== undefined) {
@@ -169,7 +184,7 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 				{ children.length > 3 && <div isActive={ String ( info.active == children.length-1 ) } /> }
 			</div>
 		}
-		<div ref={contentRef} id="content">
+		<div ref={contentRef} id="content" className="app-no-scroll">
 			<InfoContext value={info}>
 				{ children && children.map((x,i)=>(
 					<MediaCarouselContent key={i} index={i} contentType={contentType} contentId={contentId} children={x}/>
