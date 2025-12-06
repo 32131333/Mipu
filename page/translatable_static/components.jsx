@@ -915,7 +915,7 @@ app.components.Gallery = function ({ medias, content, children, onIndexChange })
 			{typeof now == "string" ?
 				<img src={now}/>
 			:
-				<Content>{now}</Content>
+				<Content key={page}>{now}</Content>
 			}
 		</div>
 	</div>;
@@ -935,11 +935,20 @@ app.components.Gallery.Objects = {
 			url = app.functions.parseUnknownURL(url, "image");
 		};
 		
+		const naturalSize = useRef([]);
+		const handleAfterLoad = (event) => {
+			const { clientWidth, clientHeight } = event.target;
+
+			naturalSize.current[0] = clientWidth;
+			naturalSize.current[1] = clientHeight;
+		};
+		
 		return <LazyLoadImage
 			alt="Image"
-			placeholder=<div style={{height: "600", width: "800", backdropFilter: "grayscale(1)", display: "flex", alignContent: "center", alignText: "center", alignItems: "center"}}><app.components.Loading /></div>
-			key={url}
-			src={url} />
+			placeholder=<div style={{height: naturalSize.current[1] ?? undefined, width: naturalSize.current[0] ?? undefined, display: "flex", alignContent: "center", alignText: "center", alignItems: "center"}}><app.components.Loading /></div>
+			src={url}
+			onLoad={handleAfterLoad}
+			/>
 	},
 	"video": function VideoContent({children}) {
 		let url = children.url;
