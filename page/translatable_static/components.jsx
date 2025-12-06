@@ -941,17 +941,17 @@ app.components.Gallery.Objects = {
 			url = app.functions.parseUnknownURL(url, "image");
 		};
 		
-		const naturalSize = useRef([]);
+		/*const naturalSize = useRef([]);
 		const handleAfterLoad = (event) => {
 			const { clientWidth, clientHeight } = event.target;
 
 			naturalSize.current[0] = clientWidth;
 			naturalSize.current[1] = clientHeight;
-		};
+		};*/
 		
 		return <LazyLoadImage
 			alt="Image"
-			placeholder=<div style={{height: naturalSize.current[1] ?? undefined, width: naturalSize.current[0] ?? undefined, display: "flex", alignContent: "center", alignText: "center", alignItems: "center"}}><app.components.Loading /></div>
+			placeholder=<div style={{/*height: naturalSize.current[1] ?? undefined, width: naturalSize.current[0] ?? undefined, */display: "flex", alignContent: "center", alignText: "center", alignItems: "center"}}><app.components.Loading /></div>
 			src={url}
 			onLoad={handleAfterLoad}
 			/>
