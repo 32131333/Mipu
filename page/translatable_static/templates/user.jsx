@@ -190,7 +190,7 @@ const MipuAdvPostsMainPage = memo(function ({userId}) {
 		} else return () => {};
 	}, [debounce]);
 	
-	return <div>
+	return <div id="sprksposts">
 		<div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 3 }}>
 			{psts.map((x, i) => <Link key={i} to="/feed" state={{data: psts, activeIndex: i}}><app.structures.MipuAdvPostPreview children={x}/></Link>)}
 		</div>
@@ -457,6 +457,7 @@ export default function UserPage() {
 		flex-direction: row;
 		word-break: keep-all;
 		align-items: center;
+		justify-content: center;
 	}
 	
 	.base-information {
@@ -524,6 +525,13 @@ export default function UserPage() {
 		text-align: center;
 	}
 	
+	.userpage #sprksposts > div > a {
+		width: calc(100% / 6.1);
+	}
+	.userpage #sprksposts > div > a > * {
+		height: unset;
+		width: 100%;
+	}
 	
 	@media (max-width: 700px) {
 		.userpage {
@@ -550,8 +558,8 @@ export default function UserPage() {
 			padding-top: 110px;
 			padding-inline: 12px;
 		}
-		.base-information.d {
-			
+		.userpage #sprksposts > div > a {
+			width: calc(100% / 3.05);
 		}
 	}
 	
