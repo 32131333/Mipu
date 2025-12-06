@@ -1,6 +1,6 @@
 /*const { useState, useEffect, useRef, forwardRef, useMemo, useCallback } = React;
 const { Link } = ReactRouterDOM;*/
-import { useState, useEffect, useRef, forwardRef, useMemo, useCallback, Fragment, forceUpdate } from "react";
+import { useState, useEffect, useRef, forwardRef, useMemo, useCallback, Fragment, forceUpdate, createContext, useContext } from "react";
 import React from "react";
 import { Link } from "react-router";
 
@@ -742,41 +742,47 @@ app.components.Content = function (val) {
 		.replaceAll("***&nbsp; \n", "***\n")
 		.replace(/(\d\. |>|\- |\* ).*(&nbsp; \n){2}/gi, (...a)=>a[0].slice(0, a[0].length-a[2].length*2)+"\n\n&nbsp; \n");
 
-	const textComponents = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'td', 'span', 'blockquote'].reduce((acc, tag) => {
-		acc[tag] = ({ children, ...props }) => {
-			return React.createElement(tag, props, app.components.Content.preparseContent(children, val));
-		};
-		return acc;
-	}, {});
+	const textComponents = app.components.Content.textComponents; // Возможно, это исправит проблему с ререндером всего содержимого
 
-	return <div className={`contentify${app.components.Content.isOnlyEmojis(val.children) ? " onlyEmojis" : ""}`}>
-		<Markdown
-			urlTransform={app.functions.parseUnknownURL}
-			remarkPlugins={[remarkGfm, remarkBreaks]}
-			components={{
-				...textComponents,
-				a(props) {
-					return <a {...props} onClick={function (e) {
-							e.preventDefault();
-							if (props.onClick) props.onClick(e);
-							if (props.href) app.functions.youReallyWantToOpenLink(props.href);
-						}
-					}/>
-				}
-			}}
-		>{endText}</Markdown>
-		{
-			cut &&
-			(
-				(!showFull && !val.hideShowMoreButton)
-				||
-				(showFull && val.showCollapseButton)
-			)
-			&&
-			<span className="app-clickableText" onClick={()=>setShowMore(a=>!a)}>{showFull ? "#button.collapse#" : "#button.showmore#"}</span>
-		}
-	</div>;
+	return <app.components.Content.Props value={val}>
+		<div className={`contentify${app.components.Content.isOnlyEmojis(val.children) ? " onlyEmojis" : ""}`}>
+			<Markdown
+				urlTransform={app.functions.parseUnknownURL}
+				remarkPlugins={[remarkGfm, remarkBreaks]}
+				components={{
+					...textComponents,
+					a(props) {
+						return <a {...props} onClick={function (e) {
+								e.preventDefault();
+								if (props.onClick) props.onClick(e);
+								if (props.href) app.functions.youReallyWantToOpenLink(props.href);
+							}
+						}/>
+					}
+				}}
+			>{endText}</Markdown>
+			{
+				cut &&
+				(
+					(!showFull && !val.hideShowMoreButton)
+					||
+					(showFull && val.showCollapseButton)
+				)
+				&&
+				<span className="app-clickableText" onClick={()=>setShowMore(a=>!a)}>{showFull ? "#button.collapse#" : "#button.showmore#"}</span>
+			}
+		</div>
+	</app.components.Content.Props>;
 };
+app.components.Content.Props = createContext(null);
+
+app.components.Content.textComponents = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'td', 'span', 'blockquote'].reduce((acc, tag) => {
+	acc[tag] = ({ children, ...props }) => {
+		return React.createElement(tag, props, app.components.Content.preparseContent(children, {}));
+	};
+	return acc;
+}, {});
+
 app.components.Content.processText = function (text) {
 	// помогите мне. шо это такое????
 	// Ради этого я даже использовал пробел с нулевой шириной
@@ -820,7 +826,7 @@ app.components.Content.preparseContent = function (children, props) {
 				let a = app.components.Content.preparseContent.syntax.map(b=>b[0].test(x) && b[1]);
 				for (const b of a) {
 					//if (a) return <Component text={a} key={index}/>
-					if (b) return React.createElement(b, {key: index, fromContent: props.fromContent}, x); 
+					if (b) return React.createElement(b, {key: index/*, fromContent: props.fromContent*/}, x); 
 				};
 				return x;
 			});
@@ -850,8 +856,9 @@ app.components.Content.preparseContent.syntax = [
 	[/#[A-Za-z0-9\-_А-Яа-я]+/g, function ({children}) {
 		return <app.components.react.UnderRouterLink to={`/search?query=${children}`}>{children}</app.components.react.UnderRouterLink>
 	}],
-	[/\$\[.+\]/g, function ({children, fromContent: content}) {
+	[/\$\[.+\]/g, function ({children/*, fromContent: content*/}) {
 		const [failed, setFailed] = useState(null);
+		const { fromContent: content } = useContext(app.components.Content.Props);
 		
 		let a;
 		if (!failed) {
