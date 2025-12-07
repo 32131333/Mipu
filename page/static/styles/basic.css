@@ -1558,13 +1558,16 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	background-color: black;
 	filter: opacity(0.5);
 }
-.app-mipuadvpostplayer > .commentslayer > #modalcontainer {
+.app-mipuadvpostplayer > .commentslayer > .modalcontainer {
 	position: absolute;
 	max-height: 85%;
 	width: 100%;
 	z-index: 2;
 	bottom: 0px;
 	overflow: auto;
+}
+.app-mipuadvpostplayer > .commentslayer > .modalcontainer#comments {
+	height: 100%;
 }
 
 .app-mipuadvpostplayer .postinfo {

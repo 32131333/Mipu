@@ -348,9 +348,9 @@ export default function MipuAdvPost({children, disabled, active}) {
 		{ openedState &&
 			<div className="commentslayer">
 				<div id="closepart" onClick={()=>{setOpenedState(null)}}/>
-				<div className="app-cm-modal" id="modalcontainer">
+				<div className="app-cm-modal modalcontainer" id={openedState}>
 					{ openedState == "comments" &&
-						<div style={{height: "100%"}}>
+						<div>
 							<app.structures.CommentList
 								contentType={contentType}
 								contentId={currentData.id}
