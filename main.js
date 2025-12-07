@@ -75,6 +75,40 @@ function readAndTranslate(fileName, lang) {
 
 module.exports = function (app) {
 	app.use(function (req, res, next) {
+		//console.log(req.headers);
+		//req.selectedLanguage = req.cookies.lang;
+		if (!req.cookies.lang) {
+			if (!req.headers["accept-language"]) {
+				res.cookie("lang", defaultLanguage);
+				req.selectedLanguage = defaultLanguage;
+			} else {
+				// Используем язык, который был указан браузером при посещении страницы
+				let selected = false;
+				
+				let acceptLanguage = req.headers["accept-language"].split(",").map(x=>x.trim());
+				
+				for (const lang of acceptLanguage) {
+					let langFullName = lang.split(";")[0].toLowerCase();
+					let langRealName = langFullName.split("-")[0];
+					
+					
+					let savedLang = languages[langFullName] || languages[langRealName];
+					//console.log(lang, langFullName, langRealName, savedLang);
+					if (savedLang) {
+						// Язык существует, значит можем выбрать язык для юзера
+						res.cookie("lang", savedLang.langCode);
+						req.selectedLanguage = savedLang.langCode;
+						selected = true;
+						break;
+					};
+				};
+				if (!selected) {
+					res.cookie("lang", defaultLanguage);
+					req.selectedLanguage = defaultLanguage;
+				};
+			};
+		};
+		
 		res.set("X-Is-Proxy", String(Boolean(req.get("X-Is-Proxy"))));
 		next();
 	});
@@ -89,8 +123,7 @@ module.exports = function (app) {
 	});
 	
 	app.use("/translatable_static", function (req, res, next) {
-		if (req.cookies.lang==undefined) res.cookie("lang", defaultLanguage);
-		let language = language_parse(req.cookies.lang);
+		let language = language_parse(req.selectedLanguage);
 
 		let filePath = path.join(__dirname, "page/translatable_static", req.url);
 		try {
@@ -107,8 +140,8 @@ module.exports = function (app) {
 	});
 	
 	app.use("/", function (req, res, next) {
-		if (req.cookies.lang==undefined) res.cookie("lang", defaultLanguage);
-		let language = language_parse(req.cookies.lang);
+		//if (req.cookies.lang==undefined) res.cookie("lang", defaultLanguage);
+		let language = language_parse(req.selectedLanguage);
 
 		let document = readAndTranslate(path.join(__dirname, "page", "index.html"), language);
 		document = document.replace("^isProxy", String(Boolean(req.get("X-Is-Proxy"))));

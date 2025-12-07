@@ -9,7 +9,7 @@ Mipu is the one-page web-application and also a social network. His philosophy i
 3. I created the frontend and backend on my own
 
 ## Run
-1. Just write `npm i`
+1. Just write `npm i --force`
 2. Run `node index`
 3. And wait the `bundle.js` file creation!! :D
 4. Go to `/languages/ru.json` and update the API's url to Mipu's domains
