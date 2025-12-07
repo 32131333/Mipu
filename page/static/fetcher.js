@@ -95,7 +95,7 @@ class BFetch {
 				r = JSON.stringify(r);
 			};
 			
-			preResult.push(`${a}=${r}`);
+			preResult.push(`${encodeURIComponent(a)}=${encodeURIComponent(r)}`);
 		};
 		if (preResult.length>0) return "?"+preResult.join("&")
 		else return "";

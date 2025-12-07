@@ -1650,6 +1650,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 .app-pg-verticalFeed1 > div > div > * {
 	width: 100%;
 	height: 100%;
+	scroll-snap-stop: always;
 }
 .app-pg-verticalFeed1 > div > div > div:not(.dontscrollsnap), .app-pg-verticalFeed1 > div .snapstart {
 	scroll-snap-align: start;

@@ -77,7 +77,7 @@ const style = <style>{`
 function SearchPage() {
     // Получаем параметры из URL
     const [searchParams, setSearchParams] = useSearchParams();
-    const query = searchParams.get('query') || '';
+    const query = decodeURIComponent( searchParams.get('query') || '' );
     const type = searchParams.get('type') || 'all';
     const sort = searchParams.get('sort') || '0';
     
