@@ -73,7 +73,16 @@ function readAndTranslate(fileName, lang) {
 	};
 };
 
+const rendererForSearchIndexing = require("./rendererForSearchIndexing");
 module.exports = function (app) {
+	app.use(function (req, res, next) {
+		if (req.headers['user-agent'].toLowerCase().includes("bot") || req.cookies.force_bot_mode) {
+			return rendererForSearchIndexing(req, res, next);
+		};
+		return next();
+	});
+	
+	
 	app.use(function (req, res, next) {
 		//console.log(req.headers);
 		//req.selectedLanguage = req.cookies.lang;
@@ -114,7 +123,7 @@ module.exports = function (app) {
 	});
 	
 	app.use("/favicon.ico", function (req, res) { res.redirect("static/fallingstar.ico") });
-	app.use("/robots.txt", function (req, res) { res.redirect("static/img/robots.txt") });
+	app.use("/robots.txt", function (req, res) { res.redirect("static/robots.txt") });
 	
 	app.use("/static", express.static(path.join(__dirname, "page/static")), function (req, res, next) {
 		if (!res.headersSent) {
@@ -152,21 +161,7 @@ module.exports = function (app) {
 		res.set("Content-type", "text/html").send(document);
 	});
 	
-	app.use("/", function (req, res, next) {
-		// Генерация заголовок для третьих сторон. Концепция может быть изменена
-		res.status(200).set("Content-type", "text/html").send(`
-<!doctype html>
-<html lang='en'>
-	<head><meta charset="utf-8"></head>
-	<body>
-		<h1>If you see this text, try changing or updating your browser, as you have been detected as a bot reading the link header and not a user. You weren't supposed to be here</h1>
-		<hr>
-		<h1>Если вы видите этот текст, попробуйте поменять или обновить браузер, так как вы были распознаны, как бот для чтения заголовок ссылок, а не пользователь. Вы не должны были здесь оказаться</h1>
-	</body>
-</html>`);
-	});
-	
-	webpackGen();
+	//webpackGen();
 };
 
 module.exports.languages = languages;
