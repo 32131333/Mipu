@@ -991,7 +991,7 @@ input:disabled + .slider {
 /* Comment specific styles */
 .usercomment {
     /*margin-bottom: 15px;*/ /* Space between comments */
-    padding-left: 0; /* Reset padding if inherited */
+    /*padding-left: 0;*/ /* Reset padding if inherited */
 }
 .usercomment .authorinfo {
     margin-bottom: 5px; /* Less space after author in comments */
