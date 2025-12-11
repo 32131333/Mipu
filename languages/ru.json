@@ -304,7 +304,7 @@
 		},
 		"settings": {
 			"category": {
-				"you": "Вы",
+				"you": "Ты",
 				"login": "Авторизация",
 				"client": "Клиент",
 				"info": "О сайте",
