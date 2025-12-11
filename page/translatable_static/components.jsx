@@ -1797,8 +1797,10 @@ app.functions.alignUserWithDefaultTypes = (data)=>{
 	};
 };
 
-app.functions.parseUnknownURL = function (url) {
-	return url; // no logic
+app.functions.parseUnknownURL = function (url, t) {
+	if (url.startsWith("/")) return url;
+	
+	return app.apis.mediaproxy && t != "href" ? (app.apis.mediaproxy + "?url=" + encodeURIComponent(url)) : url;
 };
 
 app.components.Mention = function ({children, type, symbol, to}) {

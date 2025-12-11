@@ -11,11 +11,13 @@
 	"MipuadvpostsName": "Sparks",
 	"apis": {
 		"api": "http://localhost:6382/",
-		"mediastorage": "http://localhost:6383/"
+		"mediastorage": "http://localhost:6383/",
+		"mediaproxy": "/mediaproxy/"
 	},
 	"proxy_apis": {
 		"api": "/api/",
-		"mediastorage": "/media/"
+		"mediastorage": "/media/",
+		"mediaproxy": "/mediaproxy/"
 	},
 	"uncategorized": {
 		"pleaseEnableJavaScript": "<h1>#clientName# без JavaScript - не #clientName# :(</h1><br><h2>Весь наш сайт основан на больших технологиях с использованием JavaScript<br>Мы будем в огромном восторге, если вы разрешите странице использовать JavaScript<br>❤ Сайт будет рад, если включите :3</h2>",

@@ -20,6 +20,7 @@
     "@floating-ui/react": "^0.27.16",
     "@twemoji/api": "^16.0.1",
     "@twemoji/parser": "^16.0.0",
+    "axios": "^1.13.2",
     "babel-loader": "^10.0.0",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",

@@ -19,9 +19,8 @@ const limiter = rateLimit({
 
 app.use(/*limiter, */cookieParser(), compression());
 
-const main = require("./main.js");
-main(app);
-
+require("./proxy.js")(app);
+require("./main.js")(app);
 
 app.use(function(err, req, res, next) {
 	console.error("[ ERROR ]",err);

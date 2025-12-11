@@ -161,7 +161,7 @@ module.exports = function (app) {
 		res.set("Content-type", "text/html").send(document);
 	});
 	
-	//webpackGen();
+	webpackGen();
 };
 
 module.exports.languages = languages;
