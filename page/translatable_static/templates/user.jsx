@@ -327,11 +327,7 @@ export default function UserPage() {
 		const st = val.children;
 		const url = new URL(st.link);
 		//return <a key={y} target="__blank" href={x.link}>🌐 {x.text ?? x.link}{y!=user.links.length-1 ? <br /> : null}</a>;
-		return <a className="app-st-userLinkBtn" href={st.link} onClick={e=>{e.preventDefault(); app.functions.youReallyWantToOpenLink(st.link)}}>
-			{/*<FixedSVG>{app.___svgs.x_1}</FixedSVG>*/}
-			<img className="emoji" src={ app.functions.parseUnknownURL(url.origin + "/favicon.ico", "src") }/>
-			<div id="showtext">{st.text ?? st.link}</div>
-		</a>
+		return <a className="app-st-userLinkBtn" href={st.link} onClick={e=>{e.preventDefault(); app.functions.youReallyWantToOpenLink(st.link)}}><img className="emoji" src={ app.functions.parseUnknownURL(url.origin + "/favicon.ico", "src") }/><div id="showtext">{st.text ?? st.link}</div>;</a>
 	};
 	
 	function UhOh(val) {
