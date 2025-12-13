@@ -4,7 +4,7 @@
   "description": "Show something to a whole wide world! Maybe",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#00000",
+  "background_color": "#000000",
   "theme_color": "#1f1f1f", 
   "icons": [
     {
