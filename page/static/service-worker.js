@@ -10,6 +10,6 @@ self.addEventListener('activate', (event) => {
 
 // Добавьте пустой обработчик fetch, чтобы не было ошибок, 
 // если браузер его ожидает (хотя это не строго обязательно для регистрации)
-/*self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', (event) => {
   // console.log('Service Worker: Fetching', event.request.url);
-});*/
+});

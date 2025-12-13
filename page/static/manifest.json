@@ -1,7 +1,8 @@
 {
-  "name": "Mipu Social",
+  "name": "Mipu",
   "short_name": "Mipu",
-  "start_url": "/feed",
+  "description": "Show something to a whole wide world! Maybe",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#1f1f1f",
   "theme_color": "#ff007f", 
