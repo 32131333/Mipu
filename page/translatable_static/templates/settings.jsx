@@ -291,7 +291,7 @@ pages.personalization = {
 					throw Error();
 				};
 			}/*)*/;
-			func(e);
+			return func(e);
 		}, [data]);
 		return <>
 			<style>{`
