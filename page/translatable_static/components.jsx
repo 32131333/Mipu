@@ -1900,7 +1900,7 @@ app.structures.Post = function ({post: value, children, onDelete, micro, canOpen
 			else if (x.startsWith("/user/")) return app.apis.mediastorage+x.split("/")[2]+"/"+x.split("/")[3]
 			else return app.functions.parseUnknownURL(x);
 		})), ...post.objectMedias]}/>}
-		<app.structures.Rating hideReactions={micro} onRepost={!micro && (()=>setReplying(a=>!a))} moreButtonCallback={moreMenuCallback} rating={post.rating} openFull={canOpenFully && !isNaN(post.id) && `/post/${post.id}`} contentType="posts" contentId={post.id} />
+		<app.structures.Rating hideReactions={micro} onRepost={!micro && (()=>setReplying(a=>!a))} moreButtonCallback={moreMenuCallback} rating={post.rating} onCommentClick={canOpenFully && !isNaN(post.id) && `/post/${post.id}`} contentType="posts" contentId={post.id} />
 	</div>
 	{replying && <app.structures.PostEdit post={{objectMedias: [{"id":"share","structure":"post","contentId": post.id}]}} onApply={()=>{setReplying(false);setSuccessfullyReply(true)}} onCancel={()=>setReplying(false)}/>}
 	{successfullyReply && <app.components.Success>#uncategorized.successrepost#</app.components.Success>}
@@ -3122,7 +3122,16 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 		<div>
 			{val.onRepost && <button className="app-iconOnlyButton b" disabled={processing} onClick={val.onRepost}><app.components.react.FixedSVG className="alphaicon">{app.___svgs.repost}</app.components.react.FixedSVG></button>}
 			{val.openFull && <app.components.react.UnderRouterLink to={val.openFull} className="app-iconOnlyButton b" onClick={()=>{}}><app.components.react.FixedSVG className="alphaicon">{app.___svgs.open}</app.components.react.FixedSVG></app.components.react.UnderRouterLink>}
-			<div><button className="app-iconOnlyButton b" onClick={val.onCommentClick} disabled={!val.onCommentClick || processing}><app.components.react.FixedSVG className="alphaicon">{app.___svgs.comment}</app.components.react.FixedSVG></button>{actually.comments > 0 ? ` ${actually.comments}` : null}</div>
+			
+			<div>
+				{val.onCommentClick && typeof val.onCommentClick == "string" && !processing ?
+					<app.components.react.UnderRouterLink to={val.onCommentClick} className="app-iconOnlyButton b"><app.components.react.FixedSVG className="alphaicon">{app.___svgs.comment}</app.components.react.FixedSVG></app.components.react.UnderRouterLink>
+					:
+					<button className="app-iconOnlyButton b" onClick={val.onCommentClick} disabled={!val.onCommentClick || processing}><app.components.react.FixedSVG className="alphaicon">{app.___svgs.comment}</app.components.react.FixedSVG></button>
+				}
+				{actually.comments > 0 ? ` ${actually.comments}` : null}
+			</div>
+			
 			{val.moreButtonCallback && <button className="app-iconOnlyButton b" disabled={processing} onClick={val.moreButtonCallback}><app.components.react.FixedSVG className="alphaicon">{app.___svgs.more}</app.components.react.FixedSVG></button>}
 		</div>
 	</div>;
