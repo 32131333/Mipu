@@ -1787,7 +1787,8 @@ app.functions.alignUserWithDefaultTypes = (data)=>{
 			description: null,
 			created: NaN,
 			avatar: {},
-			background: {}
+			background: {},
+			links: []
 		},
 		...data,
 		...{
