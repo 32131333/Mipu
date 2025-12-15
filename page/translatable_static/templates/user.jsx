@@ -213,9 +213,20 @@ function MainComments({user}) {
 function MainInfoPage({user}) {
 	const mainPageSettings = user.mainPage ?? [];
 	
+	const isMobile = app.reactstates.useIsMobileOrientation();
 	
 	return <>
 		<div className="colorfill">
+			{
+				isMobile && Array.isArray(user.links) && user.links.length > 0 && 
+				<div className="lnksMobileAdaption">
+					{
+						user.links.map((x,y)=>(
+							<LinkFromProfile key={y}>{x}</LinkFromProfile>
+						))
+					}
+				</div>
+			}
 			{user.description && <>
 					<h3>#page.user.description#</h3>
 					<div className="app-st-contentcard"><Content compressTo={12}>{user.description}</Content></div>
@@ -308,6 +319,14 @@ MainTabs.pages = {
 	}
 };
 
+
+function LinkFromProfile(val) {
+	const st = val.children;
+	const url = new URL(st.link);
+	//return <a key={y} target="__blank" href={x.link}>🌐 {x.text ?? x.link}{y!=user.links.length-1 ? <br /> : null}</a>;
+	return <a className="app-st-userLinkBtn" href={st.link} onClick={e=>{e.preventDefault(); app.functions.youReallyWantToOpenLink(st.link)}}><img className="emoji" src={ app.functions.parseUnknownURL(url.origin + "/favicon.ico", "src") }/> <div id="showtext">{st.text ?? st.link}</div></a>;
+};
+
 export const path = "user/:id/:page?";
 export default function UserPage() {
 	const isMobile = app.reactstates.useIsMobileOrientation();
@@ -323,12 +342,6 @@ export default function UserPage() {
 	
 	const { me } = app.reactstates.useInformationAboutMe();
 	
-	function LinkFromProfile(val) {
-		const st = val.children;
-		const url = new URL(st.link);
-		//return <a key={y} target="__blank" href={x.link}>🌐 {x.text ?? x.link}{y!=user.links.length-1 ? <br /> : null}</a>;
-		return <a className="app-st-userLinkBtn" href={st.link} onClick={e=>{e.preventDefault(); app.functions.youReallyWantToOpenLink(st.link)}}><img className="emoji" src={ app.functions.parseUnknownURL(url.origin + "/favicon.ico", "src") }/> <div id="showtext">{st.text ?? st.link}</div>;</a>
-	};
 	
 	function UhOh(val) {
 		const reasons = tryToReadJSON("#page.user.unvaliable#");
@@ -516,6 +529,14 @@ export default function UserPage() {
 	}
 	
 	
+	.userpage .lnksMobileAdaption {
+		display: flex;
+		gap: 5px;
+		align-content: center;
+		justify-content: center;
+		margin-block: 15px;
+	}
+	
 	
 	.userpage .fillallheight {
 		height: 60vh;
@@ -596,10 +617,9 @@ export default function UserPage() {
 					{user.id != me.id && user.me && !user.unvaliable && <SubButton modify={updateData} user={user} />}
 				</div>
 				<ul className="lnks">
-					{user.links.map((x,y)=>{
-						//return <a key={y} target="__blank" href={x.link}>🌐 {x.text ?? x.link}{y!=user.links.length-1 ? <br /> : null}</a>;
-						return <Fragment key={y}><LinkFromProfile>{x}</LinkFromProfile>{y!=user.links.length-1 ? <br /> : null}</Fragment>;
-					})}
+					{user.links.map((x,y)=>(
+						<LinkFromProfile key={y}>{x}</LinkFromProfile>
+					))}
 				</ul>
 			</div>
 			<div className="userpage">

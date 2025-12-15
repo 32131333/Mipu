@@ -1791,8 +1791,7 @@ app.functions.alignUserWithDefaultTypes = (data)=>{
 		},
 		...data,
 		...{
-			badges: (!data || data.unvaliable && data.unvaliable!=="missing" || !data.tag) ? [{type: 1, id: "unvaliable"}] : data.badges,
-			links: (!data || data.unvaliable && data.unvaliable!=="missing" || !data.tag) ? [{text: "Go to main page", link: "/"}] : data.links
+			badges: (!data || data.unvaliable && data.unvaliable!=="missing" || !data.tag) ? [{type: 1, id: "unvaliable"}] : data.badges
 		}
 	};
 };

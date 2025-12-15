@@ -323,7 +323,7 @@ module.exports.urls = [
 			}
 		};
 	}],
-	[/^\/$/g, async function (req, res) {
+	[/^\/$/, async function (req, res) {
         // Убедитесь, что URL-параметры определены корректно
 		const feedUrl = new URL(module.exports.APIUrl + "feed");
 		feedUrl.searchParams.set("pageLength", "150");
