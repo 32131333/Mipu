@@ -2175,7 +2175,7 @@ app.components.MobileTextInput = forwardRef(function ({
 	};
 	
 	const cursorRef = useRef(null);
-	function onChange(e) {
+	function onNativeChange(e) {
 		cursorRef.current = e.target.selectionStart;
 		setText(e.target.value);
 	};
@@ -2195,7 +2195,7 @@ app.components.MobileTextInput = forwardRef(function ({
 			value={text}
 			placeholder={placeholder}
 			disabled={disabled}
-			onChange={onChange}
+			onChange={onNativeChange}
 		/>
 		{gallery.length > 0 && <app.components.GalleryInput disabled={disabled || galleryWaiting} onDelete={handleGalleryRemove}>{gallery}</app.components.GalleryInput>}
 		<div className="app-structure-rating">
