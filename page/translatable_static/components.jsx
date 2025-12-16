@@ -2174,6 +2174,19 @@ app.components.MobileTextInput = forwardRef(function ({
         }, 0);
 	};
 	
+	const cursorRef = useRef(null);
+	function onChange(e) {
+		cursorRef.current = e.target.selectionStart;
+		setText(e.target.value);
+	};
+	
+	useLayoutEffect(() => {
+		const input = textareaRef.current;
+		if (input && cursorRef.current != null) {
+			input.setSelectionRange(cursorRef.current, cursorRef.current);
+		};
+	}, [text]);
+	
 	/* Короче, с contentEditable в мобильных версиях Chrome очень туго. Поэтому Slate вообще не подходит к мобильным устройствам */
 	return <>{warning && <app.components.WarnAlert>#uncategorized.mobile_input_unstable_warn#</app.components.WarnAlert>}
 	<div className={"app-slatetexteditor contentify" + (className ? " "+className : "")} ref={ref}>
@@ -2182,7 +2195,7 @@ app.components.MobileTextInput = forwardRef(function ({
 			value={text}
 			placeholder={placeholder}
 			disabled={disabled}
-			onChange={e => setText(e.target.value)}
+			onChange={onChange}
 		/>
 		{gallery.length > 0 && <app.components.GalleryInput disabled={disabled || galleryWaiting} onDelete={handleGalleryRemove}>{gallery}</app.components.GalleryInput>}
 		<div className="app-structure-rating">
