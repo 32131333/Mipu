@@ -90,7 +90,8 @@ export default function VerticalFeed() {
 	const activeIndexRef = useRef(0);
 	
 	const [ containerHeight, setContainerHeight ] = useState(window.innerHeight);
-	const [ isContainerHeightCalculated, setIsContainerHeightCalculated ] = useState(false);
+	const clientHeightRef = useRef(window.innerHeight);
+	//const [ isContainerHeightCalculated, setIsContainerHeightCalculated ] = useState(false);
 	
 	
 	/*let feedData, updateFeedData, error, setError, feedState, updateFeedState, getForYouInfo, updateForYouInfo,
@@ -176,16 +177,25 @@ export default function VerticalFeed() {
 	}, [ feedState, containerHeight ]);*/
 	// Восстановление состояния ленты
 	useEffect(() => {
-		if (!isContainerHeightCalculated) return;
+		//if (!isContainerHeightCalculated) return;
+		//clientHeightRef.current = containerHeight;
+		const container = pgRef.current;
+		//if (!container.classList.contains("activateScroll")) return;
+		//if (container.classList.contains("activateScroll")) container.classList.remove("activateScroll");
+		
 		let request;
-		if (pgRef.current) {
+		if (container) {
 			request = requestAnimationFrame(() => {
-				const offset = feedState.activeIndex * pgRef.current.clientHeight;//containerHeight;
+				if (container.classList.contains("activateScroll")) container.classList.remove("activateScroll");
+				
+				const offset = feedState.activeIndex * containerHeight;//containerHeight;
 				pgRef.current.scrollTo(0, offset);
+				
+				container.classList.add("activateScroll");
 			});
 		};
 		return ()=>cancelAnimationFrame(request);
-	}, [isStaticMode, isContainerHeightCalculated]);
+	}, [isStaticMode, containerHeight/*, isContainerHeightCalculated*/]);
 	
 	
 	function handleRetryAfterError() {
@@ -299,7 +309,11 @@ export default function VerticalFeed() {
 	// Поведение ленты
 	useEffect(function () {
 		function onResize() {
-			if (pgRef.current) setContainerHeight(pgRef.current.clientHeight);
+			if (pgRef.current && pgRef.current.clientHeight != clientHeightRef.current) {
+				pgRef.current.classList.remove("activateScroll");
+				clientHeightRef.current = pgRef.current.clientHeight;
+				setContainerHeight(pgRef.current.clientHeight);
+			};
 		};
 		//window.addEventListener("resize", onResize);
 		
@@ -309,7 +323,7 @@ export default function VerticalFeed() {
 		observer.observe(pgRef.current);
 		onResize();
 		
-		setIsContainerHeightCalculated(true);
+		//setIsContainerHeightCalculated(true);
 		
 		return () => observer.disconnect();
 	}, []);
@@ -342,14 +356,18 @@ export default function VerticalFeed() {
 	// Дебаунс скролла
 	useEffect(() => {
 		// const starts = feedData.map((_, i) => i * containerHeight); <- ChatGPT зачем-то вставил эту переменную
-		if (!isContainerHeightCalculated) return;
+		//if (!isContainerHeightCalculated) return;
 		
 		const container = pgRef.current;
 		let scrollTimeout;
 
 		function onScroll(e) {
+			if (!container.classList.contains("activateScroll")) return;
+			
 			if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
 			scrollTimeout = requestAnimationFrame(() => {
+				if (!container.classList.contains("activateScroll")) return;
+				
 				const scrollTop = container.scrollTop;
 				const closestIndex = Math.round(scrollTop / containerHeight);
 				if (activeIndexRef.current !== closestIndex) {
@@ -364,7 +382,7 @@ export default function VerticalFeed() {
 			container.removeEventListener("scroll", onScroll);
 			cancelAnimationFrame(scrollTimeout);
 		};
-	}, [feedData, containerHeight, isContainerHeightCalculated]);
+	}, [feedData, containerHeight/*, isContainerHeightCalculated*/]);
 	
 	
 	const renderIndexes = [feedState.activeIndex - 2, feedState.activeIndex - 1, feedState.activeIndex, feedState.activeIndex + 1, feedState.activeIndex + 2];

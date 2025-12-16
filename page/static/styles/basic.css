@@ -1643,10 +1643,15 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	max-height: 100%;
 	overflow-y: scroll;
 	height: 100dvh;
+	background-color: black;
+	overflow: hidden;
+}
+.app-pg-verticalFeed1.activateScroll {
+	overflow: scroll;
 	scroll-snap-type: y mandatory;
 	overflow-anchor: none;
-	background-color: black;
 }
+
 .app-pg-verticalFeed1 > div > div > * {
 	width: 100%;
 	height: 100%;

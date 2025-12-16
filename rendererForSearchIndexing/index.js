@@ -119,7 +119,7 @@ module.exports.urls = [
 			return false;
 		};
 	}],
-	["posts", async function (req, res) {
+	["post", async function (req, res) {
 		const id = req.path.split("/")[2];
 		const postRes = await fetch(module.exports.APIUrl+`posts/${id}`, {headers});
 		const result = await postRes.json();
@@ -285,7 +285,7 @@ module.exports.urls = [
 		
 		if (Array.isArray(postsData.content) && postsData.content.length > 0) {
 			postsData.content.forEach(post => {
-				const postUrlPath = (post.object === "posts") ? `/posts/${post.id}` : `/sprks/${post.id}`;
+				const postUrlPath = (post.object === "posts") ? `/post/${post.id}` : `/sprks/${post.id}`;
 				const previewText = post.object === "posts" ? post.content.substring(0, 100) + '...' : (post.description?.substring(0, 100) || "Посмотреть вертикальный пост") + "...";
 				postsListHtml += `<li><a href="${postUrlPath}">${escape(previewText)}</a></li>`;
 			});
@@ -354,7 +354,7 @@ module.exports.urls = [
 
 			data.forEach(post => {
                 // Определяем тип и URL
-				const postUrlPath = (post.object === "posts") ? `/posts/${post.id}` : `/sprks/${post.id}`;
+				const postUrlPath = (post.object === "posts") ? `/post/${post.id}` : `/sprks/${post.id}`;
                 // Определяем текст для ссылки, используя escape
 				const previewText = post.object === "posts" ? 
                     post.content.substring(0, 100) + '...' : 

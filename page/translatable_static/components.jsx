@@ -1,6 +1,6 @@
 /*const { useState, useEffect, useRef, forwardRef, useMemo, useCallback } = React;
 const { Link } = ReactRouterDOM;*/
-import { useState, useEffect, useRef, forwardRef, useMemo, useCallback, Fragment, forceUpdate, createContext, useContext } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, forwardRef, useMemo, useCallback, Fragment, forceUpdate, createContext, useContext } from "react";
 import React from "react";
 import { Link } from "react-router";
 
@@ -86,7 +86,7 @@ app.reactstates.useLocalStorageValue = function (key, defaultValue) {
 };
 
 app.reactstates.makeTopBarTranparency = function () {
-	useEffect(function () {
+	useLayoutEffect(function () {
 		const container = document.querySelector("body > .container333 > .page-root");
 		
 		container.classList.add("mobileTransparencyHeader");

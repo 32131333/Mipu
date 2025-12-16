@@ -175,6 +175,17 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 		};
 	}, [active]);
 	
+	
+	useEffect(function () {
+		if (!info.isFocused && info.active != 0) {
+			updateInfo(d=>{
+				d.active = 0;
+			});
+			contentRef.current.scrollTo({left: 0, behavior: "smooth"});
+		};
+	}, [ info ]);
+	
+	
 	return <div className="playerlayer">
 		{ children && children.length > 1 &&
 			<div id="indicator">
@@ -327,7 +338,7 @@ export default function MipuAdvPost({children, disabled, active}) {
 	
 	return <div className="app-mipuadvpostplayer">
 		<MediaCarousel children={content} contentId={id} contentType={contentType} active={active}/>
-		<div className={"toplayer"+(openedState ? " hide" : "")}>
+		<div className={"toplayer"}>
 			<div className="postinfo">
 				<app.components.Username href user={author}/>
 				<app.components.Content showCollapseButton compressTo={2}>{description}</app.components.Content>

@@ -117,8 +117,8 @@ app.destroyTooltip = async function () {
 
 
 // Йа использую таймер для более сглаженного убирания тултипа
-app.createTooltip.destroy = new Timer(500, app.destroyTooltip);
-app.createTooltip.wait = new Timer(500);
+app.createTooltip.destroy = new Timer(200, app.destroyTooltip);
+app.createTooltip.wait = new Timer(200);
 
 
 // Автоматическое управление бла бла бла
