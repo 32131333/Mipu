@@ -1425,11 +1425,17 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	top: 0px;
 	left: 0px;
 }
-.app-mipuadvpostpreview span {
+.app-mipuadvpostpreview span:not(.app-txtd) {
 	bottom: 3px;
 	left: 5px;
 	color: var(--buttonsAndTextColor0);
 	stroke: var(--buttonsAndTextColor0);
+	position: absolute;
+}
+.app-mipuadvpostpreview .app-txtd {
+	top: 3px;
+	left: 5px;
+	max-width: calc(100% - 10px);
 	position: absolute;
 }
 
@@ -1572,6 +1578,9 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 
 .app-mipuadvpostplayer .postinfo {
 	font-size: medium;
+	display: inherit;
+	justify-content: start;
+	align-items: start;
 }
 .app-mipuadvpostplayer .postinfo .app-usertag {
 	font-size: larger;
@@ -1673,7 +1682,13 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	scrollbar-width: none;     /* Firefox */
 }
 
-
+.app-txtd {
+	padding: 3px;
+	border-radius: 5px;
+	background-color: var(--selectedColor);
+	color: var(--buttonsAndTextColor0);
+	backdrop-filter: brightness(0.4);
+}
 
 
 body > .processoverlay {

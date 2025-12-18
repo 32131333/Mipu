@@ -7,7 +7,8 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { useShallow } from "zustand/react/shallow";
 
-const visibilityDesc = tryToReadJSON("#page.create.visibilitydesc#");
+//const visibilityDesc = tryToReadJSON("#page.create.visibilitydesc#");
+const visibilityDesc = app.structures.MipuAdvPostPreview.visibilityDesc;
 
 const useCreatePageData = create(immer(
 	(set, get)=>({

@@ -1371,7 +1371,7 @@ app.functions._userContextMenu.exitFromAccount = () => {
 		getMe.update("guest", "guest");
 		window.history.pushState({"isExited": true}, {}, "/login");
 		window.dispatchEvent(new PopStateEvent("popstate"));
-	}, "window.localStorage.clear()");
+	}, "sudo logout");
 };
 
 
@@ -2027,7 +2027,7 @@ app.functions.getEmjs = function (callback) {
 };
 
 app.components.ContentInput = forwardRef(function (props, ref) {
-	const isMobile = /(android|ios)/ig.test(window.navigator.userAgent);
+	const isMobile = /(android|iphone)/ig.test(window.navigator.userAgent);
 	return isMobile ? <app.components.MobileTextInput {...props} ref={ref}/> : <app.components.TextInputOne {...props} ref={ref}/>
 });
 
@@ -3214,18 +3214,20 @@ app.structures.Rating.Reaction = function (val) {
 	return <button className={`app-structure-reaction${info.ratedByMe ? " reacted" : ""}`} onClick={val.onClick} disabled={val.loading===true}>{info.emoji.type == "custom" ? `:e:${info.emoji.id}:` : info.emoji.id} {!isNaN(info.count) ? info.count : "?"}</button>
 };
 
-
-
 app.structures.MipuAdvPostPreview = function ({ children, style }) {
-	const { id, preview, views } = children;
+	const { id, preview, views, visibility } = children;
+	const visibilityDescription = app.structures.MipuAdvPostPreview.visibilityDesc.find(x=>x.id==visibility);
 	
 	return <div style={style} className="app-mipuadvpostpreview">
+		{ visibility != "1" && visibilityDescription && <span tooltip={visibilityDescription.description} className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
 		<div className="ddd" style={{ backgroundImage: 'url("' + app.apis.mediastorage + ( `/posts/${id}/${ preview ? preview : "preview.webp" }` ) + '")' }}>
 			<div className="sh"/>
 		</div>
 		<span><app.components.react.FixedSVG className="a" children={app.___svgs.play}/> {app.functions.parseCount(views)}</span>
 	</div>;
 };
+app.structures.MipuAdvPostPreview.visibilityDesc = tryToReadJSON("#page.create.visibilitydesc#");
+
 
 app.components.MipuAdvPostSearchCard = function ({ children }) {
 	const { author, id, description } = children;

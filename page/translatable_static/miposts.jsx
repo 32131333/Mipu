@@ -12,6 +12,7 @@ const { useEffect, useCallback, useState, useRef, createContext, useContext } = 
 /* --------------------------------------- */
 
 const InfoContext = createContext({ active: 0, isFocused: false });
+const visibilityDesc = app.structures.MipuAdvPostPreview.visibilityDesc;
 
 function MediaCarouselContent({children, index, contentId}) {
 	const Info = useContext(InfoContext);
@@ -303,6 +304,7 @@ export default function MipuAdvPost({children, disabled, active}) {
 		author,
 		rating
 	} = currentData;
+	const visibilityDescription = visibilityDesc.find(x=>x.id==visibility);
 	const contentType = "mipuadv_posts";
 	
 	async function handleShare(type) {
@@ -340,6 +342,7 @@ export default function MipuAdvPost({children, disabled, active}) {
 		<MediaCarousel children={content} contentId={id} contentType={contentType} active={active}/>
 		<div className={"toplayer"}>
 			<div className="postinfo">
+				{ visibility != "1" && visibilityDescription && <span className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
 				<app.components.Username href user={author}/>
 				<app.components.Content showCollapseButton compressTo={2}>{description}</app.components.Content>
 			</div>
