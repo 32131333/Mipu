@@ -342,7 +342,7 @@ export default function MipuAdvPost({children, disabled, active}) {
 		<MediaCarousel children={content} contentId={id} contentType={contentType} active={active}/>
 		<div className={"toplayer"}>
 			<div className="postinfo">
-				{ visibility != "1" && visibilityDescription && <span className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
+				{ visibility != "1" && visibilityDescription && <span tooltip={visibilityDescription.description} className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
 				<app.components.Username href user={author}/>
 				<app.components.Content showCollapseButton compressTo={2}>{description}</app.components.Content>
 			</div>

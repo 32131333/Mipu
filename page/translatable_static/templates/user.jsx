@@ -93,7 +93,7 @@ const MainPosts = memo(function ({userId, me}) {
 	
 	if (!isLoading && isEmpty && psts.length <= 0 && me.id!=userId) {
 		return <div className="fillallheight" id="emptypage">
-			<span><h3>#page.user.emptypostspage#</h3><br />#page.user.emptypostspage1#</span>
+			<span><h3>#page.user.emptypostspage#</h3>#page.user.emptypostspage1#</span>
 		</div>;
 	} else {
 		return <div>
@@ -133,7 +133,7 @@ function MainTabs(props) {
 	};
 };
 
-const MipuAdvPostsMainPage = memo(function ({userId}) {
+const MipuAdvPostsMainPage = memo(function ({userId, me}) {
 	const [psts, setPsts] = useState([]);
 	const [isLoading, setLoading] = useState(false);
 	
@@ -190,11 +190,18 @@ const MipuAdvPostsMainPage = memo(function ({userId}) {
 		} else return () => {};
 	}, [debounce]);
 	
-	return <div id="sprksposts">
-		<div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 1.2 }}>
-			{psts.map((x, i) => <Link key={i} to="/feed" state={{data: psts, activeIndex: i}}><app.structures.MipuAdvPostPreview children={x}/></Link>)}
-		</div>
-	</div>;
+	
+	if (!isLoading && isEmpty && psts.length <= 0) {
+		return <div className="fillallheight" id="emptypage">
+			<span><h3>#page.user.emptymipuadvpostspage#</h3>{userId == me.id ? <>#page.user.emptymipuadvpostspage2#<br /><Link to="create" className="btn app-button">#button.create#</Link></> : "#page.user.emptymipuadvpostspage1#"}</span>
+		</div>;
+	} else {
+		return <div id="sprksposts">
+			<div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 1.2 }}>
+				{psts.map((x, i) => <Link key={i} to="/feed" state={{data: psts, activeIndex: i}}><app.structures.MipuAdvPostPreview children={x}/></Link>)}
+			</div>
+		</div>;
+	};
 });
 
 
@@ -543,7 +550,7 @@ export default function UserPage() {
 	}
 	.userpage #emptypage.fillallheight {
 		align-content: center;
-		line-height: 0;
+		/* line-height: 0; */
 		text-align: center;
 	}
 	
