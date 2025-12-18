@@ -1688,6 +1688,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	background-color: var(--selectedColor);
 	color: var(--buttonsAndTextColor0);
 	backdrop-filter: brightness(0.4);
+	max-width: max-content;
 }
 
 
