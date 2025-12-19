@@ -38,7 +38,7 @@ app._emoji = function (src, type, data) {
 	elem.setAttribute("draggable", "false");
 	return elem;
 };
-app._emoji.iemoji = /:i:.\w*:/g; // :i:verified: -- Системное эмодзи
+//app._emoji.iemoji = /:i:.\w*:/g; // :i:verified: -- Системное эмодзи
 app._emoji.cemoji = /:e:.\w*:/g; // :e:7: -- Кастомное эмодзи
 app._emoji.onlyEmojis = /^(?:(?:\p{Emoji}|:i:\w*:|:e:\w*:|\s)+)$/u;
 
@@ -118,7 +118,7 @@ app._emoji.customParse = function (node) {
 	};
 };
 app._emoji.customParse.parsers = [
-	[app._emoji.iemoji, (d, onlyUrl)=>!onlyUrl ? app._emoji("/static/svg/"+`${d[0].slice(3, -1)}`+".svg") : "/static/svg/"+`${d[0].slice(3, -1)}`+".svg"],
+	/*[app._emoji.iemoji, (d, onlyUrl)=>!onlyUrl ? app._emoji("/static/svg/"+`${d[0].slice(3, -1)}`+".svg") : "/static/svg/"+`${d[0].slice(3, -1)}`+".svg"],*/
 	[app._emoji.cemoji, (d, onlyUrl)=>!onlyUrl ? app._emoji(app.apis.mediastorage+`emoji/${d[0].slice(3, -1)}`, "custom", {tooltip: "#uncategorized.this_is_custom_emoji#", customid: String(d[0].slice(3, -1))}) : app.apis.mediastorage+`emoji/${d[0].slice(3, -1)}`]
 ];
 //app._emoji.customParse.parsers = [[app._emoji.iemoji, (d)=>new Text("[ internal emoji ]")], [app._emoji.cemoji, (d)=>new Text("[ custom emoji ]")]];

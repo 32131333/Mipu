@@ -21,14 +21,19 @@ function Nav(val) {
 	);
 };
 
-function Nav1() {
+function Nav1({ notifyCount, setNotifyCount }) {
 	const { me } = app.reactstates.useInformationAboutMe();
 	return (
 		<div className="mobile-header">
 			<NavButtonTemplate to="/feed" content={ <app.components.react.FixedSVG className="alphaicon d" children={app.___svgs.sparks}/> } text="#navbar.feed#" />
 			<NavButtonTemplate to="/" svg="home" text="#navbar.posts#" />
 			<NavButtonTemplate style={{ transform: "scale(1.1)" }} to="/create" content={ <app.components.react.FixedSVG className="alphaicon d" children={app.___svgs.new1}/> } text="#navbar.create#" />
-			<NavButtonTemplate to="/notify" content={ <app.components.react.FixedSVG className="alphaicon fill d" children={app.___svgs.idle_bell}/> } text="#navbar.notify#" />
+			<NavButtonTemplate to="/notify" 
+				content={ <>
+					{ notifyCount > 0 && <span className="app-button-notify-count">{notifyCount}</span> }
+					<app.components.react.FixedSVG className="alphaicon fill d" children={app.___svgs.idle_bell}/>
+				</> } 
+				text="#navbar.notify#" />
 			<NavButtonTemplate to="/you" content={ <app.components.Avatar user={me} /> } text="#navbar.you#" />
 		</div>
 	);

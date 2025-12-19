@@ -371,6 +371,7 @@ body > .container333 > .page-root > .mobile-header > a {
 }
 body > .container333 > .page-root > .mobile-header > a > div {
 	max-height: 30px;
+	position: relative;
 }
 body > .container333 > .page-root > .mobile-header > a > span {
 	width: 200%;
@@ -873,12 +874,15 @@ input:disabled + .slider {
 	color: var(--buttonsAndTextColor0);
 	background-color: var(--redColor);
 	aspect-ratio: 1 / 1;
-	height: 60%;
-	width: 60%;
+	/* height: 60% !important; */
+	/* width: 60% !important; */
 	line-height: 120%;
 	border-radius: 100%;
 	bottom: -5px;
 	right: -5px;
+	font-size: 15px;
+	height: 1.2em !important;
+	width: 1.2em !important;
 }
 
 .notifications-popup-container .popup-header {

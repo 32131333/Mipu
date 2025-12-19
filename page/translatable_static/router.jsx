@@ -113,26 +113,12 @@ function SearchBar({ onCancel }) {
 	</Form>;
 };
 
-function TopBar({ me, themeState, failed }) {
+function TopBar({ me, themeState, failed, notifyCount, setNotifyCount }) {
 	const location = useLocation();
 	const isMobile = app.reactstates.useIsMobileOrientation();
 	const darkThemeByOS = app.reactstates.useLocalStorageValue("settings.darkthemebyos", true);
 
 	const [ isMobileSearch, setIsMobileSearch ] = useState(false);
-
-	const [notifyCount, setNotifyCount] = useState(0);
-	useEffect(()=>{
-		async function a() {
-			await getMe();
-			const resp = await app.f.get("notify");
-			if (typeof resp == "object" && resp.content) {
-				setNotifyCount(resp.content);
-			};
-			// Здесь типа должна быть логика для socket.io. Но как знаю я сам, я его не использую пока что, может быть и никак не воспользуюсь
-		};
-		a();
-	}, []);
-
 
 	const notifyButtonRef = useRef(null);
 	const defaultHeaderActions = <>
@@ -182,17 +168,30 @@ function App() {
 		const { me, failed } = app.reactstates.useInformationAboutMe();	
 		const { useYourOwnBackground, type: themeState } = app.reactstates.useThemeInfo();
 		
+		const [notifyCount, setNotifyCount] = useState(0);
+		useEffect(()=>{
+			async function a() {
+				await getMe();
+				const resp = await app.f.get("notify");
+				if (typeof resp == "object" && resp.content) {
+					setNotifyCount(resp.content);
+				};
+				// Здесь типа должна быть логика для socket.io. Но как знаю я сам, я его не использую пока что, может быть и никак не воспользуюсь
+			};
+			a();
+		}, []);
+		
 		return (
 			<Fragment>
 				{useYourOwnBackground && me && <app.components.UserBackgroundStyleSetting user={me}/>}
 				<div className="header">
-					<TopBar me={me} failed={failed} themeState={themeState} />
+					<TopBar me={me} failed={failed} themeState={themeState} notifyCount={notifyCount} setNotifyCount={setNotifyCount}/>
 				</div>
 				<div className="page-root">
 					<div className="root">
 						<Outlet />
 					</div>
-					<Nav/>
+					<Nav notifyCount={notifyCount} setNotifyCount={setNotifyCount}/>
 				</div>
 			</Fragment>
 		);
