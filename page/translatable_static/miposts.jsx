@@ -141,11 +141,9 @@ MediaCarouselContent.Objects = {
 				if (nh-nw <= 0 && !a/* !d.top position == "h" && nh == w && nw == h*/) {
 					a = true;
 					fullscreenMode();
-				} else if (document.fullscreenElement == videoRef.current) {
+				} else if (nh-nw > 0 && document.fullscreenElement == videoRef.current) {
 					a = false;
 					document.exitFullscreen();
-				} else {
-					a = false;
 				};
 			
 				//[ h, w ] = [ nh, nw ];
