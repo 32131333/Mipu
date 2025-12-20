@@ -87,7 +87,7 @@ MediaCarouselContent.Objects = {
 		function pauseOrPlay() {
 			let r = isPaused();
 			isPaused() ? play() : pause();
-			check(!r);//ControllerContext?.check?.(!r);
+			//check(!r);//ControllerContext?.check?.(!r);
 		};
 		
 		function fullscreenMode() {
@@ -100,7 +100,7 @@ MediaCarouselContent.Objects = {
 			//const check = ControllerContext?.get?.("check");
 			if (isFocused) {
 				//console.log(ControllerContext?.check); // <- Здесь undefined :<
-				console.log(check);
+				//console.log(check);
 				if (!isEnabled.current) {
 					try {
 						isEnabled.current = true;
@@ -119,6 +119,16 @@ MediaCarouselContent.Objects = {
 					//ControllerContext?.check?.(true);
 				};
 			};
+		}, [isFocused, check]);
+		
+		useEffect(function () {
+			if (!isFocused && !check) return;
+			
+			function onPlaying() {
+				check(videoRef.current.paused);
+			};
+			videoRef.current.addEventListener("playing", onPlaying);
+			return ()=>{ videoRef.current && videoRef.current.removeEventListener("playing", onPlaying) };
 		}, [isFocused, check]);
 		
 		useEffect(function () {
@@ -146,6 +156,8 @@ MediaCarouselContent.Objects = {
 			};*/
 			
 			function onOrientationChange() {
+				if (!window.matchMedia("(pointer: coarse)").matches) return; // Игнорирую десктоп
+				
 				const d = document.fullscreenElement == videoRef.current;
 				const isLandscapeOrientation = screen.orientation.type.includes("landscape");
 				
@@ -163,7 +175,7 @@ MediaCarouselContent.Objects = {
 			
 			videoRef.current.addEventListener("fullscreenchange", onFullScreenChange);
 			//if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) window.addEventListener("resize", onResize);
-			if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0 && !window.matchMedia("(pointer: coarse)").matches) screen.orientation.addEventListener("change", onOrientationChange);
+			if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) screen.orientation.addEventListener("change", onOrientationChange);
 			
 			return ()=>{
 				if (videoRef.current) videoRef.current.removeEventListener("fullscreenchange", onFullScreenChange);
