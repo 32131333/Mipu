@@ -1566,7 +1566,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	align-items: center;
 	width: -webkit-fill-available;
 	height: -webkit-fill-available;
-	font-size: 8em;
+	font-size: 4em;
 	top: 0;
 	left: 0;
 }

@@ -24,8 +24,7 @@ function MediaCarouselContent({children, index, contentId}) {
 	const isFocused = (Info.active == index) && Info.isFocused;
 	
 	const [ paused, setPaused ] = useState(false);
-	//const pausedRef = useRef(paused);
-	ControllerContext && ObjectsControllerCallbacks && !ControllerContext?.check && ControllerContext?.setCheck?.((isPaused)=>{
+	const checkFunc = useCallback((isPaused)=>{
 		/*app.toasts.show({content: "Called :D", duration: 1000});*/
 		//app.toasts.show({content: "The checked isPaused is now "+String(isPaused)+" :D", duration: 1000})
 		
@@ -35,7 +34,9 @@ function MediaCarouselContent({children, index, contentId}) {
 			};
 			return prev;
 		});
-	});
+	}, []);
+	//const pausedRef = useRef(paused);
+	//ControllerContext && ObjectsControllerCallbacks && !ControllerContext?.check && ControllerContext?.setCheck?.(useCallback);
 	//useEffect(()=>pausedRef.current = paused, [paused]);
 	
 	//app.toasts.show({content: "isPaused: "+String(paused), duration: 1000})
@@ -55,7 +56,8 @@ function MediaCarouselContent({children, index, contentId}) {
 				React.createElement(
 					MediaCarouselContent.Objects[id],
 					{ 
-						url, Info, index, isFocused 
+						url, Info, index, isFocused,
+						check: checkFunc
 					}
 				)
 			}
@@ -68,7 +70,7 @@ MediaCarouselContent.Objects = {
 	image({ url, Info, index }) {
 		return <img draggable="false" src={url}/>;
 	},
-	video({ url, info, index, isFocused }) {
+	video({ url, info, index, isFocused, check }) {
 		const videoRef = useRef();
 		const ControllerContext = useContext(MediaControlContext);
 		//console.log(ControllerContext);
@@ -85,23 +87,29 @@ MediaCarouselContent.Objects = {
 		function pauseOrPlay() {
 			let r = isPaused();
 			isPaused() ? play() : pause();
-			ControllerContext?.check?.(!r);
+			check(!r);//ControllerContext?.check?.(!r);
 		};
 		
+		function fullscreenMode() {
+			if (!isEnabled.current) return false;
+			videoRef.current.requestFullscreen();
+		};
 
 		const isEnabled = useRef(false);
 		useEffect(function () {
+			//const check = ControllerContext?.get?.("check");
 			if (isFocused) {
-				console.log(ControllerContext?.check); // <- Здесь undefined :<
+				//console.log(ControllerContext?.check); // <- Здесь undefined :<
+				console.log(check);
 				if (!isEnabled.current) {
 					try {
 						isEnabled.current = true;
 						videoRef.current.currentTime = 0;
-						ControllerContext?.check?.(false);
 						play();
 					} catch {
 						// В воспроизведении отказано
-						ControllerContext?.check?.(true);
+					} finally {
+						check?.(videoRef.current.paused);
 					};
 				};
 			} else {
@@ -110,6 +118,48 @@ MediaCarouselContent.Objects = {
 					pause();
 					//ControllerContext?.check?.(true);
 				};
+			};
+		}, [isFocused, check]);
+		
+		useEffect(function () {
+			if (!isFocused) return;
+			
+			/*let h,w = videoRef.current.clientHeight, videoRef.current.clientWidth;
+			const resize = new ResizeObserver(()=>{
+				
+			});*/
+			//let [ h, w ] = [document.body.clientHeight, document.body.clientWidth];
+			let a = false;
+			function onResize() {
+				let [ nh, nw ] = [document.body.clientHeight, document.body.clientWidth];
+				
+				//const position = Math.max(h,w) == h && h!==v ? "v" : "h";
+				
+				/*const d = videoRef.current.getBoundingClientRect();
+				const d1 = document.body.getBoundingClientRect();*/
+				
+				if (nh-nw <= 0 && !a/* !d.top position == "h" && nh == w && nw == h*/) {
+					a = true;
+					fullscreenMode();
+				} else if (document.fullscreenElement == videoRef.current) {
+					a = false;
+					document.exitFullscreen();
+				};
+			
+				//[ h, w ] = [ nh, nw ];
+			};
+			
+			function onFullScreenChange(e) {
+				const isEnabled = document.fullscreenElement == videoRef.current;
+				videoRef.current.controls = isEnabled;
+			};
+			
+			videoRef.current.addEventListener("fullscreenchange", onFullScreenChange);
+			if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) window.addEventListener("resize", onResize);
+			
+			return ()=>{
+				if (videoRef.current) videoRef.current.removeEventListener("fullscreenchange", onFullScreenChange);
+				window.removeEventListener("resize", onResize);
 			};
 		}, [isFocused]);
 		
@@ -133,14 +183,19 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 	const [ ControllerContexts, updateControllerContexts ] = useImmer([]);
 	
 	function updateControllerContext(id, name) {
-		return (result)=>updateControllerContexts(d=>{
-			if (!d[id]) d[id] = {};
-			d[id][name] = result;
+		return (result)=>{
 			Object.assign(ControllerContextsValues[id], getControllerContext(id), {[name]: result});
-		});
+			updateControllerContexts(d=>{
+				if (!d[id]) d[id] = {};
+				d[id][name] = result;
+			});
+		};
 	};
-	function getGetFunc(id) {
+	/*function getGetFunc(id) {
 		return (n)=>ControllerContexts[id] && ControllerContexts[id][n];
+	};*/
+	function getGetFunc(id) {
+		return n=>ControllerContextsValues && ControllerContextsValues[id] && ControllerContextsValues[id][n];
 	};
 	function getControllerContext(id) {
 		return {
