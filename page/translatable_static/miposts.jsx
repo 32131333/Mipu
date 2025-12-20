@@ -144,6 +144,8 @@ MediaCarouselContent.Objects = {
 				} else if (document.fullscreenElement == videoRef.current) {
 					a = false;
 					document.exitFullscreen();
+				} else {
+					a = false;
 				};
 			
 				//[ h, w ] = [ nh, nw ];
