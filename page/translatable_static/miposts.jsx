@@ -6,70 +6,118 @@
 import React from "react";
 import { useImmer } from "use-immer";
 
-const { useEffect, useCallback, useState, useRef, createContext, useContext } = React;
+const { useEffect, useCallback, useState, useRef, createContext, useContext, useMemo } = React;
 // И многие динамические переменные с app.components
 
 /* --------------------------------------- */
 
 const InfoContext = createContext({ active: 0, isFocused: false });
+const MediaControlContext = createContext({});
+
 const visibilityDesc = app.structures.MipuAdvPostPreview.visibilityDesc;
 
 function MediaCarouselContent({children, index, contentId}) {
 	const Info = useContext(InfoContext);
+	const ControllerContext = useContext(MediaControlContext);
+	const ObjectsControllerCallbacks = ControllerContext?.callbacks;
+	
+	const isFocused = (Info.active == index) && Info.isFocused;
+	
+	const [ paused, setPaused ] = useState(false);
+	//const pausedRef = useRef(paused);
+	ControllerContext && ObjectsControllerCallbacks && !ControllerContext?.check && ControllerContext?.setCheck?.((isPaused)=>{
+		/*app.toasts.show({content: "Called :D", duration: 1000});*/
+		//app.toasts.show({content: "The checked isPaused is now "+String(isPaused)+" :D", duration: 1000})
+		
+		setPaused(prev=>{
+			if (isPaused!==undefined && isPaused!==prev) {
+				return isPaused;
+			};
+			return prev;
+		});
+	});
+	//useEffect(()=>pausedRef.current = paused, [paused]);
+	
+	//app.toasts.show({content: "isPaused: "+String(paused), duration: 1000})
 	
 	const id = children.id;
 	let url = children.url;
 	
 	if (url) {
-		/*if (url.startsWith("/")) {
-			url = app.apis.mediastorage + url;
-		} else {
-			url = app.functions.parseUnknownURL(url, "image");
-		};*/
 		url = app.apis.mediastorage + "/posts/" + String(contentId) + "/" + String(url);
 	};
 
-	// Крч тестовое свойство isfocused работает, над потом убрать
-	// isfocused={ String( Info.active == index ) }
-	
-	/*switch(id) {
-		case "image":
-			return 
-		case "video":
-			return 
-		default:
-			return <span>Unknown content type 😭</span>
-	}*/
+	console.log(ObjectsControllerCallbacks);
 	if (MediaCarouselContent.Objects[id]) {
-		return React.createElement(MediaCarouselContent.Objects[id], { url, Info, index, isFocused: (Info.active == index) && Info.isFocused });
+		return <div onClick={()=>{ObjectsControllerCallbacks?.pauseOrPlay?.()}}>
+			{ paused && <div className="pauselayout"><app.components.react.FixedSVG className="alphaicon fill" children={app.___svgs.play}/></div> }
+			{
+				React.createElement(
+					MediaCarouselContent.Objects[id],
+					{ 
+						url, Info, index, isFocused 
+					}
+				)
+			}
+		</div>;
 	} else {
 		return <span>Unknown content type 😭</span>;
 	};
 };
 MediaCarouselContent.Objects = {
 	image({ url, Info, index }) {
-		return <div><img draggable="false" src={url}/></div>;
+		return <img draggable="false" src={url}/>;
 	},
 	video({ url, info, index, isFocused }) {
 		const videoRef = useRef();
+		const ControllerContext = useContext(MediaControlContext);
+		//console.log(ControllerContext);
 		
+		function isPaused() {
+			return videoRef.current.paused;
+		};
+		function pause() {
+			videoRef.current.pause();
+		};
+		function play() {
+			videoRef.current.play();
+		};
+		function pauseOrPlay() {
+			let r = isPaused();
+			isPaused() ? play() : pause();
+			ControllerContext?.check?.(!r);
+		};
+		
+
 		const isEnabled = useRef(false);
 		useEffect(function () {
 			if (isFocused) {
+				console.log(ControllerContext?.check); // <- Здесь undefined :<
 				if (!isEnabled.current) {
-					videoRef.current.play();
-					videoRef.current.currentTime = 0;
-					isEnabled.current = true;
+					try {
+						isEnabled.current = true;
+						videoRef.current.currentTime = 0;
+						ControllerContext?.check?.(false);
+						play();
+					} catch {
+						// В воспроизведении отказано
+						ControllerContext?.check?.(true);
+					};
 				};
 			} else {
 				if (isEnabled.current) {
-					videoRef.current.pause();
 					isEnabled.current = false;
+					pause();
+					//ControllerContext?.check?.(true);
 				};
 			};
 		}, [isFocused]);
 		
-		return <div><video ref={videoRef} controls loop src={url} /></div>;
+		if (!ControllerContext.callbacks && ControllerContext.set) {
+			ControllerContext.set({ isPaused, pause, play, pauseOrPlay });
+		};
+		
+		return <video ref={videoRef} loop src={url} />;
 	}
 };
 
@@ -82,6 +130,35 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 	const DOMWidth = useRef(360);
 		
 	const [ info, updateInfo ] = useImmer({ active: 0, isFocused: false }); // isFocused должен передаваться от одних к другим. По умолчанию должен быть true
+	const [ ControllerContexts, updateControllerContexts ] = useImmer([]);
+	
+	function updateControllerContext(id, name) {
+		return (result)=>updateControllerContexts(d=>{
+			if (!d[id]) d[id] = {};
+			d[id][name] = result;
+			Object.assign(ControllerContextsValues[id], getControllerContext(id), {[name]: result});
+		});
+	};
+	function getGetFunc(id) {
+		return (n)=>ControllerContexts[id] && ControllerContexts[id][n];
+	};
+	function getControllerContext(id) {
+		return {
+			set: updateControllerContext(id, "callbacks"),
+			setCheck: updateControllerContext(id, "check"),
+			get: getGetFunc(id)
+		}
+	};
+	
+	const ControllerContextsValues = useMemo(()=>children && children.map((x,i)=>getControllerContext(i)), [children]);
+	
+	/*useEffect(function () {
+		if (isFocused) {
+			const OnKeyPress = function () {
+				
+			};
+		};
+	}, [info, ControllerContexts]);*/
 	
 	useEffect(function () {
 		const current = contentRef.current;
@@ -186,6 +263,14 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 		};
 	}, [ info ]);
 	
+	useEffect(function () {
+		updateControllerContexts([]);
+	}, [children]);
+	/*useEffect(function () {
+		ControllerContexts.forEach((x,i)=>{
+			Object.assign(ControllerContextsValues[i], x);
+		});
+	}, [ControllerContexts]);*/
 	
 	return <div className="playerlayer">
 		{ children && children.length > 1 &&
@@ -199,7 +284,9 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 		<div ref={contentRef} id="content" className="app-no-scroll">
 			<InfoContext value={info}>
 				{ children && children.map((x,i)=>(
-					<MediaCarouselContent key={i} index={i} contentType={contentType} contentId={contentId} children={x}/>
+					<MediaControlContext key={i} value={ControllerContextsValues[i]}>
+						<MediaCarouselContent index={i} contentType={contentType} contentId={contentId} children={x}/>
+					</MediaControlContext>
 				))}
 			</InfoContext>
 		</div>
@@ -244,19 +331,19 @@ function VerticalRating({ contentId, contentType, children, onUpdate, disabled, 
 	
 	return <>
 		<div>
-			<button className="app-iconOnlyButton b" onClick={processLike} disabled={isProcessing || disabled}>
+			<button className="app-iconOnlyButton b" id="like" active={String(myRating==1)} onClick={processLike} disabled={isProcessing || disabled}>
 				<app.components.react.FixedSVG className={`r alphaicon${myRating==1 ? " fill" : ""}`}>{app.___svgs.heart}</app.components.react.FixedSVG>
 			</button>
 			<span id="count">{liked > 0 ? ` ${app.functions.parseCount(liked)}` : "#uncategorized.likename#"}</span>
 		</div>
 		<div>
-			<button className="app-iconOnlyButton b" onClick={onComments} disabled={disabled}>
+			<button className="app-iconOnlyButton b" id="comment" onClick={onComments} disabled={disabled}>
 				<app.components.react.FixedSVG className="r alphaicon">{app.___svgs.comment}</app.components.react.FixedSVG>
 			</button>
 			<span id="count">{comments > 0 ? ` ${app.functions.parseCount(comments)}` : "#uncategorized.commentsname#"}</span>
 		</div>
 		<div>
-			<button className="app-iconOnlyButton b" onClick={onShare} disabled={disabled}>
+			<button className="app-iconOnlyButton b" id="share" onClick={onShare} disabled={disabled}>
 				<app.components.react.FixedSVG className="r alphaicon fill">{app.___svgs.share}</app.components.react.FixedSVG>
 			</button>
 			<span id="count">#uncategorized.sharename#</span>

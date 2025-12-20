@@ -17,6 +17,7 @@
 	--transparencyBlackColor: #0000008c;
 	--blueColor: rgb(58, 130, 247);
 	--darklyThirdColor: #111111;
+	--pinkyRedColor: #ff0667;
 }
 
 * {
@@ -1543,6 +1544,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	max-width: 100%;
 	align-items: center;
 	align-content: center;
+	position: relative;
 }
 .app-mipuadvpostplayer > .playerlayer > #content > * > img, 
 .app-mipuadvpostplayer > .playerlayer > #content > * > video {
@@ -1552,6 +1554,21 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	width: 100%;
 	display: block;
 	margin: auto;
+}
+
+.app-mipuadvpostplayer > .playerlayer .pauselayout {
+	position: absolute;
+	filter: drop-shadow(0px 0px 4px black) contrast(0.95) opacity(0.2);
+	background: linear-gradient(#ffffff00 50%, black);
+	display: flex;
+	align-content: center;
+	justify-content: center;
+	align-items: center;
+	width: -webkit-fill-available;
+	height: -webkit-fill-available;
+	font-size: 8em;
+	top: 0;
+	left: 0;
 }
 
 .app-mipuadvpostplayer > .commentslayer {
@@ -1613,8 +1630,18 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	fill: white;
 }
 
-.app-mipuadvpostplayer .rating > *:not(:hover):has(> .app-iconOnlyButton) {
+
+.app-mipuadvpostplayer > .toplayer .app-iconOnlyButton {
+	filter: opacity(0.9);
+}
+
+.app-mipuadvpostplayer .rating > *:not(:hover):has(> .app-iconOnlyButton/*:not([active="true"])*/) {
 	filter: contrast(0.5);
+}
+
+.app-mipuadvpostplayer > .toplayer #like.app-iconOnlyButton[active="true"] svg {
+	stroke: var(--pinkyRedColor);
+	fill: var(--pinkyRedColor);
 }
 
 .app-mipuadvpostplayer .rating > * {
