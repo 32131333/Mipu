@@ -129,16 +129,12 @@ MediaCarouselContent.Objects = {
 				
 			});*/
 			//let [ h, w ] = [document.body.clientHeight, document.body.clientWidth];
-			let a = false;
+			/*let a = false;
 			function onResize() {
 				let [ nh, nw ] = [document.body.clientHeight, document.body.clientWidth];
 				
-				//const position = Math.max(h,w) == h && h!==v ? "v" : "h";
 				
-				/*const d = videoRef.current.getBoundingClientRect();
-				const d1 = document.body.getBoundingClientRect();*/
-				
-				if (nh-nw <= 0 && !a/* !d.top position == "h" && nh == w && nw == h*/) {
+				if (nh-nw <= 0 && !a) {
 					a = true;
 					fullscreenMode();
 				} else if (nh-nw > 0 && document.fullscreenElement == videoRef.current) {
@@ -147,6 +143,17 @@ MediaCarouselContent.Objects = {
 				};
 			
 				//[ h, w ] = [ nh, nw ];
+			};*/
+			
+			function onOrientationChange() {
+				const d = document.fullscreenElement == videoRef.current;
+				const isLandscapeOrientation = screen.orientation.type.includes("landscape");
+				
+				if (isLandscapeOrientation && !d) {
+					fullscreenMode();
+				} else if (!isLandscapeOrientation && d) {
+					document.exitFullscreen();
+				};
 			};
 			
 			function onFullScreenChange(e) {
@@ -155,11 +162,12 @@ MediaCarouselContent.Objects = {
 			};
 			
 			videoRef.current.addEventListener("fullscreenchange", onFullScreenChange);
-			if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) window.addEventListener("resize", onResize);
+			//if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) window.addEventListener("resize", onResize);
+			if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) ;
 			
 			return ()=>{
 				if (videoRef.current) videoRef.current.removeEventListener("fullscreenchange", onFullScreenChange);
-				window.removeEventListener("resize", onResize);
+				//window.removeEventListener("resize", onResize);
 			};
 		}, [isFocused]);
 		
