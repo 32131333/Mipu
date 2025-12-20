@@ -128,7 +128,13 @@ MediaCarouselContent.Objects = {
 				check(videoRef.current.paused);
 			};
 			videoRef.current.addEventListener("playing", onPlaying);
-			return ()=>{ videoRef.current && videoRef.current.removeEventListener("playing", onPlaying) };
+			videoRef.current.addEventListener("pause", onPlaying);
+			return ()=>{ 
+				if (videoRef.current) {
+					videoRef.current.removeEventListener("playing", onPlaying)
+					videoRef.current.removeEventListener("pause", onPlaying)
+				};
+			};
 		}, [isFocused, check]);
 		
 		useEffect(function () {
