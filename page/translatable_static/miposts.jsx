@@ -163,11 +163,12 @@ MediaCarouselContent.Objects = {
 			
 			videoRef.current.addEventListener("fullscreenchange", onFullScreenChange);
 			//if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) window.addEventListener("resize", onResize);
-			if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) ;
+			if ((videoRef.current.clientHeight - videoRef.current.clientWidth) <= 0) screen.orientation.addEventListener("change", onOrientationChange);
 			
 			return ()=>{
 				if (videoRef.current) videoRef.current.removeEventListener("fullscreenchange", onFullScreenChange);
 				//window.removeEventListener("resize", onResize);
+				screen.orientation.removeEventListener("change", onOrientationChange);
 			};
 		}, [isFocused]);
 		
