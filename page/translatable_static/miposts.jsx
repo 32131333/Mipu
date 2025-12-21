@@ -127,11 +127,11 @@ MediaCarouselContent.Objects = {
 			function onPlaying() {
 				check(videoRef.current.paused);
 			};
-			videoRef.current.addEventListener("playing", onPlaying);
+			videoRef.current.addEventListener("play", onPlaying);
 			videoRef.current.addEventListener("pause", onPlaying);
 			return ()=>{ 
 				if (videoRef.current) {
-					videoRef.current.removeEventListener("playing", onPlaying)
+					videoRef.current.removeEventListener("play", onPlaying)
 					videoRef.current.removeEventListener("pause", onPlaying)
 				};
 			};

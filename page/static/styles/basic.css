@@ -1435,6 +1435,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	left: 5px;
 	color: var(--buttonsAndTextColor0);
 	stroke: var(--buttonsAndTextColor0);
+	fill: var(--buttonsAndTextColor0);
 	position: absolute;
 }
 .app-mipuadvpostpreview .app-txtd {
