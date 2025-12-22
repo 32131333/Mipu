@@ -1,5 +1,5 @@
 import { Link, useParams, useLocation } from "react-router";
-import { useEffect, useState, useCallback, useRef, Fragment } from "react";
+import { useEffect, useState, useCallback, useRef, Fragment, useLayoutEffect } from "react";
 import React from "react";
 import { useImmer } from "use-immer";
 
@@ -176,7 +176,7 @@ export default function VerticalFeed() {
 		};
 	}, [ feedState, containerHeight ]);*/
 	// Восстановление состояния ленты
-	useEffect(() => {
+	useLayoutEffect(() => {
 		//if (!isContainerHeightCalculated) return;
 		//clientHeightRef.current = containerHeight;
 		const container = pgRef.current;

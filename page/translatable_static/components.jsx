@@ -3228,6 +3228,65 @@ app.structures.MipuAdvPostPreview = function ({ children, style }) {
 };
 app.structures.MipuAdvPostPreview.visibilityDesc = tryToReadJSON("#page.create.visibilitydesc#");
 
+/*app.components.RangeInputOne = function ({ ...props }) {
+	return <input
+		{...props}
+		type="range"
+		className={["app-rangeinput1", props.className].filter(x=>typeof x == "string").join(" ")}
+		onInput={function (...a) {
+			const event = a[0];
+			
+			const elem = event.target;
+			const ratio = (elem.value - (elem.min || "0")) / ((elem.min || "100") - (elem.min || "0")) * 100;
+			//elem.style.background = `linear-gradient(90deg, var(--activeColor) ${ratio}%, var(--inactiveColor) ${ratio}%)`;
+			this.style.setProperty('--progress', ratio + '%');
+			
+			props.onInput?.(...a);
+		}}
+	/>;
+};*/
+app.components.RangeInputOne = function ({ ref, ...props }) {
+	const updateStyle = (elem) => {
+		if (!elem) return;
+		const min = parseFloat(elem.min || 0);
+		const max = parseFloat(elem.max || 100);
+		const val = parseFloat(elem.value || 0);
+		const ratio = ((val - min) / (max - min)) * 100;
+		elem.style.setProperty('--progress', `${ratio}%`);
+	};
+
+	return (
+		<input
+			{...props}
+			type="range"
+			ref={(node) => {
+				// Привязываем ref
+				if (typeof ref === 'function') ref(node);
+				else if (ref) ref.current = node;
+
+				if (node) {
+					// Добавляем магический метод прямо в DOM-узел!
+					// Теперь можно будет вызвать ref.current.update()
+					// Инициализация при первом появлении
+					//node.update();
+					node.update = () => updateStyle(node);
+					node.setValue = (v) => {
+						node.value = v;
+						node.update();
+					};
+					node.update();
+					//node.setValue(0);
+				};
+			}}
+			className={["app-rangeinput1", props.className].filter(x => typeof x === "string").join(" ")}
+			onInput={(e) => {
+				updateStyle(e.target);
+				props.onInput?.(e);
+			}}
+		/>
+	);
+};
+
 
 app.components.MipuAdvPostSearchCard = function ({ children }) {
 	const { author, id, description } = children;

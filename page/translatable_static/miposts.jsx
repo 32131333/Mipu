@@ -23,14 +23,23 @@ function MediaCarouselContent({children, index, contentId}) {
 	
 	const isFocused = (Info.active == index) && Info.isFocused;
 	
+	const timeLapseRef = useRef(null);
+	
 	const [ paused, setPaused ] = useState(false);
-	const checkFunc = useCallback((isPaused)=>{
+	const [ showTimeLapse, setShowTimeLapse ] = useState(false);
+	const checkFunc = useCallback((isPaused, showTimeLapse)=>{
 		/*app.toasts.show({content: "Called :D", duration: 1000});*/
 		//app.toasts.show({content: "The checked isPaused is now "+String(isPaused)+" :D", duration: 1000})
 		
-		setPaused(prev=>{
-			if (isPaused!==undefined && isPaused!==prev) {
+		if (isPaused !== undefined) setPaused(prev=>{
+			if (isPaused!==prev) {
 				return isPaused;
+			};
+			return prev;
+		});
+		if (showTimeLapse !== undefined) setShowTimeLapse(prev=>{
+			if (showTimeLapse!==prev) {
+				return showTimeLapse;
 			};
 			return prev;
 		});
@@ -52,12 +61,13 @@ function MediaCarouselContent({children, index, contentId}) {
 	if (MediaCarouselContent.Objects[id]) {
 		return <div onClick={()=>{ObjectsControllerCallbacks?.pauseOrPlay?.()}}>
 			{ paused && <div className="pauselayout"><app.components.react.FixedSVG className="alphaicon fill" children={app.___svgs.play}/></div> }
+			{ showTimeLapse && <app.components.RangeInputOne ref={timeLapseRef} defaultValue={0} className="timelapse" /> }
 			{
 				React.createElement(
 					MediaCarouselContent.Objects[id],
 					{ 
 						url, Info, index, isFocused,
-						check: checkFunc
+						check: checkFunc, timeLapseRef
 					}
 				)
 			}
@@ -70,7 +80,9 @@ MediaCarouselContent.Objects = {
 	image({ url, Info, index }) {
 		return <img draggable="false" src={url}/>;
 	},
-	video({ url, info, index, isFocused, check }) {
+	video({ url, info, index, isFocused, check, timeLapseRef }) {
+		check?.(undefined, true); // Включчаем таймапс
+		
 		const videoRef = useRef();
 		const ControllerContext = useContext(MediaControlContext);
 		//console.log(ControllerContext);
@@ -122,17 +134,63 @@ MediaCarouselContent.Objects = {
 		}, [isFocused, check]);
 		
 		useEffect(function () {
+			//timeLapseRef.current?.hidden = true;
 			if (!isFocused && !check) return;
 			
-			function onPlaying() {
+			let isVideoEarlyPlaying = false;
+			function onPlay() {
 				check(videoRef.current.paused);
+				if (timeLapseRef.current) {
+					timeLapseRef.current.hidden = !videoRef.current.paused && !isVideoEarlyPlaying ? videoRef.current.duration <= 10 : false;
+				};
 			};
-			videoRef.current.addEventListener("play", onPlaying);
-			videoRef.current.addEventListener("pause", onPlaying);
+			function onPlaying() {
+				if (timeLapseRef.current) {
+					timeLapseRef.current.max = String(Math.round(videoRef.current.duration));
+					//timeLapseRef.current.value = String(Math.round(videoRef.current.currentTime));
+				};
+			};
+			function onTimeUpdate() {
+				if (timeLapseRef.current && !videoRef.current.paused) {
+					//console.log(timeLapseRef.current);
+					timeLapseRef.current.setValue(String(Math.round(videoRef.current.currentTime)));
+				};
+			};
+			
+			function onTimeLapsePointerDown() {
+				if (!videoRef.current.paused) {
+					isVideoEarlyPlaying = true;
+					videoRef.current.pause();
+				};
+			};
+			function onTimeLapsePointerUp() {
+				if (isVideoEarlyPlaying) {
+					isVideoEarlyPlaying = false;
+					videoRef.current.play();
+				};
+			};
+			function onTimeLapseInput() {
+				videoRef.current.currentTime = Number(timeLapseRef.current.value);
+			};
+			timeLapseRef.current?.addEventListener("pointerup", onTimeLapsePointerUp);
+			timeLapseRef.current?.addEventListener("pointerdown", onTimeLapsePointerDown);
+			timeLapseRef.current?.addEventListener("input", onTimeLapseInput);
+			
+			videoRef.current.addEventListener("play", onPlay);
+			videoRef.current.addEventListener("pause", onPlay);
+			videoRef.current.addEventListener("playing", onPlaying);
+			videoRef.current.addEventListener("timeupdate", onTimeUpdate);
 			return ()=>{ 
 				if (videoRef.current) {
-					videoRef.current.removeEventListener("play", onPlaying)
-					videoRef.current.removeEventListener("pause", onPlaying)
+					videoRef.current.removeEventListener("play", onPlay);
+					videoRef.current.removeEventListener("pause", onPlay);
+					videoRef.current.removeEventListener("playing", onPlaying);
+					videoRef.current.removeEventListener("timeupdate", onTimeUpdate);
+				};
+				if (timeLapseRef.current) {
+					timeLapseRef.current.removeEventListener("pointerup", onTimeLapsePointerUp);
+					timeLapseRef.current.removeEventListener("pointerdown", onTimeLapsePointerDown);
+					timeLapseRef.current.removeEventListener("input", onTimeLapseInput);
 				};
 			};
 		}, [isFocused, check]);

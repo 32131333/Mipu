@@ -1496,6 +1496,15 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	pointer-events: all;
 }
 
+.app-mipuadvpostplayer .timelapse {
+	position: absolute;
+	bottom: 0px;
+	width: 97%;
+	left: 0px;
+	margin-inline: 1.5%;
+	z-index: 3;
+}
+
 .app-mipuadvpostplayer > .playerlayer > #indicator {
 	background: none;
 	display: flex;
@@ -1504,6 +1513,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	bottom: 120px;
 	width: 100%;
 	justify-content: center;
+	z-index: 1;
 }
 .app-mipuadvpostplayer > .playerlayer > #indicator > * {
 	aspect-ratio: 1 / 1;
@@ -1527,7 +1537,8 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 .app-mipuadvpostplayer > .playerlayer > #content {
 	height: 100%;
 	width: 100%;
-	overflow: auto;
+	overflow: hidden;
+	overflow-x: auto;
 	display: flex;
 	align-items: center;
 	/* touch-action: pan-y; */
@@ -1622,6 +1633,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	gap: 10px;
 	align-items: center;
 	font-size: xx-large;
+	overflow: clip;
 }
 
 .app-mipuadvpostplayer .rating .fixsvg.alphaicon svg {
@@ -1789,7 +1801,48 @@ body > .processoverlay #lst #progress {
 	background: none;
 }*/
 
+.app-rangeinput1 {
+	--inactiveColor: #ffffff47;
+	--activeColor: #ffffff;
+	--progress: 50%; /* Будем менять это через JS */
+	background: linear-gradient(90deg, 
+		var(--activeColor) var(--progress), 
+		var(--inactiveColor) var(--progress)
+	);
+	appearance: none;
+	width: 200px;
+	height: 4px;
+	/* background: var(--activeColor);*/
+	cursor: pointer;
+	touch-action: none;
+}
 
+/* Thumb: for Chrome, Safari, Edge */
+.app-rangeinput1::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;	
+	width: 8px;
+	height: 8px;
+	border-radius: 9999px;
+	background: var(--activeColor);
+	box-shadow: none;
+}
+
+/* Thumb: for Firefox */
+.app-rangeinput1::-moz-range-thumb {
+	border: none;
+	width: 8px;
+	height: 8px;
+	border-radius: 9999px;
+	background: var(--activeColor);
+	box-shadow: none;
+}
+
+.app-rangeinput1.hideslider::-webkit-slider-thumb, .app-rangeinput1.hideslider::-moz-range-thumb {
+	width: 0px;
+	height: 0px;
+	background: none;
+}
 
 
 
