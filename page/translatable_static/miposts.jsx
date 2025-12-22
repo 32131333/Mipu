@@ -26,8 +26,8 @@ function MediaCarouselContent({children, index, contentId}) {
 	const timeLapseRef = useRef(null);
 	
 	const [ paused, setPaused ] = useState(false);
-	const [ showTimeLapse, setShowTimeLapse ] = useState(false);
-	const checkFunc = useCallback((isPaused, showTimeLapse)=>{
+	//const [ showTimeLapse, setShowTimeLapse ] = useState(false);
+	const checkFunc = useCallback((isPaused/*, showTimeLapse*/)=>{
 		/*app.toasts.show({content: "Called :D", duration: 1000});*/
 		//app.toasts.show({content: "The checked isPaused is now "+String(isPaused)+" :D", duration: 1000})
 		
@@ -61,7 +61,7 @@ function MediaCarouselContent({children, index, contentId}) {
 	if (MediaCarouselContent.Objects[id]) {
 		return <div onClick={()=>{ObjectsControllerCallbacks?.pauseOrPlay?.()}}>
 			{ paused && <div className="pauselayout"><app.components.react.FixedSVG className="alphaicon fill" children={app.___svgs.play}/></div> }
-			{ showTimeLapse && <app.components.RangeInputOne ref={timeLapseRef} defaultValue={0} className="timelapse" /> }
+			<app.components.RangeInputOne ref={timeLapseRef} defaultValue={0} hidden className="timelapse" />
 			{
 				React.createElement(
 					MediaCarouselContent.Objects[id],
@@ -81,7 +81,7 @@ MediaCarouselContent.Objects = {
 		return <img draggable="false" src={url}/>;
 	},
 	video({ url, info, index, isFocused, check, timeLapseRef }) {
-		check?.(undefined, true); // Включчаем таймапс
+		//check?.(undefined, true); // Включчаем таймапс
 		
 		const videoRef = useRef();
 		const ControllerContext = useContext(MediaControlContext);
