@@ -37,12 +37,12 @@ function MediaCarouselContent({children, index, contentId}) {
 			};
 			return prev;
 		});
-		if (showTimeLapse !== undefined) setShowTimeLapse(prev=>{
+		/*if (showTimeLapse !== undefined) setShowTimeLapse(prev=>{
 			if (showTimeLapse!==prev) {
 				return showTimeLapse;
 			};
 			return prev;
-		});
+		});*/
 	}, []);
 	//const pausedRef = useRef(paused);
 	//ControllerContext && ObjectsControllerCallbacks && !ControllerContext?.check && ControllerContext?.setCheck?.(useCallback);
