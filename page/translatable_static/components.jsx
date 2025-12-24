@@ -672,6 +672,19 @@ app.components.Loading = function ({children}) {
 app.components.selfButton.root = ReactDOM.createRoot(document.querySelector("body .header .header-actions"));*/
 app.functions = {};
 
+app.functions.formatTime = (seconds) => {
+	const s = Math.floor(seconds % 60);
+	const m = Math.floor((seconds / 60) % 60);
+	const h = Math.floor(seconds / 3600);
+
+	const ss = String(s).padStart(2, '0');
+	const mm = String(m).padStart(2, '0');
+
+	return h > 0 
+		? `${h}:${mm}:${ss}` 
+		: `${m}:${ss}`;
+};
+
 app.functions.getReactDOMProps = function (element) {
 	let keys = Object.keys(element);
 	let keyName;

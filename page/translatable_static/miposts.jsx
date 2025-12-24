@@ -13,6 +13,7 @@ const { useEffect, useCallback, useState, useRef, createContext, useContext, use
 
 const InfoContext = createContext({ active: 0, isFocused: false });
 const MediaControlContext = createContext({});
+const HideTopPlayerContext = createContext(()=>{});
 
 const visibilityDesc = app.structures.MipuAdvPostPreview.visibilityDesc;
 
@@ -20,10 +21,12 @@ function MediaCarouselContent({children, index, contentId}) {
 	const Info = useContext(InfoContext);
 	const ControllerContext = useContext(MediaControlContext);
 	const ObjectsControllerCallbacks = ControllerContext?.callbacks;
+	const setHideTopPlayer = useContext(HideTopPlayerContext);
 	
 	const isFocused = (Info.active == index) && Info.isFocused;
 	
 	const timeLapseRef = useRef(null);
+	const timeLapseTextRef = useRef(null);
 	
 	const [ paused, setPaused ] = useState(false);
 	//const [ showTimeLapse, setShowTimeLapse ] = useState(false);
@@ -57,11 +60,38 @@ function MediaCarouselContent({children, index, contentId}) {
 		url = app.apis.mediastorage + "/posts/" + String(contentId) + "/" + String(url);
 	};
 
-	console.log(ObjectsControllerCallbacks);
+	//console.log(ObjectsControllerCallbacks);
+	
+	useEffect(function () {
+		function onPointerDown() {
+			setHideTopPlayer(true);
+			timeLapseTextRef.current.hidden = false;
+		};
+		function onPointerUp() {
+			setHideTopPlayer(false);
+			timeLapseTextRef.current.hidden = true;
+		};
+		function onInput() {
+			//app.functions.formatTime(time)
+			timeLapseTextRef.current.innerHTML = `<span class="app-notmaintext">${app.functions.formatTime(timeLapseRef.current.value)}</span> / ${app.functions.formatTime(timeLapseRef.current.max)}`;
+		};
+		
+		timeLapseRef.current.addEventListener("pointerup", onPointerUp);
+		timeLapseRef.current.addEventListener("pointerdown", onPointerDown);
+		timeLapseRef.current.addEventListener("input", onInput);
+		
+		return function () {
+			timeLapseRef.current?.removeEventListener("pointerup", onPointerUp);
+			timeLapseRef.current?.removeEventListener("pointerdown", onPointerDown);
+			timeLapseRef.current?.removeEventListener("input", onInput);
+		};
+	}, []);
+	
 	if (MediaCarouselContent.Objects[id]) {
 		return <div onClick={()=>{ObjectsControllerCallbacks?.pauseOrPlay?.()}}>
 			{ paused && <div className="pauselayout"><app.components.react.FixedSVG className="alphaicon fill" children={app.___svgs.play}/></div> }
-			<app.components.RangeInputOne ref={timeLapseRef} defaultValue={0} hidden className="timelapse" />
+			<span className="timelapsetext" ref={timeLapseTextRef} hidden></span>
+			<app.components.RangeInputOne ref={timeLapseRef} step="0.1" defaultValue={0} hidden className="timelapse" />
 			{
 				React.createElement(
 					MediaCarouselContent.Objects[id],
@@ -135,13 +165,15 @@ MediaCarouselContent.Objects = {
 		
 		useEffect(function () {
 			//timeLapseRef.current?.hidden = true;
+			if (!isFocused) timeLapseRef.current.hidden = true;
+			
 			if (!isFocused && !check) return;
 			
 			let isVideoEarlyPlaying = false;
 			function onPlay() {
 				check(videoRef.current.paused);
 				if (timeLapseRef.current) {
-					timeLapseRef.current.hidden = !videoRef.current.paused && !isVideoEarlyPlaying ? videoRef.current.duration <= 10 : false;
+					timeLapseRef.current.hidden = !videoRef.current.paused && !isVideoEarlyPlaying ? videoRef.current.duration <= 25 : false;
 				};
 			};
 			function onPlaying() {
@@ -495,6 +527,7 @@ export default function MipuAdvPost({children, disabled, active}) {
 	const [ currentData, updateCurrentData ] = useImmer({ noData: true });
 	
 	const [ openedState, setOpenedState ] = useState(null);
+	const [ hideTopPlayer, setHideTopPlayer ] = useState(false);
 	
 	/*
 	
@@ -566,11 +599,14 @@ export default function MipuAdvPost({children, disabled, active}) {
 	};
 	
 	return <div className="app-mipuadvpostplayer">
-		<MediaCarousel children={content} contentId={id} contentType={contentType} active={active}/>
-		<div className={"toplayer"}>
+		<HideTopPlayerContext value={setHideTopPlayer}><MediaCarousel children={content} contentId={id} contentType={contentType} active={active}/></HideTopPlayerContext>
+		<div className={["toplayer", hideTopPlayer && "hide"].filter(x=>x!==false).join(" ")}>
 			<div className="postinfo">
 				{ visibility != "1" && visibilityDescription && <span tooltip={visibilityDescription.description} className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
-				<app.components.Username href user={author}/>
+				<div>
+					<app.components.Username href user={author}/>
+					{(created || edited) && <span className="app-notmaintext"> ● {app.functions.ago(edited || created)}</span>}
+				</div>
 				<app.components.Content showCollapseButton compressTo={2}>{description}</app.components.Content>
 			</div>
 			<div className="rating">
