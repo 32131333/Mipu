@@ -285,6 +285,12 @@ MediaCarouselContent.Objects = {
 		};
 		
 		return <video ref={videoRef} loop src={url} />;
+	},
+	deletednotify() {
+		return <div style={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", paddingInline: "10%" }}>
+			<h3>#uncategorized.great#</h3>
+			<span>#uncategorized.mipuadvpostdeleted#</span>
+		</div>;
 	}
 };
 
@@ -456,7 +462,7 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 		<div ref={contentRef} id="content" className="app-no-scroll">
 			<InfoContext value={info}>
 				{ children && children.map((x,i)=>(
-					<MediaControlContext key={i} value={ControllerContextsValues[i]}>
+					<MediaControlContext key={`${x?.id}${x?.url}${i}`} value={ControllerContextsValues[i]}>
 						<MediaCarouselContent index={i} contentType={contentType} contentId={contentId} children={x}/>
 					</MediaControlContext>
 				))}
@@ -523,7 +529,42 @@ function VerticalRating({ contentId, contentType, children, onUpdate, disabled, 
 	</>;
 };
 
-export default function MipuAdvPost({children, disabled, active}) {	
+function MipuAdvPostMicroEditForm({ children, onConfirm, onCancel, contentType }) {
+	const [ form, updateForm ] = useImmer({
+		description: children.description,
+		visibility: children.visibility
+	});
+	const [ error, setError ] = useState(null);
+	
+	const selectedVisibility = form.visibility !== undefined ? visibilityDesc.find(x=>x.id==form.visibility) : visibilityDesc[0];
+	
+	async function submit() {
+		const r = await app.f.patch(`${contentType}/${children.id}`, {...form});
+		if (r.status=="success") {
+			onConfirm(r.content);
+		} else {
+			setError(r.error);
+			return false;
+		};
+	};
+	
+	return <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+		<div>
+			<span>#uncategorized.mipuadvpostseditinfo#</span>
+			{error && <app.components.ErrorAlert>{app.translateError(error)}</app.components.ErrorAlert>}
+		</div>
+		<div>
+			<app.components.ContentInput placeholder="#uncategorized.description#" value={form.description} onChange={e=>{ updateForm(d=>{ d.description = e.target.value }) }}/>
+			<button className="app-buttonFromModals flexCenter" onClick={()=>{ updateForm(d=>{ d.visibility = visibilityDesc[visibilityDesc.indexOf(selectedVisibility)+1] ? visibilityDesc[visibilityDesc.indexOf(selectedVisibility)+1].id : visibilityDesc[0].id }) }}>
+				<span id="icon" children={selectedVisibility.emoji}/>
+				<span><b>#page.create.visibility#: {selectedVisibility.name}</b><br />{selectedVisibility.description}</span>
+			</button>
+		</div>
+		<span><app.components.ProcessButton onClick={submit} className="btn app-button">#button.confirm#</app.components.ProcessButton> <button onClick={onCancel}>#button.cancel#</button></span>
+	</div>;
+};
+
+export default function MipuAdvPost({children, disabled, active, onDelete}) {	
 	const [ currentData, updateCurrentData ] = useImmer({ noData: true });
 	
 	const [ openedState, setOpenedState ] = useState(null);
@@ -567,6 +608,8 @@ export default function MipuAdvPost({children, disabled, active}) {
 	const visibilityDescription = visibilityDesc.find(x=>x.id==visibility);
 	const contentType = "mipuadv_posts";
 	
+	const me = app.me; // Относительно лучше просто использовать глобальную переменную, чем хук
+	
 	async function handleShare(type) {
 		let url = document.location.origin + `/sprks/${id}`;
 		try {
@@ -586,7 +629,7 @@ export default function MipuAdvPost({children, disabled, active}) {
 				duration: 5000,
 				onClick: (_, t)=>t()
 			});
-			setOpenedState(false);
+			setOpenedState(null);
 		} catch(e) {
 			app.toasts.show({
 				icon: <app.components.react.FixedSVG className="d" children={app.___svgs.x}  />,
@@ -595,6 +638,19 @@ export default function MipuAdvPost({children, disabled, active}) {
 				duration: 5000,
 				onClick: (_, t)=>t()
 			});
+		};
+	};
+	async function handleDelete() {
+		if (!id) return;
+		setOpenedState(null);
+		
+		const confirmed = await app.functions.youReallyWantToDo();
+		if (confirmed) {
+			const r = await app.f.delete(`${contentType}/${id}`);
+			if (r.status == "success") {
+				onDelete?.();
+				updateCurrentData({ author, content: [ {id: "deletednotify"} ] });
+			};
 		};
 	};
 	
@@ -640,11 +696,25 @@ export default function MipuAdvPost({children, disabled, active}) {
 								<b>#uncategorized.url#</b>
 								<pre>{ document.location.origin + `/sprks/${id}` }</pre>
 								<div style={{ display: "flex", width: "100%", paddingInline: 5, gap: 5, alignItems: "center" }}>
-									<button onClick={e=>handleShare("share")} className="btn app-button">#button.share#</button>
-									<button onClick={e=>handleShare("copy")} className="btn app-button">#button.copyurl#</button>
+									{ /*
+										<button onClick={e=>handleShare("share")} className="btn app-button">#button.share#</button>
+										<button onClick={e=>handleShare("copy")} className="btn app-button">#button.copyurl#</button>
+									*/ }
+									<app.components.iconButton onClick={e=>handleShare("share")} icon={ <app.components.react.FixedSVG className="alphaicon fill d" children={app.___svgs.share} /> }>#button.share#</app.components.iconButton>
+									<app.components.iconButton onClick={e=>handleShare("copy")} icon={ <div className="d">🔗</div> }>#button.copyurl#</app.components.iconButton>
+									{ me.id == author?.id && <app.components.iconButton onClick={handleDelete}>#button.delete#</app.components.iconButton> }
+									{ me.id == author?.id && <app.components.iconButton icon={ <div className="d">✏</div> } onClick={()=>setOpenedState("edit")}>#button.edit#</app.components.iconButton> }
 								</div>
 							</div>
 						</div>
+					}
+					{
+						openedState == "edit" && <MipuAdvPostMicroEditForm 
+													children={currentData}
+													onConfirm={(d)=>{ setOpenedState(null); updateCurrentData(d) }}
+													onCancel={()=>setOpenedState("share")}
+													contentType={contentType}
+													/>
 					}
 				</div>
 			</div>

@@ -259,6 +259,13 @@ app.reactstates.useListen = function (contentType, contentId) {
 
 const generateClassId = ()=>`btn${Math.floor(Math.random()*1000000)}`;
 
+app.components.iconButton = function ({ icon, children, dontPadding, className, ...props }) {
+	return <button {...props} className={["app-button2", dontPadding && "dntpdding", className].filter(x=>x!==false).join(" ")}>
+		<div className="icon">{icon || <app.components.react.FixedSVG className="alphaicon fill d" children={app.___svgs.x_1}/>}</div>
+		<span className="text">{children || "Button"}</span>
+	</button>;
+};
+
 app.components.react.CheckBox = ({ checked, id, label, onInput, name }) => {
 	const [isChecked, setIsChecked] = useState(checked ?? false);
 

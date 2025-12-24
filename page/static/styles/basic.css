@@ -49,7 +49,7 @@
 	vertical-align: -0.1em;
 }
 
-.fixsvg.d svg {
+.fixsvg.d svg, .d > .emoji {
 	height: 100%;
 	width: 100%;
 	margin: 0 0 0 0;
@@ -1878,6 +1878,48 @@ body > .processoverlay #lst #progress {
 }
 
 
+.app-button2 {
+	display: flex;
+	background: none;
+	border: none;
+	color: var(--buttonsAndTextColor);
+	flex-direction: column;
+	aspect-ratio: 1 / 1;
+	/*height: 1em;*/
+	width: 4em;
+	overflow: visible;
+	gap: 2px;
+	align-items: center;
+	margin: 0 8px;
+	--buttonIconColor: var(--transparencyColor);
+}
+.app-button2 > .icon {
+	height: 2.5em;
+	aspect-ratio: 1 / 1;
+	border-radius: 100%;
+	background-color: var(--buttonIconColor);
+}
+.app-button2 > .icon:not(.dntpdding) {
+	padding: 9px;
+}
+
+.app-button2 > .text {
+	font-size: 0.8em;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	width: 6em;
+}
+
+.app-button2:hover {
+	filter: opacity(0.8);
+}
+.app-button2:active {
+	filter: opacity(0.5);
+}
 
 
 @media (max-width: 700px) {

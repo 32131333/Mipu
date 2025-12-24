@@ -36,7 +36,7 @@ class ErrorBoundary extends Component {
 export default function TestPage() {
 	const [ renderInfo, updateRenderInfo ] = useImmer({component: null, props: {}});
 	const [ componentName, setComponentName ] = useState("app.components.WarningAlert");
-	const [ componentProps, setComponentProps ] = useState('{\n    "value": "А я помню этот день, может быть, единственный в моей жизни",\n    "children": `Я знаю твой телифон, но никагда не пазваню\n~Nya OwO`,\n    "onInput": console.log,\n    "onClick": showArt /* Возвращает случайную картинку */\n}');
+	const [ componentProps, setComponentProps ] = useState('{\n    "value": "А я помню этот день, может быть, это был первый день моей жизни",\n    "children": `Я знаю твой телифон, но никагда не пазваню\n~Nya OwO`,\n    "onInput": console.log,\n    "onClick": showArt, /* Возвращает случайную картинку */\n    "title": "loveforyou ^w^"\n}');
 	
 	const [ failedProps, setFailedProps ] = useState(false);
 	const [ failedName, setFailedName ] = useState(false);
