@@ -679,9 +679,9 @@ export default function MipuAdvPost({children, disabled, active, onDelete}) {
 			</div>
 		</div>
 		{ openedState &&
-			<div className="commentslayer app-joinfromdownanim">
+			<div className="commentslayer">
 				<div id="closepart" onClick={()=>{setOpenedState(null)}}/>
-				<div className="app-cm-modal modalcontainer" id={openedState}>
+				<div className="app-cm-modal modalcontainer app-joinfromdownanim" id={openedState}>
 					{ openedState == "comments" &&
 						<div>
 							<app.structures.CommentList
