@@ -548,9 +548,9 @@ function MipuAdvPostMicroEditForm({ children, onConfirm, onCancel, contentType }
 		};
 	};
 	
-	return <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+	return <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
 		<div>
-			<span>#uncategorized.mipuadvpostseditinfo#</span>
+			<b><span>#uncategorized.mipuadvpostseditinfo#</span></b>
 			{error && <app.components.ErrorAlert>{app.translateError(error)}</app.components.ErrorAlert>}
 		</div>
 		<div>
@@ -560,7 +560,7 @@ function MipuAdvPostMicroEditForm({ children, onConfirm, onCancel, contentType }
 				<span><b>#page.create.visibility#: {selectedVisibility.name}</b><br />{selectedVisibility.description}</span>
 			</button>
 		</div>
-		<span><app.components.ProcessButton onClick={submit} className="btn app-button">#button.confirm#</app.components.ProcessButton> <button onClick={onCancel}>#button.cancel#</button></span>
+		<span><app.components.ProcessButton onClick={submit} className="btn app-button">#button.confirm#</app.components.ProcessButton> <button className="btn app-button" onClick={onCancel}>#button.cancel#</button></span>
 	</div>;
 };
 
@@ -656,7 +656,7 @@ export default function MipuAdvPost({children, disabled, active, onDelete}) {
 	
 	return <div className="app-mipuadvpostplayer">
 		<HideTopPlayerContext value={setHideTopPlayer}><MediaCarousel children={content} contentId={id} contentType={contentType} active={active}/></HideTopPlayerContext>
-		<div className={["toplayer", hideTopPlayer && "hide"].filter(x=>x!==false).join(" ")}>
+		<div className={["toplayer", "hide1", !hideTopPlayer && "unhide"].filter(x=>x!==false).join(" ")}>
 			<div className="postinfo">
 				{ visibility != "1" && visibilityDescription && <span tooltip={visibilityDescription.description} className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
 				<div>
@@ -679,7 +679,7 @@ export default function MipuAdvPost({children, disabled, active, onDelete}) {
 			</div>
 		</div>
 		{ openedState &&
-			<div className="commentslayer">
+			<div className="commentslayer app-joinfromdownanim">
 				<div id="closepart" onClick={()=>{setOpenedState(null)}}/>
 				<div className="app-cm-modal modalcontainer" id={openedState}>
 					{ openedState == "comments" &&
