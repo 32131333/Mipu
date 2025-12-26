@@ -3098,7 +3098,7 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 	
 	const [ reactionsLimitedShowPopper, setReactionsLimitedShowPopper ] = useState(false);
 	const {refs: floatingRef, floatingStyles} = useFloating({
-		placement: "bottom-start",
+		placement: "bottom-center",
 		middleware: [
 			offset(4),
 			flip(),
@@ -3199,7 +3199,7 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 					...floatingStyles
 				}}
 			>
-				<span style={{justifyContent: "center"}}>{reactionsComponents.slice(reactionsMaxLimitation)}</span>
+				<div style={{justifyContent: "center", flexWrap: "wrap"}}>{reactionsComponents.slice(reactionsMaxLimitation)}</div>
 				<span style={{lineHeight: "initial", display: "initial", fontSize: 14}}>#uncategorized.limitedreactionsinfo#</span>
 			</div>
 		}
