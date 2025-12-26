@@ -160,6 +160,13 @@ export default function VerticalFeed() {
 
 	
 	
+	const isScrollDisabledBySomethingRef = useRef(false);
+	const disableScroll = useCallback(function (e) {
+		const container = pgRef.current;
+		isScrollDisabledBySomethingRef.current = e;
+		
+		e ? container.classList.remove("activateScroll") : container.classList.add("activateScroll");
+	}, []); // Вроде бы с useCallback должна возвращаться одна и таже функция без переписывания
 	
 	/*const forYouInfoRef = useRef({
 		active: false,
@@ -185,16 +192,16 @@ export default function VerticalFeed() {
 		
 		let request;
 		if (container) {
+			if (container.classList.contains("activateScroll")) container.classList.remove("activateScroll");
+			
 			request = requestAnimationFrame(() => {
-				if (container.classList.contains("activateScroll")) container.classList.remove("activateScroll");
-				
 				const offset = feedState.activeIndex * containerHeight;//containerHeight;
 				pgRef.current.scrollTo(0, offset);
 				
-				container.classList.add("activateScroll");
+				if (!isScrollDisabledBySomethingRef.current) container.classList.add("activateScroll");
 			});
 		};
-		return ()=>cancelAnimationFrame(request);
+		//return ()=>cancelAnimationFrame(request);
 	}, [isStaticMode, containerHeight/*, isContainerHeightCalculated*/]);
 	
 	
@@ -373,14 +380,15 @@ export default function VerticalFeed() {
 				if (activeIndexRef.current !== closestIndex) {
 					updateFeedState(d => { d.activeIndex = closestIndex; });
 					activeIndexRef.current = closestIndex;
-				}
+				};
+				scrollTimeout = null;
 			});
 		};
 		
 		container.addEventListener("scroll", onScroll);
 		return () => {
 			container.removeEventListener("scroll", onScroll);
-			cancelAnimationFrame(scrollTimeout);
+			if (scrollTimeout) cancelAnimationFrame(scrollTimeout);
 		};
 	}, [feedData, containerHeight/*, isContainerHeightCalculated*/]);
 	
@@ -429,6 +437,7 @@ export default function VerticalFeed() {
 									children={feedData[i]}
 									active={feedState.activeIndex === i}
 									index={i}
+									setVerticalScrollDisabled={disableScroll}
 								/>
 					};
 					if (!feedData[i] && (i == 0 || feedData[i-1])) {

@@ -507,7 +507,7 @@ function VerticalRating({ contentId, contentType, children, onUpdate, disabled, 
 		setIsProcessing(false);
 	};
 	
-	return <>
+	/*return <>
 		<div>
 			<button className="app-iconOnlyButton b" id="like" active={String(myRating==1)} onClick={processLike} disabled={isProcessing || disabled}>
 				<app.components.react.FixedSVG className={`r alphaicon${myRating==1 ? " fill" : ""}`}>{app.___svgs.heart}</app.components.react.FixedSVG>
@@ -526,6 +526,36 @@ function VerticalRating({ contentId, contentType, children, onUpdate, disabled, 
 			</button>
 			<span id="count">#uncategorized.sharename#</span>
 		</div>
+	</>;*/
+	return <>
+		<app.components.iconButton
+			type="1"
+			id="like"
+			active={String(myRating==1)}
+			onClick={processLike}
+			disabled={isProcessing || disabled}
+			icon={ <app.components.react.FixedSVG className={`d alphaicon${myRating==1 ? " fill" : ""}`}>{app.___svgs.heart}</app.components.react.FixedSVG> }
+		>
+			{liked > 0 ? `${app.functions.parseCount(liked)}` : "#uncategorized.likename#"}
+		</app.components.iconButton>
+		<app.components.iconButton
+			type="1"
+			id="comment"
+			onClick={onComments}
+			disabled={disabled}
+			icon={ <app.components.react.FixedSVG className="d alphaicon">{app.___svgs.comment}</app.components.react.FixedSVG> }
+		>
+			{comments > 0 ? `${app.functions.parseCount(comments)}` : "#uncategorized.commentsname#"}
+		</app.components.iconButton>
+		<app.components.iconButton
+			type="1"
+			id="share"
+			onClick={onShare}
+			disabled={disabled}
+			icon={ <app.components.react.FixedSVG className="d alphaicon fill">{app.___svgs.share}</app.components.react.FixedSVG> }
+		>
+			#uncategorized.sharename#
+		</app.components.iconButton>
 	</>;
 };
 
@@ -564,7 +594,7 @@ function MipuAdvPostMicroEditForm({ children, onConfirm, onCancel, contentType }
 	</div>;
 };
 
-export default function MipuAdvPost({children, disabled, active, onDelete}) {	
+export default function MipuAdvPost({children, disabled, active, onDelete, setVerticalScrollDisabled}) {	
 	const [ currentData, updateCurrentData ] = useImmer({ noData: true });
 	
 	const [ openedState, setOpenedState ] = useState(null);
@@ -597,6 +627,10 @@ export default function MipuAdvPost({children, disabled, active, onDelete}) {
 			};
 		};
 	}, [active]);
+	
+	useEffect(function () {
+		if (active) setVerticalScrollDisabled(openedState || hideTopPlayer);
+	}, [active, openedState, setVerticalScrollDisabled, hideTopPlayer]);
 	
 	const {
 		id, visibility,

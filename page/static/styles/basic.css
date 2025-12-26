@@ -1077,7 +1077,7 @@ input:disabled + .slider {
 }
 .app-structure-rating > div {
 	display: flex;
-	gap: 10px;
+	gap: 8px;
 	padding: 5px 0px;
 	position: relative;
 }
@@ -1085,7 +1085,7 @@ input:disabled + .slider {
 	display: flex;
 	align-items: center;
 	line-height: 0;
-	gap: 5px;
+	gap: 2px;
 }
 
 .app-structure-postgallery {
@@ -1649,7 +1649,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	gap: 10px;
 	align-items: center;
 	font-size: xx-large;
-	overflow: clip;
+	overflow: visible;
 }
 
 .app-mipuadvpostplayer .rating .fixsvg.alphaicon svg {
@@ -1657,6 +1657,9 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 }
 .app-mipuadvpostplayer .rating .fixsvg.alphaicon.fill svg {
 	fill: white;
+}
+.app-mipuadvpostplayer .rating .app-button2 {
+	font-size: 17px;
 }
 
 
@@ -1668,7 +1671,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 	filter: contrast(0.5);
 }
 
-.app-mipuadvpostplayer > .toplayer #like.app-iconOnlyButton[active="true"] svg {
+.app-mipuadvpostplayer > .toplayer #like.app-button2[active="true"] svg {
 	stroke: var(--pinkyRedColor);
 	fill: var(--pinkyRedColor);
 }
@@ -1891,6 +1894,7 @@ body > .processoverlay #lst #progress {
 	gap: 2px;
 	align-items: center;
 	margin: 0 8px;
+	padding: 0;
 	--buttonIconColor: var(--transparencyColor);
 }
 .app-button2 > .icon {
@@ -1899,7 +1903,7 @@ body > .processoverlay #lst #progress {
 	border-radius: 100%;
 	background-color: var(--buttonIconColor);
 }
-.app-button2 > .icon:not(.dntpdding) {
+.app-button2:not(.dntpdding) > .icon {
 	padding: 9px;
 }
 
@@ -1914,11 +1918,38 @@ body > .processoverlay #lst #progress {
 	width: 6em;
 }
 
+.app-button2.type1 > .icon {
+	border-radius: 0;
+	background: none;
+}
+.app-button2.type1 > .text {
+	width: 5em;
+}
+.app-button2.type1 {
+	margin: 0;
+}
+.app-button2.type1:not(.dntpdding) > .icon {
+	padding: 4px;
+}
+
+
 .app-button2:hover {
 	filter: opacity(0.8);
 }
 .app-button2:active {
 	filter: opacity(0.5);
+}
+
+.app-button2.type1 {
+	filter: opacity(0.9) brightness(0.9);
+}
+.app-button2.type1:hover {
+	filter: opacity(1);
+}
+
+
+.app-button2:disabled, .app-button2.type1:disabled {
+	filter: opacity(0.4) grayscale(1);
 }
 
 
@@ -2052,7 +2083,7 @@ body > .processoverlay #lst #progress {
   to { opacity: 1; transform: initial; }
 }
 .app-joinfromdownanim {
-	animation: joinanim 0.2s ease-out;
+	animation: joinanim 0.25s ease-out;
 }
 
 

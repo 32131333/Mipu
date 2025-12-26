@@ -259,8 +259,8 @@ app.reactstates.useListen = function (contentType, contentId) {
 
 const generateClassId = ()=>`btn${Math.floor(Math.random()*1000000)}`;
 
-app.components.iconButton = function ({ icon, children, dontPadding, className, ...props }) {
-	return <button {...props} className={["app-button2", dontPadding && "dntpdding", className].filter(x=>x!==false).join(" ")}>
+app.components.iconButton = function ({ icon, children, type, dontPadding, className, ...props }) {
+	return <button {...props} className={["app-button2", dontPadding && "dntpdding", type && `type${type}`, className].filter(x=>x!==false).join(" ")}>
 		<div className="icon">{icon || <app.components.react.FixedSVG className="alphaicon fill d" children={app.___svgs.x_1}/>}</div>
 		<span className="text">{children || "Button"}</span>
 	</button>;
@@ -3091,13 +3091,26 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 		"myReactions": [{id: '7', type: 'custom'}]
 	}
 	*/
+	const isMobile = app.reactstates.useIsMobileOrientation();
+
 	const [actually, update] = useImmer(children ?? rating ?? {liked: 0, disliked: 0, comments: 0, reactions: []});
 	const [processing, setProcessing] = useState(contentType && contentId ? false : true);
+	
+	const [ reactionsLimitedShowPopper, setReactionsLimitedShowPopper ] = useState(false);
+	const {refs: floatingRef, floatingStyles} = useFloating({
+		placement: "bottom-start",
+		middleware: [
+			offset(4),
+			flip(),
+			shift({padding: 5})
+		]
+	});
 	
 	useEffect(function () {
 		update(children ?? rating ?? {liked: 0, disliked: 0, comments: 0, reactions: []});
 		setProcessing(contentType && contentId ? false : true);
-	}, [children, rating, contentType, contentId])
+	}, [children, rating, contentType, contentId]);
+	
 	
 	async function processLike(event) {
 		setProcessing(true);
@@ -3138,18 +3151,23 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 		setProcessing(false);
 	};
 	
+	const reactionsMaxLimitation = isMobile ? 1 : Infinity;
+	//const reactions = Array.isArray(actually.reactions) && reactionsMaxLimitation != Infinity ? actually.reactions.slice(0,reactionsMaxLimitation) : actually.reactions;
+	const reactionsComponents = Array.isArray(actually.reactions) && !val.hideReactions && actually.reactions.map((x)=>{
+		return <app.structures.Rating.Reaction onClick={processReaction(x.emoji.id)} loading={processing} key={`${x.emoji.type}${x.emoji.id}`} reaction={
+			{...x, ratedByMe: x.ratedByMe ?? !!actually.myReactions.filter(z=>z.type==x.emoji.type&&z.id===x.emoji.id)[0] ?? false}
+		}/>
+	});
+	
 	return <div className="app-structure-rating">
 		<div>
 			<div><button className="app-iconOnlyButton b" onClick={()=>processLike()} disabled={processing}><app.components.react.FixedSVG className={`alphaicon${actually.myRating==1 ? " fill" : ""}`}>{app.___svgs.heart}</app.components.react.FixedSVG></button>{actually.liked > 0 ? ` ${actually.liked}` : null}</div>
 			{ !val.hideReactions && Array.isArray(actually.reactions) && actually.reactions.length != 0 &&
 				<span>
-					{actually.reactions.map((x)=>{
-						return <app.structures.Rating.Reaction onClick={processReaction(x.emoji.id)} loading={processing} key={`${x.emoji.type}${x.emoji.id}`} reaction={
-							{...x, ratedByMe: x.ratedByMe ?? !!actually.myReactions.filter(z=>z.type==x.emoji.type&&z.id===x.emoji.id)[0] ?? false}
-						}/>
-					})}
+					{reactionsComponents.slice(0, reactionsMaxLimitation)}
 				</span>
 			}
+			{ actually.reactions && actually.reactions.length > reactionsMaxLimitation && <button ref={floatingRef.setReference} className="app-iconOnlyButton b" onClick={() => { setReactionsLimitedShowPopper(e=>!e) }} disabled={processing}><app.components.react.FixedSVG className="alphaicon fill">{reactionsLimitedShowPopper ? app.___svgs.up : app.___svgs.down}</app.components.react.FixedSVG></button> }
 			{ !val.hideReactions && !actually.tooManyReactions && <app.structures.Rating.AddReactionButton disabled={processing} onEmojiSelect={processAddReaction}/> }
 		</div>
 		<div>
@@ -3167,6 +3185,24 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 			
 			{val.moreButtonCallback && <button className="app-iconOnlyButton b" disabled={processing} onClick={val.moreButtonCallback}><app.components.react.FixedSVG className="alphaicon">{app.___svgs.more}</app.components.react.FixedSVG></button>}
 		</div>
+		
+		{ 
+			/* Floating для реакций типа */
+		
+			Array.isArray(actually.reactions) && !val.hideReactions && actually.reactions.length > reactionsMaxLimitation && reactionsLimitedShowPopper &&
+			
+			<div className="app-tooltip floating"
+				ref={floatingRef.setFloating}
+				style={{
+					padding: 8,
+					flexDirection: "column",
+					...floatingStyles
+				}}
+			>
+				<span style={{justifyContent: "center"}}>{reactionsComponents.slice(reactionsMaxLimitation)}</span>
+				<span style={{lineHeight: "initial", display: "initial", fontSize: 14}}>#uncategorized.limitedreactionsinfo#</span>
+			</div>
+		}
 	</div>;
 };
 

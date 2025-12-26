@@ -27,7 +27,9 @@ tooltipElement.appendChild(tooltipArrow);
 
 // Создание tooltip
 app.createTooltip = async function (referenceElement) {
-	if (app.createTooltip.isCreating || app.createTooltip.renderedOn == referenceElement) return; // Создаем дебаунс. Но и не даем повторять повторному пересозданию на том же референсе
+	if (app.createTooltip.isCreating || app.createTooltip.renderedOn == referenceElement || !document.body.contains(referenceElement)) return; // Создаем дебаунс. Но и не даем повторять повторному пересозданию на том же референсе
+	// Ну и отменяем вызов, если элемент неожиданно пропадает из ветки document.body
+	
 	app.createTooltip.isCreating = true;
 	await app.destroyTooltip();
 	

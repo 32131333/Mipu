@@ -122,7 +122,7 @@ function MainTabs(props) {
 			<div className={!isMobile ? "btns" : "tabs-header"}>
 				{
 					Object.keys(MainTabs.pages).map(function (x, index) {
-						return <NavLink className={!isMobile ? "navbutton" : "tab-button"} to={location.pathname.split("/").reverse().slice(1).reverse().join("/")+"/"+x}>{MainTabs.pages[x].btnName}</NavLink>
+						return <NavLink replace className={!isMobile ? "navbutton" : "tab-button"} to={location.pathname.split("/").reverse().slice(1).reverse().join("/")+"/"+x}>{MainTabs.pages[x].btnName}</NavLink>
 					})
 				}
 			</div>
@@ -193,7 +193,7 @@ const MipuAdvPostsMainPage = memo(function ({userId, me}) {
 	
 	if (!isLoading && isEmpty && psts.length <= 0) {
 		return <div className="fillallheight" id="emptypage">
-			<span><h3>#page.user.emptymipuadvpostspage#</h3>{userId == me.id ? <>#page.user.emptymipuadvpostspage2#<br /><Link to="create" className="btn app-button">#button.create#</Link></> : "#page.user.emptymipuadvpostspage1#"}</span>
+			<span><h3>#page.user.emptymipuadvpostspage#</h3>{userId == me.id ? <>#page.user.emptymipuadvpostspage2#<br /><Link to="/create" className="btn app-button">#button.create#</Link></> : "#page.user.emptymipuadvpostspage1#"}</span>
 		</div>;
 	} else {
 		return <div id="sprksposts">
