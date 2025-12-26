@@ -3167,7 +3167,7 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 					{reactionsComponents.slice(0, reactionsMaxLimitation)}
 				</span>
 			}
-			{ actually.reactions && actually.reactions.length > reactionsMaxLimitation && <button ref={floatingRef.setReference} className="app-iconOnlyButton b" onClick={() => { setReactionsLimitedShowPopper(e=>!e) }} disabled={processing}><app.components.react.FixedSVG className="alphaicon fill">{reactionsLimitedShowPopper ? app.___svgs.up : app.___svgs.down}</app.components.react.FixedSVG></button> }
+			{ !val.hideReactions && Array.isArray(actually.reactions) && actually.reactions.length != 0 && actually.reactions.length > reactionsMaxLimitation && <button ref={floatingRef.setReference} className="app-iconOnlyButton b" onClick={() => { setReactionsLimitedShowPopper(e=>!e) }} disabled={processing}><app.components.react.FixedSVG className="alphaicon fill">{reactionsLimitedShowPopper ? app.___svgs.up : app.___svgs.down}</app.components.react.FixedSVG></button> }
 			{ !val.hideReactions && !actually.tooManyReactions && <app.structures.Rating.AddReactionButton disabled={processing} onEmojiSelect={processAddReaction}/> }
 		</div>
 		<div>
