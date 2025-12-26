@@ -3196,6 +3196,7 @@ app.structures.Rating = function ({children, rating, contentType, contentId, ...
 				style={{
 					padding: 8,
 					flexDirection: "column",
+					textAlign: "center",
 					...floatingStyles
 				}}
 			>
