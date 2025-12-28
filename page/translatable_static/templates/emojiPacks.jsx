@@ -125,8 +125,8 @@ export default function EmojiPacks() {
 	}, [/*page*/]);
 	const handlePackCreate = useCallback(function () {
 		return new Promise(async(r)=>{
-			const r = await app.f.put("emojipack");
-			if (r.status=="success") {
+			const res = await app.f.put("emojipack");
+			if (res.status=="success") {
 				updatePacks(d=>{ d.push(r.content) });
 			};
 			r();
