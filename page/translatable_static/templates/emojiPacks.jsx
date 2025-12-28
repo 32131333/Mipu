@@ -24,19 +24,17 @@ function Pack({ children, onPatch, onDelete }) {
 	};
 	async function handleEmojiUpload(e) {
 		return await new Promise(r=>{
-			app.functions.uploadFileContextMenu(async function (src) {
-				app.functions.cropModal(src, {height: 512, width: 512}, async function (src, file) {
-					const bd = new FormData();
-					bd.set("file", file);
+			app.functions.uploadFileContextMenu(async function (file) {
+				const bd = new FormData();
+				bd.set("file", file);
 					
-					const r = await app.f.post(`emojipack/${children.id}`, bd);
-					if (r.status=="success") {
-						onPatch({...children, emojis: [...children.emojis, r.content]});
-						r(true);
-					} else {
-						r(false);
-					};
-				}, ()=>r("ignore"));
+				const r = await app.f.post(`emojipack/${children.id}`, bd);
+				if (r.status=="success") {
+					onPatch({...children, emojis: [...children.emojis, r.content]});
+					r(true);
+				} else {
+					r(false);
+				};
 			}, e.target, ()=>r("ignore"));
 		});
 	};
@@ -126,11 +124,10 @@ export default function EmojiPacks() {
 		});
 	}, [/*page*/]);
 	const handlePackCreate = useCallback(function () {
-		
 		return new Promise(async(r)=>{
-			const d = await app.f.put("emojipack");
-			if (d.status=="success") {
-				updatePacks(d=>{ d.push(d.content) });
+			const r = await app.f.put("emojipack");
+			if (r.status=="success") {
+				updatePacks(d=>{ d.push(r.content) });
 			};
 			r();
 		});
