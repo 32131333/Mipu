@@ -323,6 +323,9 @@ app.components.react.CoolTextInput = ({value: v, ...val}) => {
 	
 	const ref = useRef(null);
 	
+	const t = useRef(null);
+	
+	
 	function handleInput(e) {
 		if (val.onKeyDown) return val.onKeyDown(e);
 		if (e.key === 'Tab' || e.key === 'Enter') {
@@ -330,7 +333,12 @@ app.components.react.CoolTextInput = ({value: v, ...val}) => {
 		};
 	};
 	function handleContentChange(e) {
+		if (t.current) {
+			clearTimeout(t.current);
+		};
+		
 		if (val.onInput) val.onInput(e);
+		if (val.onChange) t.current = setTimeout(()=> val.onChange({target: {value: e.target.textContent}}), 1000);
 		setValue(e.target.textContent);
 	};
 	function handleOnFocus() { 
@@ -740,7 +748,7 @@ app.functions.microDesc = function (text, cropToLength) {
 app.components.Content = function (val) {
 	if (!val.children) return null;
 
-	const compressTo = val.compressTo ? (isNaN(val.compressTo) ? 1 : val.compressTo) : 8;
+	const compressTo = val.compressTo ? (isNaN(val.compressTo) ? 1 : val.compressTo) : 8;	
 	const [ showFull, setShowMore ] = useState(!compressTo || val.showFullDefaultly);
 	
 	let cut = false;
@@ -891,8 +899,20 @@ app.components.Content.preparseContent.syntax = [
 		
 		if (!failed) return <app.components.Gallery medias={a} content={content}/>
 		else return children;
+	}],
+	[app._emoji.customParse.parsers[0][0], function ({children}) {
+		return <app.components.CustomEmoji id={children.slice(3, -1)} />;
 	}]
 ];
+
+app.components.CustomEmoji = ({ id }) => <img 
+	className="emoji emoji-custom"
+	draggable="false"
+	tooltip="#uncategorized.this_is_custom_emoji#"
+	customid={id}
+	src={app.apis.mediastorage+`emoji/${id}`}
+	alt={`:e:${id}:`}
+/>;
 
 
 app.components.Gallery = function ({ medias, content, children, onIndexChange }) {
@@ -1910,7 +1930,7 @@ app.structures.Post = function ({post: value, children, onDelete, micro, canOpen
 			<span>
 				<app.components.Username.Extended.allowRedirect user={post.author}/>
 				<br />
-				<span>🕑 {app.functions.ago(post.created)}{post.edited ? ", #uncategorized.edited#" : ""}</span>
+				<span>🕑 {app.functions.ago(post.created)}{post.edited ? "(#uncategorized.edited#)" : ""}</span>
 			</span>
 		</div>
 		{post.unvaliable && <app.components.ErrorAlert>{app.translateError(post.unvaliable)}</app.components.ErrorAlert>}
@@ -2084,7 +2104,8 @@ app.components.MobileTextInput = forwardRef(function ({
 		// text может быть '' — это валидное значение
 		if (text === null) return;
 		
-		const galleryString = gallery.length > 0 ? `\n\n$${JSON.stringify(gallery)}` : '';
+		//const galleryString = gallery.length > 0 ? `\n\n$${JSON.stringify(gallery)}` : '';
+		const galleryString = gallery.length > 0 ? `\n$${JSON.stringify(gallery)}` : '';
 		const combinedValue = (text ?? '') + galleryString;
 
 		if (onChange && lastEmittedValue.current !== combinedValue) {
@@ -2102,7 +2123,8 @@ app.components.MobileTextInput = forwardRef(function ({
 		let newGallery = [];
         
 		// Надежно парсим галерею из конца строки
-		const galleryMatch = newText.match(/\n\n\$(\[.*\])$/s);
+		//const galleryMatch = newText.match(/\n\n\$(\[.*\])$/s);
+		const galleryMatch = newText.match(newText.split("\n").length <= 1 ? /\$(\[.*\])$/s : /\n\$(\[.*\])$/s);
 		if (galleryMatch && galleryMatch[1]) {
 			try {
 				newGallery = JSON.parse(galleryMatch[1]);
@@ -3268,7 +3290,10 @@ app.structures.Rating.Reaction = function (val) {
 	// {emoji: {"type": "custom", "id": 7}, count: 3}
 	// {emoji: {"type": "non-custom", "id": "🦊"}, count: 5, ratedByMe: true}
 	const info = val.children ?? val.reaction;
-	return <button className={`app-structure-reaction${info.ratedByMe ? " reacted" : ""}`} onClick={val.onClick} disabled={val.loading===true}>{info.emoji.type == "custom" ? `:e:${info.emoji.id}:` : info.emoji.id} {!isNaN(info.count) ? info.count : "?"}</button>
+	return <button
+		className={`app-structure-reaction${info.ratedByMe ? " reacted" : ""}`}
+		onClick={val.onClick} disabled={val.loading===true}
+	>{info.emoji.type == "custom" ? <app.components.CustomEmoji id={info.emoji.id}/>/*`:e:${info.emoji.id}:`*/ : info.emoji.id} {!isNaN(info.count) ? info.count : "?"}</button>
 };
 
 app.structures.MipuAdvPostPreview = function ({ children, style }) {
@@ -3636,7 +3661,7 @@ app.structures.Comment = function ({ commentData: initialCommentData, repliesPre
                     <br />
                     <span title={app.functions.date(currentCommentData.created)}>
                         🕑 {app.functions.ago(currentCommentData.created)}
-                        {currentCommentData.edited ? ", #uncategorized.edited#" : ""}
+                        {currentCommentData.edited ? "(#uncategorized.edited#)" : ""}
                     </span>
                 </span>
             </div>
