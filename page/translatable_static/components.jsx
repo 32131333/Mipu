@@ -352,9 +352,9 @@ app.components.react.CoolTextInput = ({value: v, ...val}) => {
 		ref.current.focus()
 	};
 	
-	const {label, ...rest} = val;
+	const {label, style, ...rest} = val;
 	return (
-		<div style={{ display: "-webkit-inline-box", position: "relative" }}>
+		<div style={{ ...style, display: "-webkit-inline-box", position: "relative" }}>
 			<span onClick={handleClickFocus}>{val.label}</span>
 			<div
 				{...rest}

@@ -71,26 +71,26 @@ function Pack({ children, onPatch, onDelete }) {
 			{ children.emojis.map((x,i)=>(
 				<div key={i} style={{ display: "flex", gap: 5, padding: 5, alignItems: "center" }}>
 					<span style={{"transform": "scale(1.5)"}}><app.components.CustomEmoji id={x.id}/></span>
-					<span>
-						{" "}
-						<span className="app-notMainText">:</span>
-						{
-							isMyOwn ?
-								<app.components.react.CoolTextInput 
-									style={{ lineHeight: "0.68em" }}
-									placeholder="bestemojinameever"
-									defaultValue={x.emojiId}
-									onChange={e=>{handleEmojiChange(x.id, {name: e.target.value})}}
-								/>
-								:
-								<span>{x.emojiId}</span>
-						}
-						<span className="app-notMainText">:</span>
+					<div style={{display: "flex", gap: 2, alignItems: "center", paddingInline: 1}}>
+						<span>
+							<span className="app-notMainText">:</span>
+							{
+								isMyOwn ?
+									<app.components.react.CoolTextInput 
+										style={{ lineHeight: "0.68em" }}
+										placeholder="bestemojinameever"
+										defaultValue={x.emojiId}
+										onChange={e=>{handleEmojiChange(x.id, {name: e.target.value})}}
+									/>
+									:
+									<span>{x.emojiId}</span>
+							}
+							<span className="app-notMainText">:</span>
+						</span>
 						{ isMyOwn && <>
-							{" "}
 							<button className="app-iconOnlyButton b" onClick={()=>handleEmojiDelete(x.id)}><app.components.react.FixedSVG className="alphaicon fill" children={app.___svgs.x_1}/></button>
 						</>}
-					</span>
+					</div>
 				</div>
 			)) }
 			{ children.emojis.length <= 0 && <span>#page.emojipacks.no_emojis#</span> }
