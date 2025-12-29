@@ -43,14 +43,14 @@
 
 /* twemoji + образование svg-контента как изображение */
 .emoji, .fixsvg svg {
-	/*height: 1em;*/
+	height: 1em;
 	width: 1em;
 	margin: 0 .05em 0 .1em;
 	vertical-align: -0.1em;
 }
-.fixsvg svg, div.emoji {
+/*.fixsvg svg, div.emoji {
 	height: 1em;
-}
+}*/
 
 .fixsvg.d svg, .d > .emoji {
 	height: 100%;
