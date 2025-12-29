@@ -6,8 +6,7 @@ import { useImmer } from "use-immer";
 export const path = "/_emojipacks";
 
 
-function Pack({ children, onPatch, onDelete }) {
-	const { me } = app.reactstates.useInformationAboutMe();
+function Pack({ children, onPatch, onDelete, me }) {
 	const isMyOwn = children?.author?.id == me.id;
 	
 	async function handleChange(d) {
@@ -23,18 +22,34 @@ function Pack({ children, onPatch, onDelete }) {
 		};
 	};
 	async function handleEmojiUpload(e) {
+		async function confirmUpload(file) {
+			const bd = new FormData();
+			bd.set("file", file);
+					
+			const r = await app.f.post(`emojipack/${children.id}`, bd);
+			if (r.status=="success") {
+				onPatch({...children, emojis: [...children.emojis, r.content]});
+				return true;
+			} else {
+				return false;
+			};
+		};
+		
 		return await new Promise(r=>{
 			app.functions.uploadFileContextMenu(async function (file) {
-				const bd = new FormData();
-				bd.set("file", file);
-					
-				const r = await app.f.post(`emojipack/${children.id}`, bd);
-				if (r.status=="success") {
-					onPatch({...children, emojis: [...children.emojis, r.content]});
-					r(true);
-				} else {
-					r(false);
+				let d = file;
+				
+				const confirm = await app.functions.youReallyWantToDo(undefined, undefined, "#page.emojipacks.youworuldliketocrop#");
+				if (confirm) {
+					let dd = await new Promise(r=>{
+						app.functions.cropModal(d, {height: 128, width: 128}, function (src, file) {
+							r(file);
+						}, ()=>r(false));
+					});
+					if (dd) d = dd;
 				};
+				
+				r( await confirmUpload(d) );
 			}, e.target, ()=>r("ignore"));
 		});
 	};
@@ -62,8 +77,11 @@ function Pack({ children, onPatch, onDelete }) {
 					:
 					<span>{children.name ?? "#page.emojipacks.withoutname#"}</span>
 			}
-			{ isMyOwn && <app.components.ProcessButton onClick={handleEmojiUpload} className="btn app-button">#button.uploademoji#</app.components.ProcessButton> }
-			{ isMyOwn && <app.components.ProcessButton onClick={()=>{handlePackDelete}} className="btn app-button">#button.delete#</app.components.ProcessButton> }
+			<div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+				{ isMyOwn && <app.components.ProcessButton onClick={handleEmojiUpload} className="btn app-button">#button.uploademoji#</app.components.ProcessButton> }
+				{ isMyOwn && <app.components.ProcessButton onClick={()=>{handlePackDelete}} className="btn app-button">#button.delete#</app.components.ProcessButton> }
+				<button onClick={()=>app.functions.renderEmojiInfo(children.emojis[0].id)} disabled={ children.emojis && children.emojis.length<=0 } className="btn app-button">#button.jointoemojipack#</button>
+			</div>
 		</div>
 		<div style={{display: "flex", fontSize: 20, gap: 10, flexWrap: "wrap", justifyContent: "flex-start"}}>
 			{ children.emojis.map((x,i)=>(
@@ -101,6 +119,8 @@ export default function EmojiPacks() {
 	const [ packs, updatePacks ] = useImmer([]);
 	const [ loading, setLoading ] = useState(false);
 	const [ thatsAll, setThatsAll ] = useState(false);
+	
+	const { me } = app.reactstates.useInformationAboutMe();
 	
 	const pageRef = useRef(1);
 	//const [ page, setPage ] = useState(1);
@@ -142,7 +162,7 @@ export default function EmojiPacks() {
 			</div>
 			<app.components.ProcessButton onClick={handlePackCreate} className="btn app-button">#button.create#</app.components.ProcessButton>
 		</div>
-		{ packs.map( (x,i)=>(<Pack key={i} children={x} onPatch={ (a)=>updatePacks(d=>{d[i]=a}) } onDelete={ ()=>updatePacks(d=>{d.splice(i,1)}) } />) ) }
+		{ packs.map( (x,i)=>(<Pack key={i} children={x} me={me} onPatch={ (a)=>updatePacks(d=>{d[i]=a}) } onDelete={ ()=>updatePacks(d=>{d.splice(i,1)}) } />) ) }
 		{ thatsAll && packs.length<=0 && <span>#page.emojipacks.soempty#</span> }
 		{ loading && <app.components.Loading /> }
 	</div>;

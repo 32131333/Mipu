@@ -772,8 +772,10 @@ app.components.Content = function (val) {
 
 	const textComponents = app.components.Content.textComponents; // Возможно, это исправит проблему с ререндером всего содержимого
 
+	const isOnlyEmojis = app.components.Content.isOnlyEmojis(val.children);
+	const isOnlySingleEmoji = app.components.Content.isOnlySingleEmoji(val.children);
 	return <app.components.Content.Props value={val}>
-		<div className={`contentify${app.components.Content.isOnlyEmojis(val.children) ? " onlyEmojis" : ""}`}>
+		<div className={["contentify", isOnlyEmojis && "onlyEmojis", isOnlyEmojis && isOnlySingleEmoji && "onlyEmojis1", val.className].filter(x=>x!==false).join(" ")/*`contentify${isOnlyEmojis ? " onlyEmojis" : ""}`*/}>
 			<Markdown
 				urlTransform={app.functions.parseUnknownURL}
 				remarkPlugins={[remarkGfm, remarkBreaks]}
@@ -840,6 +842,10 @@ app.components.Content.processText = function (text) {
 app.components.Content.isOnlyEmojis = function (text) {
 	return app._emoji.onlyEmojis.test(text) && isNaN(text);
 };
+app.components.Content.isOnlySingleEmoji = function (text) {
+	return app._emoji.onlySignleEmoji.test(text) && isNaN(text);
+};
+
 app.components.Content.preparseContent = function (children, props) {
 	function process(text) {
 		const regexp = new RegExp("("+app.components.Content.preparseContent.syntax

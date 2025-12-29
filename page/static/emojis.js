@@ -41,6 +41,7 @@ app._emoji = function (src, type, data) {
 //app._emoji.iemoji = /:i:.\w*:/g; // :i:verified: -- Системное эмодзи
 app._emoji.cemoji = /:e:.\w*:/g; // :e:7: -- Кастомное эмодзи
 app._emoji.onlyEmojis = /^(?:(?:\p{Emoji}|:i:\w*:|:e:\w*:|\s)+)$/u;
+app._emoji.onlySignleEmoji = /^(?:(?:\p{Emoji}|:i:\w*:|:e:\w*:|\s))$/u;
 
 
 /*app._emoji.customParse = function (node) {
