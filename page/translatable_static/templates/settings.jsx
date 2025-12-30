@@ -1,4 +1,4 @@
-import { useParams, NavLink, redirect, Navigate } from "react-router";
+import { useParams, NavLink, redirect, Navigate, Link } from "react-router";
 import { useEffect, useState, useCallback, useRef, Fragment } from "react";
 import React from "react";
 
@@ -58,7 +58,7 @@ function RequiredNeedAccount() {
 const pages = {};
 pages.main = {
 	component: function MainSettingsPage() {
-		return <></>
+		return <><Link to="/emojipacks" className="btn app-button">emojipacks</Link></>
 	},
 	pagename: ";w;"
 };
@@ -108,7 +108,6 @@ pages.userDescription = {
 			}/*)*/;
 			func(e);
 		}, [data]);
-		
 		
 		return <>
 			{/*<h3>#page.settings.userdescription.name#</h3>

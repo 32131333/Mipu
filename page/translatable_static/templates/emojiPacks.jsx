@@ -3,7 +3,7 @@ import React from "react";
 import { useImmer } from "use-immer";
 
 
-export const path = "/_emojipacks";
+export const path = "/emojipacks";
 
 
 function Pack({ children, onPatch, onDelete, me }) {
