@@ -1008,6 +1008,21 @@ app.components.Gallery.Objects = {
 			<video controls src={url}/>
 		</>;
 	},
+	"audio": function VideoContent({children}) {
+		let url = children.url;
+		if (url.startsWith("/")) {
+			var a = url.split("/");
+			if (a[2]) url = app.apis.mediastorage + url
+			else if (children.fromContent && children.fromContent.author) url = app.apis.mediastorage + children.fromContent.author.id + "/" + a[1];
+		} else {
+			url = app.functions.parseUnknownURL(url, "image");
+		};
+
+		return <>
+			<p>Test component</p>
+			<audio controls src={url}/>
+		</>;
+	},
 	"share": function SharedContent({children}) {
 		if (children.fromContent && (children.fromContent.id == children.contentId || children.fromContent.micro)) return <blockquote><span><app.components.react.FixedSVG className="alphaicon fill a">{app.___svgs.next}</app.components.react.FixedSVG> #uncategorized.authorSharingThisUnvaliable#</span></blockquote>;
 		
