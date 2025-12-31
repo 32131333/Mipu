@@ -54,3 +54,8 @@ originalsounds: [[1,2]] <- sparksid, videoindex
 
 
 Но я выберу подход MVP. Пока что выберу какой-нибудь общий звук
+
+
+
+ИЛИ
+- [{"id": "image"}, {"id": "video", "ext_audio": "1_2"}, {"id": "image": "ext_audio": "2"}, {"id": "video"}]

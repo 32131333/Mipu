@@ -17,13 +17,14 @@ const HideTopPlayerContext = createContext(()=>{});
 
 const visibilityDesc = app.structures.MipuAdvPostPreview.visibilityDesc;
 
-function MediaCarouselContent({children, index, contentId}) {
+function MediaCarouselContent({children, objects, index, contentId}) {
 	const Info = useContext(InfoContext);
 	const ControllerContext = useContext(MediaControlContext);
 	const ObjectsControllerCallbacks = ControllerContext?.callbacks;
 	const setHideTopPlayer = useContext(HideTopPlayerContext);
 	
 	const isFocused = (Info.active == index) && Info.isFocused;
+	const focusedObject = Info.isFocused && objects[Info.active];
 	
 	const timeLapseRef = useRef(null);
 	const timeLapseTextRef = useRef(null);
@@ -97,7 +98,9 @@ function MediaCarouselContent({children, index, contentId}) {
 					MediaCarouselContent.Objects[id],
 					{ 
 						url, Info, index, isFocused,
-						check: checkFunc, timeLapseRef
+						check: checkFunc, timeLapseRef,
+						self: children, focusedObject,
+						objects, focusedOnPost: Info.isFocused
 					}
 				)
 			}
@@ -107,10 +110,79 @@ function MediaCarouselContent({children, index, contentId}) {
 	};
 };
 MediaCarouselContent.Objects = {
-	image({ url, Info, index }) {
+	image({ url, Info, index, isFocused, check, timeLapseRef, self, focusedObject, objects, focusedOnPost }) {
+		const ControllerContext = useContext(MediaControlContext);
+		const { audiosRef } = ControllerContext;
+		
+		const usedAudioId = self?.audio;
+		const audioObj = audiosRef.current.querySelector(`#a${usedAudioId ?? 0}`);
+
+		function isPaused() {
+			return audioObj?.paused;
+		};
+		function pause() {
+			audioObj?.pause();
+		};
+		function play() {
+			audioObj?.play();
+		};
+		function pauseOrPlay() {
+			const audioObj = audiosRef.current.querySelector(`#a${usedAudioId ?? 0}`); // Переменная audioObj интересным образом превращается в null
+			return audioObj.paused ? audioObj.play() : audioObj.pause();
+		};
+		
+		useEffect(function () {
+			if (!focusedOnPost || !audioObj) return;
+			
+			function onPlay() {
+				check(audioObj?.paused);
+			};
+			function onPause() {
+				check(audioObj?.paused);
+			};
+			
+			audioObj?.addEventListener("play", onPlay);
+			audioObj?.addEventListener("pause", onPause);
+			return ()=>{
+				audioObj?.removeEventListener("play", onPlay);
+				audioObj?.removeEventListener("pause", onPause);
+			};
+		}, [focusedOnPost, audioObj]);
+		
+		const isEnabled = useRef(false);
+		useEffect(function () {
+			if (!audioObj) return; // Нету звука - ето значет проста статичная картинка
+			
+			if (isFocused) {
+				isEnabled.current = true;
+				
+				try {
+					//if (objects.filter(x=>x?.audio==usedAudioId && x.id=="image").indexOf(self)===0) play();
+					if (!audioObj.classList.contains("active")) {
+						audioObj.classList.add("active");
+						play();
+					};
+				} catch {
+					check(true);
+				};
+			} else if (!isFocused && (focusedObject?.id == "image" && focusedObject?.audio == self?.audio)) {
+				isEnabled.current = false; // Так как сфокусированный объект тоже использует эту музыку, мы ничего не делаем
+			} else {
+				if (isEnabled.current) {
+					isEnabled.current = false;
+					pause();
+					audioObj.classList.remove("active");
+					audioObj.currentTime = 0; // <- Здесь babel в webpack на что-то жаловался. Видимо audioObj?.currentTime не являлся желанным
+				};
+			};
+		}, [focusedObject, isFocused, focusedOnPost, audioObj]);
+		
+		if (!ControllerContext.callbacks && ControllerContext.set) {
+			ControllerContext.set({ isPaused, pause, play, pauseOrPlay });
+		};
 		return <img draggable="false" src={url}/>;
 	},
-	video({ url, info, index, isFocused, check, timeLapseRef }) {
+	video({ url, Info, index, isFocused, check, timeLapseRef, self }) {
 		//check?.(undefined, true); // Включчаем таймапс
 		
 		const videoRef = useRef();
@@ -298,8 +370,10 @@ MediaCarouselContent.Objects = {
 
 
 
-function MediaCarousel({ children, contentType, contentId, active }) {
+function MediaCarousel({ children, audios, contentType, contentId, active }) {
 	const contentRef = useRef();
+	const audiosRef = useRef();
+	
 	const DOMWidth = useRef(360);
 		
 	const [ info, updateInfo ] = useImmer({ active: 0, isFocused: false }); // isFocused должен передаваться от одних к другим. По умолчанию должен быть true
@@ -314,6 +388,18 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 			});
 		};
 	};
+	
+	const audiosParsed = useMemo(function () {
+		/*return audios.reduce((self, x)=>{
+			if (self.indexOf(x)===-1) {
+				self.push(x);
+			};
+			return self;
+		});*/
+		//return [...new Set(audios)];
+		return audios && audios.filter((value, index, self) => self.indexOf(value) === index);
+	}, [audios]); // Убираем совпадения. Хотя, может это и не особо нужно
+	
 	/*function getGetFunc(id) {
 		return (n)=>ControllerContexts[id] && ControllerContexts[id][n];
 	};*/
@@ -322,7 +408,7 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 	};
 	function getControllerContext(id) {
 		return {
-			set: updateControllerContext(id, "callbacks"),
+			audiosRef, set: updateControllerContext(id, "callbacks"),
 			setCheck: updateControllerContext(id, "check"),
 			get: getGetFunc(id)
 		}
@@ -459,11 +545,23 @@ function MediaCarousel({ children, contentType, contentId, active }) {
 				{ children.length > 3 && <div isActive={ String ( info.active == children.length-1 ) } /> }
 			</div>
 		}
+		<div ref={audiosRef} hidden>
+			{
+				audiosParsed && audiosParsed.map((x,i)=>{
+					// x => "1" "1_2", 1 - sparksid , 2(or 0) - video soundindex
+					let a = x.split("_");
+					let id = a[0];
+					let indx = a[1] ?? 0;
+					
+					return <audio key={x} id={`a${i}`} loop src={app.apis.mediastorage+`/posts/${id}/sound${indx}.ogg`}/>;
+				})
+			}
+		</div>
 		<div ref={contentRef} id="content" className="app-no-scroll">
 			<InfoContext value={info}>
 				{ children && children.map((x,i)=>(
 					<MediaControlContext key={`${x?.id}${x?.url}${i}`} value={ControllerContextsValues[i]}>
-						<MediaCarouselContent index={i} contentType={contentType} contentId={contentId} children={x}/>
+						<MediaCarouselContent index={i} contentType={contentType} contentId={contentId} objects={children} children={x}/>
 					</MediaControlContext>
 				))}
 			</InfoContext>
@@ -636,7 +734,7 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 		id, visibility,
 		content, description,
 		created, edited,
-		author,
+		author, audios,
 		rating
 	} = currentData;
 	const visibilityDescription = visibilityDesc.find(x=>x.id==visibility);
@@ -689,7 +787,7 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 	};
 	
 	return <div className="app-mipuadvpostplayer">
-		<HideTopPlayerContext value={setHideTopPlayer}><MediaCarousel children={content} contentId={id} contentType={contentType} active={active}/></HideTopPlayerContext>
+		<HideTopPlayerContext value={setHideTopPlayer}><MediaCarousel children={content} audios={audios} contentId={id} contentType={contentType} active={active}/></HideTopPlayerContext>
 		<div className={["toplayer", "hide1", !hideTopPlayer && "unhide"].filter(x=>x!==false).join(" ")}>
 			<div className="postinfo">
 				{ visibility != "1" && visibilityDescription && <span tooltip={visibilityDescription.description} className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }

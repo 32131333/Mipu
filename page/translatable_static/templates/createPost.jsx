@@ -1,5 +1,5 @@
 import { Link, useParams, useLocation } from "react-router";
-import { useEffect, useState, useCallback, useRef, Fragment } from "react";
+import { useEffect, useState, useCallback, useRef, Fragment, useMemo } from "react";
 import React from "react";
 import { useImmer } from "use-immer";
 
@@ -98,6 +98,8 @@ CreatePage.CreateTextPost.Success = function () {
 CreatePage.CreateMipuAdvancedPost = function () {
 	const [ body, updateBody ] = useCreatePageData(useShallow(a=>[a.body, a.updateBody]));
 	const reset = useCreatePageData(a=>a.reset);
+	
+	const cooltextinputInitialDefaultValue = useMemo(()=>body.audios && body.audios.join(",") || "", []);
 
 	const setType = useCreatePageData(a=>a.setType);
 	
@@ -157,6 +159,14 @@ CreatePage.CreateMipuAdvancedPost = function () {
 					placeholder="#page.create.mipuadvdesc#"
 					onChange={e=>updateBody(x=>{ x.description = e.target.value })}
 					/>
+			</div>
+			<div style={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}>
+				<div>#page.create.mipuadvsound#<br />#page.create.mipuadvsounddesc#<br /><span className="app-notMainText">(mvp)</span></div>
+				<app.components.react.CoolTextInput onInput={e=>{
+					let v = e.target.textContent;
+					v = v.split(",").map(x=>x.trim());
+					updateBody(x=>{ x.audios = v });
+				}} defaultValue={cooltextinputInitialDefaultValue} placeholder="sprksid,sprksid_videoindex,..."/>
 			</div>
 			<button className="app-buttonFromModals flexCenter" onClick={()=>{ updateBody(d=>{ d.visibility = visibilityDesc[visibilityDesc.indexOf(selectedVisibility)+1] ? visibilityDesc[visibilityDesc.indexOf(selectedVisibility)+1].id : visibilityDesc[0].id }) }}>
 				<span id="icon" children={selectedVisibility.emoji}/>
