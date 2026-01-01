@@ -26,6 +26,21 @@ const useCreatePageData = create(immer(
 		}
 	})
 ));
+app.memory.updateCreatePageData = async function (contentType, newData) {
+	const type = useCreatePageData.getState().type;
+	if (contentType!==undefined && type!==undefined && type!=contentType) {
+		const confirm = await app.functions.youReallyWantToDo(undefined, undefined, "#page.create.rewritealert#");
+		if (confirm) {
+			useCreatePageData.getState().reset();
+		} else {
+			return false;
+		};
+	};
+	
+	useCreatePageData.getState().setType(contentType);
+	useCreatePageData.getState().updateBody(newData);
+	return true;
+};
 // app.ddd = useCreatePageData;
 
 export const path = "/create";

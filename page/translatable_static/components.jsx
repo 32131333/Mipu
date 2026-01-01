@@ -31,6 +31,8 @@ app.globalPageSize = 15; // Общее количество результато
 app.components = {}
 app.components.react = {};
 
+app.memory = {};
+
 app.reactstates = {};
 app.reactstates.useIsMobileOrientation = function () {
 	const width = 700;
@@ -473,7 +475,7 @@ app.components.Avatar = function ({userId, userAvatar, user, userUnvaliable}) {
 	if (user) return app.components.avatar(user.id, user.avatar, user.unvaliable)
 	else return app.components.avatar(userId, userAvatar, userUnvaliable);
 };*/
-app.components.Avatar = function ({userId, userAvatar, user, userUnvaliable, scale, style}) {
+app.components.Avatar = function ({userId, userAvatar, user, userUnvaliable, scale, onClick, style}) {
 	if (user) {
 		userId = user.id;
 		userAvatar = user.avatar;
@@ -497,7 +499,7 @@ app.components.Avatar = function ({userId, userAvatar, user, userUnvaliable, sca
 	if (avatarObject.media!=null&&avatarObject.media.startsWith("data")) mediaUrl = avatarObject.media
 	else if (avatarObject.media!=null) mediaUrl = app.apis.mediastorage+String(userId)+"/"+avatarObject.media;
 		
-	return <div className={"app-userAvatar"} style={styles}>
+	return <div onClick={onClick} style={styles} className="app-userAvatar">
 		{avatarObject.decoration && avatarObject.decoration.behind && <img className="decor" src={avatarObject.decoration.behind}/>}
 		<img className="avatar" id={"btype"+String(avatarObject.options.borderRadiusType)} src={mediaUrl} />
 		{avatarObject.decoration && avatarObject.decoration.front && <img className="decor" src={avatarObject.decoration.front}/>}

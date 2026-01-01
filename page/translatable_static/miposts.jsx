@@ -6,6 +6,7 @@
 import React from "react";
 import { useImmer } from "use-immer";
 
+//import { useNavigate } from "react-router";
 const { useEffect, useCallback, useState, useRef, createContext, useContext, useMemo } = React;
 // И многие динамические переменные с app.components
 
@@ -14,6 +15,7 @@ const { useEffect, useCallback, useState, useRef, createContext, useContext, use
 const InfoContext = createContext({ active: 0, isFocused: false });
 const MediaControlContext = createContext({});
 const HideTopPlayerContext = createContext(()=>{});
+const GlobalRefContext = createContext({current: {}});
 
 const visibilityDesc = app.structures.MipuAdvPostPreview.visibilityDesc;
 
@@ -370,7 +372,7 @@ MediaCarouselContent.Objects = {
 
 
 
-function MediaCarousel({ children, audios, contentType, contentId, active }) {
+function MediaCarousel({ children, audios, usedAudioAuthors, post, contentType, contentId, active }) {
 	const contentRef = useRef();
 	const audiosRef = useRef();
 	
@@ -389,17 +391,6 @@ function MediaCarousel({ children, audios, contentType, contentId, active }) {
 		};
 	};
 	
-	const audiosParsed = useMemo(function () {
-		/*return audios.reduce((self, x)=>{
-			if (self.indexOf(x)===-1) {
-				self.push(x);
-			};
-			return self;
-		});*/
-		//return [...new Set(audios)];
-		return audios && audios.filter((value, index, self) => self.indexOf(value) === index);
-	}, [audios]); // Убираем совпадения. Хотя, может это и не особо нужно
-	
 	/*function getGetFunc(id) {
 		return (n)=>ControllerContexts[id] && ControllerContexts[id][n];
 	};*/
@@ -415,6 +406,67 @@ function MediaCarousel({ children, audios, contentType, contentId, active }) {
 	};
 	
 	const ControllerContextsValues = useMemo(()=>children && children.map((x,i)=>getControllerContext(i)), [children]);
+	
+	
+	
+	const globalRef = useContext(GlobalRefContext);
+	const lastRef = useRef(null);
+	const updateUsedMediaMetadata = globalRef.current.updateUsedMediaMetadata;
+	
+	const audiosMetadata = useMemo(function () {
+		return audios?.map(x=>{
+			const mipuadv_postsId = x.split("_")[0];
+			const videoIndex = x.split("_")[1] ?? 0;
+		
+			//const preview = videoIndex!==undefined && videoIndex!==0 ? `preview${videoIndex}.webp` : "preview.webp";
+		
+			const user = usedAudioAuthors.find(d=>d.ref===x);
+			//console.log(usedAudioAuthors, audios, x, user);
+			return {
+				id: mipuadv_postsId,
+				soundId: x,
+				preview: user && ["user", user]
+			};
+		});
+	}, [audios, usedAudioAuthors]); // Мы просто будем брать один и тот же объект, чтобы при перезаписи просто не вызывать лишний ре-рендер
+	//const authorAudioMetadata = useMemo(()=>({id: post?.id, soundId}), [post]);
+	const authorsAudioMetadata = useMemo(function () {
+		return children?.map((x,i)=>{
+			return {
+				id: post?.id,
+				soundId: i !== 0 ? `${post?.id}_${i}` : `${post?.id}`,
+				preview: post?.author && ["user", post?.author],
+				i
+			}
+		});
+	}, [post?.id, post?.author, children]);
+	
+	useEffect(function () {
+		//if (!audiosMetadata) updateUsedMediaMetadata(null);
+		
+		// Определяем
+		/*let audioIndex = children?.[info.active]?.audio;
+		if (!audioIndex && children?.[info.active]?.id == "image" ) audioIndex = 0;
+		
+		updateUsedMediaMetadata(audiosMetadata[audioIndex]);*/
+		let audioIndex = children?.[info.active]?.audio;
+		if (audioIndex == null && children?.[info.active]?.id === "image") {
+			audioIndex = 0;
+		};
+		
+		let selected = audiosMetadata?.[audioIndex];
+		if (!selected && children?.[info.active]?.id === "video") {
+			selected = authorsAudioMetadata.find(x=>x.i===info.active);
+		};
+		
+		const next = selected ?? null;
+
+		if (lastRef.current !== next) {
+			lastRef.current = next;
+			console.log(next);
+			updateUsedMediaMetadata(next);
+		};
+	}, [info.active, children, audiosMetadata, authorsAudioMetadata]);
 	
 	/*useEffect(function () {
 		if (isFocused) {
@@ -547,7 +599,7 @@ function MediaCarousel({ children, audios, contentType, contentId, active }) {
 		}
 		<div ref={audiosRef} hidden>
 			{
-				audiosParsed && audiosParsed.map((x,i)=>{
+				audios && audios.map((x,i)=>{
 					// x => "1" "1_2", 1 - sparksid , 2(or 0) - video soundindex
 					let a = x.split("_");
 					let id = a[0];
@@ -576,7 +628,7 @@ function VerticalRating({ contentId, contentType, children, onUpdate, disabled, 
 	
 	const [ data, updateData ] = useImmer({});
 	const { liked, comments, myRating } = data;
-	
+		
 	useEffect(function () {
 		updateData(children ? JSON.parse(JSON.stringify(children)) : {});
 	}, [children]);
@@ -604,6 +656,9 @@ function VerticalRating({ contentId, contentType, children, onUpdate, disabled, 
 		
 		setIsProcessing(false);
 	};
+	
+	/*globalRef.updateUsedMediaMetadata = updateUsedMediaMetadata;
+	console.log(usedMediaMetadata);*/
 	
 	/*return <>
 		<div>
@@ -698,6 +753,16 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 	const [ openedState, setOpenedState ] = useState(null);
 	const [ hideTopPlayer, setHideTopPlayer ] = useState(false);
 	
+	const [ usedMediaMetadata, updateUsedMediaMetadata ] = useState(null); // Тут особо Immer и не нужен, он скорее будет вызывать лишние перезаписи
+	const globalRef = useRef({ updateUsedMediaMetadata });
+	
+	//const navigate = useNavigate();
+	/*useEffect(function () {
+		globalRef.current.updateUsedMediaMetadata = updateUsedMediaMetadata;
+		return () => {
+			globalRef.current.updateUsedMediaMetadata = ()=>{};
+		};
+	}, []);	*/
 	/*
 	
 		Все, что надо пока что знать:
@@ -726,6 +791,8 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 		};
 	}, [active]);
 	
+	
+	
 	useEffect(function () {
 		if (active) setVerticalScrollDisabled(openedState || hideTopPlayer);
 	}, [active, openedState, setVerticalScrollDisabled, hideTopPlayer]);
@@ -735,6 +802,7 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 		content, description,
 		created, edited,
 		author, audios,
+		used_audio_authors,
 		rating
 	} = currentData;
 	const visibilityDescription = visibilityDesc.find(x=>x.id==visibility);
@@ -786,70 +854,88 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 		};
 	};
 	
-	return <div className="app-mipuadvpostplayer">
-		<HideTopPlayerContext value={setHideTopPlayer}><MediaCarousel children={content} audios={audios} contentId={id} contentType={contentType} active={active}/></HideTopPlayerContext>
-		<div className={["toplayer", "hide1", !hideTopPlayer && "unhide"].filter(x=>x!==false).join(" ")}>
-			<div className="postinfo">
-				{ visibility != "1" && visibilityDescription && <span tooltip={visibilityDescription.description} className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
-				<div>
-					<app.components.Username href user={author}/>
-					{(created || edited) && <span className="app-notmaintext"> ● {app.functions.ago(edited || created)}</span>}
+	return <GlobalRefContext value={globalRef}>
+		<div className="app-mipuadvpostplayer">
+			<HideTopPlayerContext value={setHideTopPlayer}><MediaCarousel post={children} children={content} usedAudioAuthors={used_audio_authors} audios={audios} contentId={id} contentType={contentType} active={active}/></HideTopPlayerContext>
+			<div className={["toplayer", "hide1", !hideTopPlayer && "unhide"].filter(x=>x!==false).join(" ")}>
+				<div className="postinfo">
+					{ visibility != "1" && visibilityDescription && <span tooltip={visibilityDescription.description} className="app-txtd">{visibilityDescription.emoji} {visibilityDescription.name}</span> }
+					<div>
+						<app.components.Username href user={author}/>
+						{(created || edited) && <span className="app-notmaintext"> ● {app.functions.ago(edited || created)}</span>}
+					</div>
+					<app.components.Content showCollapseButton compressTo={2}>{description}</app.components.Content>
 				</div>
-				<app.components.Content showCollapseButton compressTo={2}>{description}</app.components.Content>
+				<div className="rating">
+					<app.components.Avatar user={author} />
+					<VerticalRating 
+						children={rating}
+						disabled={disabled || !id}
+						contentId={id}
+						contentType={contentType}
+						onUpdate={r=>{/* currentData.rating = r */} /* Ререндер не требуется */}
+						onComments={()=>{setOpenedState("comments")}}
+						onShare={()=>{setOpenedState("share")}}
+						/>
+					{ usedMediaMetadata?.preview?.[0] == "user" && <app.components.Avatar onClick={()=>setOpenedState("audioinfo")} user={usedMediaMetadata.preview[1]} /> }
+				</div>
 			</div>
-			<div className="rating">
-				<app.components.Avatar user={author} />
-				<VerticalRating 
-					children={rating}
-					disabled={disabled || !id}
-					contentId={id}
-					contentType={contentType}
-					onUpdate={r=>{/* currentData.rating = r */} /* Ререндер не требуется */}
-					onComments={()=>{setOpenedState("comments")}}
-					onShare={()=>{setOpenedState("share")}}
-					/>
-			</div>
-		</div>
-		{ openedState &&
-			<div className="commentslayer">
-				<div id="closepart" onClick={()=>{setOpenedState(null)}}/>
-				<div className="app-cm-modal modalcontainer app-joinfromdownanim" id={openedState}>
-					{ openedState == "comments" &&
-						<div>
-							<app.structures.CommentList
-								contentType={contentType}
-								contentId={currentData.id}
-								/> {/* Структура CommentList общая, но не соответствует вертикальности, но в целом нормально, можно постараться переделать */}
-						</div>
-					}
-					{ openedState == "share" &&
-						<div>
+			{ openedState &&
+				<div className="commentslayer">
+					<div id="closepart" onClick={()=>{setOpenedState(null)}}/>
+					<div className="app-cm-modal modalcontainer app-joinfromdownanim" id={openedState}>
+						{ openedState == "comments" &&
 							<div>
-								<b>#uncategorized.url#</b>
-								<pre>{ document.location.origin + `/sprks/${id}` }</pre>
-								<div style={{ display: "flex", width: "100%", paddingInline: 5, gap: 5, alignItems: "center" }}>
-									{ /*
-										<button onClick={e=>handleShare("share")} className="btn app-button">#button.share#</button>
-										<button onClick={e=>handleShare("copy")} className="btn app-button">#button.copyurl#</button>
-									*/ }
-									<app.components.iconButton onClick={e=>handleShare("share")} icon={ <app.components.react.FixedSVG className="alphaicon fill d" children={app.___svgs.share} /> }>#button.share#</app.components.iconButton>
-									<app.components.iconButton onClick={e=>handleShare("copy")} icon={ <div className="d">🔗</div> }>#button.copyurl#</app.components.iconButton>
-									{ me.id == author?.id && <app.components.iconButton onClick={handleDelete}>#button.delete#</app.components.iconButton> }
-									{ me.id == author?.id && <app.components.iconButton icon={ <div className="d">✏</div> } onClick={()=>setOpenedState("edit")}>#button.edit#</app.components.iconButton> }
+								<app.structures.CommentList
+									contentType={contentType}
+									contentId={currentData.id}
+									/> {/* Структура CommentList общая, но не соответствует вертикальности, но в целом нормально, можно постараться переделать */}
+							</div>
+						}
+						{ openedState == "share" &&
+							<div>
+								<div>
+									<b>#uncategorized.url#</b>
+									<pre>{ document.location.origin + `/sprks/${id}` }</pre>
+									<div style={{ display: "flex", width: "100%", paddingInline: 5, gap: 5, alignItems: "center" }}>
+										{ /*
+											<button onClick={e=>handleShare("share")} className="btn app-button">#button.share#</button>
+											<button onClick={e=>handleShare("copy")} className="btn app-button">#button.copyurl#</button>
+										*/ }
+										<app.components.iconButton onClick={e=>handleShare("share")} icon={ <app.components.react.FixedSVG className="alphaicon fill d" children={app.___svgs.share} /> }>#button.share#</app.components.iconButton>
+										<app.components.iconButton onClick={e=>handleShare("copy")} icon={ <div className="d">🔗</div> }>#button.copyurl#</app.components.iconButton>
+										{ me.id == author?.id && <app.components.iconButton onClick={handleDelete}>#button.delete#</app.components.iconButton> }
+										{ me.id == author?.id && <app.components.iconButton icon={ <div className="d">✏</div> } onClick={()=>setOpenedState("edit")}>#button.edit#</app.components.iconButton> }
+									</div>
 								</div>
 							</div>
-						</div>
-					}
-					{
-						openedState == "edit" && <MipuAdvPostMicroEditForm 
-													children={currentData}
-													onConfirm={(d)=>{ setOpenedState(null); updateCurrentData(d) }}
-													onCancel={()=>setOpenedState("share")}
-													contentType={contentType}
-													/>
-					}
+						}
+						{
+							openedState == "edit" && <MipuAdvPostMicroEditForm 
+														children={currentData}
+														onConfirm={(d)=>{ setOpenedState(null); updateCurrentData(d) }}
+														onCancel={()=>setOpenedState("share")}
+														contentType={contentType}
+														/>
+						}
+						{
+							openedState == "audioinfo" && 
+							<div>
+								<button onClick={()=>(
+									app.memory.updateCreatePageData(contentType, d=>{
+										d.audios ? d.audios.push(usedMediaMetadata.soundId) : (d.audios=[usedMediaMetadata.soundId])
+									}).then(x=>{
+										if (x) {
+											window.history.pushState({}, null, "/create");
+											window.dispatchEvent(new PopStateEvent("popstate"));
+										};
+									})
+								)} className="btn app-button">#button.usethissound#</button>
+							</div>
+						}
+					</div>
 				</div>
-			</div>
-		}
-	</div>;
+			}
+		</div>
+	</GlobalRefContext>;
 };
