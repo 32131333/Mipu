@@ -28,7 +28,7 @@ const useCreatePageData = create(immer(
 ));
 app.memory.updateCreatePageData = async function (contentType, newData) {
 	const type = useCreatePageData.getState().type;
-	if (contentType!==undefined && type!==undefined && type!=contentType) {
+	if (type!=undefined && type!=contentType) {
 		const confirm = await app.functions.youReallyWantToDo(undefined, undefined, "#page.create.rewritealert#");
 		if (confirm) {
 			useCreatePageData.getState().reset();
@@ -198,7 +198,20 @@ CreatePage.CreateMipuAdvancedPost.upload = async function (body, update, cancel,
 	update("#page.create.mipuadvpostuploading.preparing#", "0%");
 	
 	let bodyReader, abort;
-	const r = await app.f.post("mipuadv_posts", contentBody);
+	
+	const { content, audios, ...bdy } = contentBody;
+	const r = await app.f.post("mipuadv_posts", {
+		content: content.map((x, i) => {
+			const hasAudio = audios && (audios[i] !== undefined && audios[i] !== "0" && audios[i] !== "");
+			return { 
+				...x, 
+				audio: hasAudio ? i : undefined
+			};
+		}), 
+		audios,
+		...bdy
+	});
+	// Строки undefined при экранизации JSON просто пропадают
 	
 	if (onProcessing) onProcessing(Array.isArray(r));
 	if (!Array.isArray(r)) return cancel();
