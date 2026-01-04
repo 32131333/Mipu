@@ -116,8 +116,8 @@ MediaCarouselContent.Objects = {
 		const ControllerContext = useContext(MediaControlContext);
 		const { audiosRef } = ControllerContext;
 		
-		const usedAudioId = self?.audio;
-		const audioObj = audiosRef.current.querySelector(`#a${usedAudioId ?? 0}`);
+		const usedAudioId = self?.audio ?? 0;
+		const audioObj = audiosRef.current.querySelector(`#a${usedAudioId}`);
 
 		function isPaused() {
 			return audioObj?.paused;
@@ -129,7 +129,7 @@ MediaCarouselContent.Objects = {
 			audioObj?.play();
 		};
 		function pauseOrPlay() {
-			const audioObj = audiosRef.current.querySelector(`#a${usedAudioId ?? 0}`); // Переменная audioObj интересным образом превращается в null
+			const audioObj = audiosRef.current.querySelector(`#a${usedAudioId}`); // Переменная audioObj интересным образом превращается в null
 			return audioObj.paused ? audioObj.play() : audioObj.pause();
 		};
 		
@@ -167,7 +167,7 @@ MediaCarouselContent.Objects = {
 				} catch {
 					check(true);
 				};
-			} else if (!isFocused && (focusedObject?.id == "image" && focusedObject?.audio == self?.audio)) {
+			} else if (!isFocused && (focusedObject?.id == "image" && focusedObject?.audio ?? 0 === usedAudioId)) {
 				isEnabled.current = false; // Так как сфокусированный объект тоже использует эту музыку, мы ничего не делаем
 			} else {
 				if (isEnabled.current) {
