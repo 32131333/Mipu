@@ -167,7 +167,7 @@ MediaCarouselContent.Objects = {
 				} catch {
 					check(true);
 				};
-			} else if (!isFocused && (focusedObject?.id == "image" && focusedObject?.audio ?? 0 === usedAudioId)) {
+			} else if (!isFocused && (focusedObject?.id == "image" && (focusedObject?.audio ?? 0) === usedAudioId)) {
 				isEnabled.current = false; // Так как сфокусированный объект тоже использует эту музыку, мы ничего не делаем
 			} else {
 				if (isEnabled.current) {
