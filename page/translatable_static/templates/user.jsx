@@ -511,7 +511,6 @@ export default function UserPage() {
 		background-position: center;
 		background-color: none;
 		box-shadow: inset 0px -300px 120px -90px var(--transparencyBlackColor);
-		background-position: bottom;
 	}
 	.base-information .lnks {
 		margin: 0;
