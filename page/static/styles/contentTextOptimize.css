@@ -9,6 +9,7 @@
 	right: 5px;
 }
 .contentify ul, .contentify ol {
+	margin-bottom: 1.5;
 	margin: 0;
 	padding: 0 0 0 20px;
 }
@@ -44,7 +45,7 @@
 
 .contentify p, .contentify li {
     font-size: 1.2em;  /* Размер шрифта для параграфов */
-    line-height: 1.5;  /* Высота строки */
+    /* line-height: 1.5; */  /* Высота строки */
 }
 
 

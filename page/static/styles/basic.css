@@ -867,7 +867,7 @@ input:disabled + .slider {
 .app-structure-post, .usercomment {
 	padding: 15px;
 }
-.app-structure-post > .contentify,  .usercomment > .contentify {
+.app-structure-post > .contentify,  .usercomment > .contentify  {
 	font-size: 16px;
 	padding: 5px 3px;
 }
@@ -1958,6 +1958,9 @@ body > .processoverlay #lst #progress {
 
 
 @media (max-width: 700px) {
+	.app-structure-post > .contentify,  .usercomment > .contentify, .app-mipuadvpostplayer > .toplayer > .postinfo > .contentify {
+		font-size: 14px;
+	}
 	.app-pg-simplecontent {
 		padding: 6px 12px;
 	}
