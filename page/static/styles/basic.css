@@ -1006,7 +1006,7 @@ input:disabled + .slider {
     margin-bottom: 5px; /* Less space after author in comments */
 }
 .usercomment .app-structure-rating {
-    margin-top: 8px; /* Less space above rating in comments */
+    /*margin-top: 8px;*/ /* Less space above rating in comments */
 }
 
 .comment-by-content-author { /* Style for comments by the original content author */
@@ -1959,7 +1959,7 @@ body > .processoverlay #lst #progress {
 
 @media (max-width: 700px) {
 	.app-structure-post > .contentify,  .usercomment > .contentify, .app-mipuadvpostplayer > .toplayer > .postinfo > .contentify {
-		font-size: 14px;
+		font-size: 15px;
 	}
 	.app-pg-simplecontent {
 		padding: 6px 12px;
