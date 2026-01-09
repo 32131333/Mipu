@@ -85,7 +85,7 @@ module.exports = function (app) {
 	
 	app.use(function (req, res, next) {
 		//console.log(req.headers);
-		//req.selectedLanguage = req.cookies.lang;
+		req.selectedLanguage = req.cookies.lang;
 		if (!req.cookies.lang) {
 			if (!req.headers["accept-language"]) {
 				res.cookie("lang", defaultLanguage);
