@@ -92,7 +92,7 @@ function SearchPage() {
 
     // Функция для загрузки данных
     const fetchResults = useCallback(async (pageNum, currentQuery, currentType, currentSort, isNewSearch) => {
-        if (!currentQuery) return;
+        //if (!currentQuery) return;
         setIsLoading(true);
         setError(null);
 
@@ -139,7 +139,7 @@ function SearchPage() {
                     return nextPage;
                 });
             }
-        }, { threshold: 1.0 });
+        }, { threshold: 1 });
 
         const currentLoader = loaderRef.current;
         if (currentLoader) {
@@ -189,11 +189,14 @@ function SearchPage() {
 		["1", "#uncategorized.sorts.new#"],
 		["2", "#uncategorized.sorts.old#"],
 		["3", "#uncategorized.sorts.popularity#"],
+		["4", "#uncategorized.sorts.virality#"],
+		["5", "#uncategorized.sorts.actuality#"]
 	];
 	const includes = [
 		["all", "#page.search.default#"],
 		["users", "#page.search.includes.users#"],
 		["posts", "#page.search.includes.posts#"],
+		["mipuadv_posts", "#page.search.includes.mipuadv_posts#"]
 	];
 
     return (
@@ -217,7 +220,6 @@ function SearchPage() {
                                 <a>#page.search.sort.index#</a>
                                 {sorts.map(sortValue => {
                                     const id = `sort_` + sortValue[0];
-                                    const labels = ['no', 'new', 'old', 'popularity'];
                                     return (
                                         <div className="radio" key={id}>
                                             <input name="sortby" value={sortValue[0]} type="radio" id={id} defaultChecked={sort === sortValue[0]} />

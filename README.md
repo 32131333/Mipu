@@ -7,6 +7,7 @@ Mipu is the one-page web-application and also a social network. His philosophy i
 1. Vertical ports is named as **Sparks** or **mipuadv_posts**(codename)
 2. I spent 0$ to create this webapp
 3. I created the frontend and backend on my own
+4. I like cola
 
 ## Run
 1. Just write `npm i --force`

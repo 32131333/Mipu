@@ -54,7 +54,11 @@ function loadLanguages() {
 	
 	for (const sLang in scriptedLanguages) {
 		const result = scriptedLanguages[sLang](languages, languages[defaultLanguage]);
+		
 		delete result.apis;
+		delete result.proxy_apis;
+		delete result.clientName;
+		
 		languages[sLang] = result;
 	};
 	

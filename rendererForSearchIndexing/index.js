@@ -62,7 +62,7 @@ module.exports.headers.set("Content-Type", "application/json;");
 const headers = module.exports.headers;
 
 module.exports.urls = [
-	["sprks", async function (req, res) {
+	[/^\/sprks/, async function (req, res) {
 		const id = req.path.split("/")[2];
 		
 		const pst = await fetch(module.exports.APIUrl+`mipuadv_posts/${id}`, {headers});
@@ -119,7 +119,7 @@ module.exports.urls = [
 			return false;
 		};
 	}],
-	["post", async function (req, res) {
+	[/^\/post/, async function (req, res) {
 		const id = req.path.split("/")[2];
 		const postRes = await fetch(module.exports.APIUrl+`posts/${id}`, {headers});
 		const result = await postRes.json();
@@ -217,7 +217,7 @@ module.exports.urls = [
 			}
 		};
 	}],
-	["user", async function (req, res) {
+	[/^\/user/, async function (req, res) {
 		const userId = req.path.split("/")[2]; // Получаем ID из URL
 		
 		const userResponse = await fetch(module.exports.APIUrl+`user/${userId}`, {headers});
@@ -326,9 +326,9 @@ module.exports.urls = [
 	[/^\/$/, async function (req, res) {
         // Убедитесь, что URL-параметры определены корректно
 		const feedUrl = new URL(module.exports.APIUrl + "feed");
-		feedUrl.searchParams.set("pageLength", "150");
+		feedUrl.searchParams.set("length", "150");
 		const verticalFeedUrl = new URL(module.exports.APIUrl + "vertical_feed");
-		verticalFeedUrl.searchParams.set("pageLength", "150");
+		verticalFeedUrl.searchParams.set("length", "150");
 		
         // Запросы к API (обрабатываем URL корректно)
 		const postsRes = await fetch(feedUrl, {headers});
