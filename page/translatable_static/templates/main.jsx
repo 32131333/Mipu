@@ -168,7 +168,7 @@ function NewsFeed({ pageRef }) {
 			if (pageRef.current.scrollHeight - pageRef.current.scrollTop < 1200) fetchFeed();
 		};
 		pageRef.current.addEventListener("scroll", onScroll);
-		return ()=>pageRef.current.removeEventListener("scroll", onScroll);
+		return ()=>pageRef.current?.removeEventListener?.("scroll", onScroll);
 	}, [fetchFeed]);
 	
 	if (error) return (
