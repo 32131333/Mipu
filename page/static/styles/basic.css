@@ -1193,9 +1193,15 @@ input:disabled + .slider {
 
 .app-pg-lsted .root {
 	width: -webkit-fill-available;
+	height: max-content;
 }
 .app-pg-lsted .categoryname {
 	margin-top: 20px;
+}
+
+.app-pg-scrollable {
+	height: -webkit-fill-available;
+	overflow: auto;
 }
 
 .app-pg-minimalisecutify {

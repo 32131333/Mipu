@@ -114,7 +114,7 @@ function HelloPage({props}) {
 };
 
 
-function NewsFeed() {
+function NewsFeed({ pageRef }) {
 	const [ result, updateResult ] = useImmer([]);
 	const [ isLoading, setIsLoading ] = useState(false);
 	const [ error, setError ] = useState(false);
@@ -149,21 +149,26 @@ function NewsFeed() {
 	
 	
 	useEffect(()=>{
-		const observer = new IntersectionObserver(entries => {
+		/*const observer = new IntersectionObserver(entries => {
 			if (entries[0].isIntersecting && !debounce.current) {
 				fetchFeed();
 			};
 		}, { threshold: 0.8 });
 
-		const currentLoader = document.querySelector(".container333 > .page-root > .root");//rootRef.current;
+		const currentLoader = pageRef.current;//document.querySelector(".container333 > .page-root > .root");//rootRef.current;
 		if (currentLoader) {
 			observer.observe(currentLoader);
 		}
 		return () => {
 			if (currentLoader) {
 				observer.unobserve(currentLoader);
-			}
+			};
+		};*/
+		function onScroll(e) {
+			if (pageRef.current.scrollHeight - pageRef.current.scrollTop < 1200) fetchFeed();
 		};
+		pageRef.current.addEventListener("scroll", onScroll);
+		return ()=>pageRef.current.removeEventListener("scroll", onScroll);
 	}, [fetchFeed]);
 	
 	if (error) return (
@@ -205,10 +210,10 @@ export default function MainPage() {
 	const isMobile = app.reactstates.useIsMobileOrientation();
 	const [ structure, updateStructure ] = useImmer({recommendations: []});
 	
-	/*const rootRef = useRef(null);*/
+	const pageRef = useRef(null);
 	return <>
 		<app.components.WebpageTitle>{`#page.main.title#`}</app.components.WebpageTitle>
-		<div className="app-pg-lsted mainPage">
+		<div ref={pageRef} className="app-pg-lsted mainPage app-pg-scrollable">
 			<style>
 			{`
 			
@@ -220,7 +225,7 @@ export default function MainPage() {
 			</div>
 			<div className="root">
 				<HelloPage />
-				<NewsFeed />
+				<NewsFeed pageRef={pageRef}/>
 			</div>
 		</div>
 	</>;
