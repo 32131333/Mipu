@@ -522,12 +522,16 @@ app.components.Badges = function ({user, badges}) {
 app.components.Badges.thatIKnow = {
 	"official": "/static/svg/fallingstar.svg",
 	"verified": "/static/svg/checkmark_1.svg",
-	"unvaliable": "/static/svg/x_1.svg"
+	"unvaliable": "/static/svg/x_1.svg",
+	"cutie": "/static/svg/heart.svg",
+	"sparkling": "/static/svg/sparks.svg"
 };
 app.components.Badges.thatIKnow.tooltip = {
 	"official": "#badges.official#",
 	"verified": "#badges.verified#",
-	"unvaliable": "#badges.unvaliable#"
+	"unvaliable": "#badges.unvaliable#",
+	"cutie": "#badges.cutie#",
+	"sparkling": "#badges.sparkling#"
 };
 
 app.components.SubButton = function ({modify, user}) {
@@ -3512,7 +3516,7 @@ app.structures.CommentForm = forwardRef(function ({
             <div className="authorinfo">
                 <app.components.Avatar user={authorToDisplay} />
                 <span>
-                    <app.components.Username.Extended user={authorToDisplay} />
+                    <app.components.Username user={authorToDisplay} />
                     <br />
                     <span>{isEditing ? "#uncategorized.editing_comment#" : (inThreadId ? "#uncategorized.replying#" : "#uncategorized.new_comment#")}</span>
                 </span>
@@ -3680,7 +3684,7 @@ app.structures.Comment = function ({ commentData: initialCommentData, repliesPre
             <div className="authorinfo">
                 <app.components.Avatar user={currentCommentData.author} />
                 <span>
-                    <app.components.Username.Extended.allowRedirect user={currentCommentData.author} />
+                    <app.components.Username href user={currentCommentData.author} />
                     <br />
                     <span title={app.functions.date(currentCommentData.created)}>
                         🕑 {app.functions.ago(currentCommentData.created)}
