@@ -112,13 +112,13 @@ const pages = [
 					}
 				</div>
 				}
-				<app.components.react.TextInput onChange={e=>idRef.current[x]=e.target.value} label="entityid"/>
+				<app.components.react.TextInput onChange={e=>idRef.current=e.target.value} label="entityid"/>
 				<app.components.ProcessButton disabled={!action} onClick={handleExecute} className="btn app-button">#button.execute#</app.components.ProcessButton>
 			</div>
 		</div>;
 	}},
 	{p: "reports", n: "#page.mod.info.reports#",
 	c({ hidden, me, data }) {
-		return <>Not working but soon</>;
+		return <div hidden={hidden}>Not working but soon</div>;
 	}},
 ];
