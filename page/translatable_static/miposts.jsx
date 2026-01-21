@@ -906,6 +906,7 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 										<app.components.iconButton onClick={e=>handleShare("copy")} icon={ <div className="d">🔗</div> }>#button.copyurl#</app.components.iconButton>
 										{ me.id == author?.id && <app.components.iconButton onClick={handleDelete}>#button.delete#</app.components.iconButton> }
 										{ me.id == author?.id && <app.components.iconButton icon={ <div className="d">✏</div> } onClick={()=>setOpenedState("edit")}>#button.edit#</app.components.iconButton> }
+										<app.components.iconButton onClick={e=>{setOpenedState(false);app.functions.report("mipuadv_posts", currentData.id)}} icon={ <div className="d">🏳</div> }>#button.report#</app.components.iconButton>
 									</div>
 								</div>
 							</div>

@@ -1977,7 +1977,9 @@ app.structures.Post = function ({post: value, children, onDelete, micro, canOpen
 	
 	function moreMenuCallback(e) {
 		let contextMenu = [
-			{text: <><app.components.react.FixedSVG className="alphaicon a">{app.___svgs.pin_button}</app.components.react.FixedSVG>{" "}{!app.me.mainPage.filter(x=>x.type=="pinnedpost"&&x.content==post.id)[0] ? "#button.pintoprofile#" : "#button.unpinfromprofile#"}</>, onClick: pinPostToProfile}
+			{text: <><app.components.react.FixedSVG className="alphaicon a">{app.___svgs.pin_button}</app.components.react.FixedSVG>{" "}{!app.me.mainPage.filter(x=>x.type=="pinnedpost"&&x.content==post.id)[0] ? "#button.pintoprofile#" : "#button.unpinfromprofile#"}</>, onClick: pinPostToProfile},
+			{text: "#button.report#", onClick: ()=>app.functions.report("posts", post.id)}
+			
 		];
 		
 		
@@ -3706,7 +3708,9 @@ app.structures.Comment = function ({ commentData: initialCommentData, repliesPre
 	};
     
     const moreMenuCallback = (event) => {
-        const items = [];
+        const items = [
+			{text: "#button.report#", onClick: ()=>app.functions.report("comments", currentCommentData.id)}
+		];
         if (isOwnComment) {
             items.push({ text: <><app.components.react.FixedSVG className="alphaicon a">{app.___svgs.edit || app.___svgs._x}</app.components.react.FixedSVG> #button.edit#</>, onClick: () => setIsEditing(true) });
             items.push({ 
@@ -3786,7 +3790,7 @@ app.structures.Comment = function ({ commentData: initialCommentData, repliesPre
                 rating={currentCommentData.rating ? JSON.parse(JSON.stringify(currentCommentData.rating)) : null}
                 contentType="comments"
                 contentId={currentCommentData.id}
-                moreButtonCallback={isOwnComment || (app.me && app.me.isAdmin) ? moreMenuCallback : null} // Allow admin to see more options too
+                moreButtonCallback={moreMenuCallback/*isOwnComment || (app.me && app.me.isAdmin) ? moreMenuCallback : null*/} // Allow admin to see more options too
                 onCommentClick={() => {
                     if (onReply) onReply(currentCommentData); 
                     else if (!currentCommentData.in_thread) handleShowReplies(); // Only toggle for top-level if no onReply

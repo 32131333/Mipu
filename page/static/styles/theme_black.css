@@ -25,7 +25,7 @@ body > .container333 > .page-root > .mobile-header > a/*.active*/ {
 }
 
 /* Только для стандартных элементов */
-input, textarea, button {
+input, textarea, button, select {
 	color: black;
 }
 
