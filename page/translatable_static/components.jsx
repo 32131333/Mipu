@@ -1185,6 +1185,71 @@ app.functions.isIAmGuest = function () {
 	return app.me == "guest";
 };
 
+
+app.functions.report = async function (entityType, entityId) {
+	if (app.me == "guest") return await app.functions.youMightToLogin();
+	return await new Promise(r=>{
+		app.m_.render({
+			title: "#page.modal.report.title#",
+			component: <app.functions.report.component t={entityType} i={entityId}/>,
+			onEnd: reason => {
+				if (reason!="closed") {
+					r(true);
+				} else r(false);
+			},
+			closable: true
+		});
+	});
+};
+
+
+app.functions.report.component = function ({t, i}) {
+	const [ isReported, setIsReported ] = useState(false);
+	
+	const selectedType = useRef(0);
+	
+	if (isReported) return <>
+		<p>#page.modal.report.reported#</p>
+		<app.m_.Border>
+			<app.m_.Button onClick={()=>true}>#button.close#</app.m_.Button>
+		</app.m_.Border>
+	</>;
+	
+	
+	async function handleSubmit(e) {
+		//console.log(`Maybe you reported with reportType ${selectedType.current} :D`);
+		const r = await app.f.post(`report/${t}/${i}/${selectedType.current}`);
+		if (r.status === "success") setIsReported(true);
+	};
+	
+	return <>
+		<div>
+			#page.modal.report.youreporting#:
+			<br />
+			- EntityType: <b>{t}</b>
+			<br />
+			- EntityId: <b>{i}</b>
+		</div>
+		<hr />
+		<form onSubmit={e=>e.preventDefault()}>
+			<div>
+				{app.functions.report.reasons.map((x,i)=>(
+					<div key={i}>
+						<input onInput={e=>{selectedType.current = i}} type="radio" id={`radio${i}`} name="radioselect" value={`${i}`} />
+						<label htmlFor={`radio${i}`}>{x}</label>
+					</div>
+				))}
+			</div>
+			<app.m_.Border>
+				<app.m_.Button isProcessButton onClick={handleSubmit}>#button.submit#</app.m_.Button>
+				{" "}
+				<app.m_.Button onClick={()=>true}>#button.cancel#</app.m_.Button>
+			</app.m_.Border>
+		</form>
+	</>;
+};
+app.functions.report.reasons = tryToReadJSON("#reporttypes#");
+
 app.functions.renderEmojiInfo = async function (emojiId) {
 	return await new Promise(r=>{
 		app.m_.render({
