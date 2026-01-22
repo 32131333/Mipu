@@ -66,19 +66,32 @@ const pages = [
 		const [ selectedType, setSelectedType ] = useState(null);
 		const [ selectedAction, setSelectedAction ] = useState(null);
 		
+		const [ answer, setAnswer ] = useState(":<");
+		
 		const action = selectedType && selectedAction && data?.avaliableActions[selectedType].find(x=>x.action===selectedAction)
 		
 		async function handleExecute() {
 			const r = await app.f.post(`mod/${selectedType}/${idRef.current}/${selectedAction}`, formRef.current);
 			if (r.status==="success") {
 				setSelectedAction(null);formRef.current = {};
+				d.current.value="";
+				
+				let c;
+				if (typeof r.content == "object") {
+					try {
+						c = JSON.stringify(r.content);
+					} catch {};
+				};
+				if (!c) c = String(r.content);
+				setAnswer(c);
+				
 				return true;
 			} else return false;
 		};
 		
 		return <div hidden={hidden}>
 			<div>
-				<select onInput={e=>{ setSelectedType(e.target.value);setSelectedAction(null);d.current.value="";formRef.current = {}; }} name="types" multiple size="8">
+				<select onInput={e=>{ setSelectedType(e.target.value);setSelectedAction(null);d.current.value="";formRef.current = {}; }} name="types" size="8">
 					<optgroup label="types">
 						{Object.keys(data?.avaliableActions).map((x,i)=>(
 							<option value={x} key={i}>{x}</option>
@@ -87,7 +100,7 @@ const pages = [
 				</select>
 			</div>
 			<div>
-				<select ref={d} onInput={e=>{setSelectedAction(e.target.value);formRef.current = {};}} name="actions" multiple size="8">
+				<select ref={d} onInput={e=>{setSelectedAction(e.target.value);formRef.current = {};}} name="actions" size="8">
 					<optgroup label="actions">
 						{selectedType && data?.avaliableActions[selectedType]?.map((x,i)=>(
 							<option value={x.action} key={i}>{x.action}</option>
@@ -113,12 +126,53 @@ const pages = [
 				</div>
 				}
 				<app.components.react.TextInput onChange={e=>idRef.current=e.target.value} label="entityid"/>
-				<app.components.ProcessButton disabled={!action} onClick={handleExecute} className="btn app-button">#button.execute#</app.components.ProcessButton>
+				<fieldset>
+					<legend>Result / Execution</legend>
+					<app.components.ProcessButton disabled={!action} onClick={handleExecute} className="btn app-button">#button.execute#</app.components.ProcessButton>
+					<p>Answer:<br /><blockquote>{answer}</blockquote></p>
+				</fieldset>
 			</div>
 		</div>;
 	}},
 	{p: "reports", n: "#page.mod.info.reports#",
 	c({ hidden, me, data }) {
-		return <div hidden={hidden}>Not working but soon</div>;
+		return <div hidden={hidden}>
+			<div>
+				<fieldset>
+					<legend>Filters</legend>
+					<select name="status" multiple size="8">
+						<optgroup label="Active reports">
+							<option value="0">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="*">*</option>
+						</optgroup>
+						<optgroup label="Sort by">
+							<option value="0">Default</option>
+							<option value="1">Weight</option>
+							<option value="2">Last updated</option>
+						</optgroup>
+					</select>
+					<button className="btn app-button"></button>
+				</fieldset>
+				<select name="report" size="8">
+					<optgroup label="Active reports">
+						
+					</optgroup>
+				</select>
+			</div>
+			<div>
+				<fieldset>
+					<legend>More information</legend>
+					<ul>
+						<li>Last updated: <b>in one day maybe</b></li>
+						<li>Status: <b>Active</b></li>
+						<li>EntityType: <b>Something</b></li>
+						<li>EntityId: <b>idk</b></li>
+					</ul>
+				</fieldset>
+				<span><button className="btn btn-primary">Accept</button> <button className="btn btn-danger">Deny</button></span>
+			</div>
+		</div>;
 	}},
 ];
