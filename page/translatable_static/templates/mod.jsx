@@ -128,7 +128,7 @@ const pages = [
 				<app.components.react.TextInput onChange={e=>idRef.current=e.target.value} label="entityid"/>
 				<fieldset>
 					<legend>Result / Execution</legend>
-					<app.components.ProcessButton disabled={!action} onClick={handleExecute} className="btn app-button">#button.execute# (costs {action?.weight}weight)</app.components.ProcessButton>
+					<app.components.ProcessButton disabled={!action} onClick={handleExecute} className="btn app-button">#button.execute# (costs {action?.weight ?? 0}weight)</app.components.ProcessButton>
 					<p>Answer:<br /><blockquote>{answer}</blockquote></p>
 				</fieldset>
 			</div>

@@ -3665,7 +3665,7 @@ app.structures.Comment = function ({ commentData: initialCommentData, repliesPre
     };
 
     const internalDeleteHandler = async () => { // Pass button element
-        if (!isOwnComment) return NaN; // Indicate no action if not own comment
+        //if (!isOwnComment) return NaN; // Indicate no action if not own comment
         const confirm = await app.functions.youReallyWantToDo(null);
         if (confirm) {
             try {
@@ -3988,8 +3988,8 @@ app.structures.CommentList = function ({ contentType, contentId, threadId, conte
     const handleCommentDeleted = (deletedCommentId) => {
         //setComments(prevComments => prevComments.filter(comment => comment.id !== deletedCommentId));
 		setComments(draft => {
-			const index = draft.indexOf(comment => String(comment.id) === String(updatedComment.id));
-			if (index) {
+			const index = draft.findIndex(comment => String(comment.id) === String(deletedCommentId));
+			if (index!==-1) {
 				draft.splice(index, 1);
 			};
 		});
