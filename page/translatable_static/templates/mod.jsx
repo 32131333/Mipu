@@ -205,7 +205,7 @@ const pages = [
 		
 		async function handleResolve(a) {
 			setIsProcessing(true);
-			const r = await app.f.post(`mod/mod_reports/${selectedReport?.id}/resolve`, { append: a });
+			const r = await app.f.post(`mod/mod_reports/${selectedReport?.id}/resolve`, { accept: a });
 			if (r.status==="success") {
 				updateReports(draft=>{
 					const i = draft.findIndex(x=>x.id===selectedReport?.id);
