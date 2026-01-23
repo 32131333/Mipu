@@ -47,6 +47,11 @@ function ModPage({me}) {
 	</div>;
 };
 
+const ReportStatusType = {
+	"0": "Active",
+	"1": "Accepted",
+	"2": "Ignored"
+};
 const pages = [
 	{p: "info", n: "#page.mod.info.title#",
 	c({ hidden, me, data }) {
@@ -136,43 +141,153 @@ const pages = [
 	}},
 	{p: "reports", n: "#page.mod.info.reports#",
 	c({ hidden, me, data }) {
-		return <div hidden={hidden}>
+		const scrollContainerRef = useRef(null);
+		const emptyContainerRef = useRef(null);
+		
+		const [ sortType, setSortType ] = useState(1);
+		const [ include, setInclude ] = useState(0);
+		
+		const [ loading, setLoading ] = useState(true);
+		const [ isEnding, setIsEnding ] = useState(false);
+		
+		const [ selectedReport, updateSelectedReport ] = useImmer(null);
+		const [ reports, updateReports ] = useImmer([]);
+		
+		const [ isProcessing, setIsProcessing ] = useState(false);
+		
+		useEffect(function () {
+			let debounce = false;
+			let page = 0;
+			
+			async function query() {
+				if (debounce) return;
+				debounce = true;
+				setLoading(true);
+				
+				const r = await app.f.get("search", {
+					parse: ["mod_reports"],
+					sort: sortType,
+					filters: { status: include !== "*" ? include : undefined },
+					page
+				});
+				
+				if (r.status==="success") {
+					updateReports(draft=>{
+						draft.push(...r.content);
+					});
+					if (r.content.length < app.globalPageSize) setIsEnding(true);
+					page++;
+				};
+				
+				setLoading(false);
+				debounce = false;
+			};
+			
+			const obs = new IntersectionObserver((e)=>{
+				if (debounce) return;
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) query();
+				});
+			}, {
+				root: scrollContainerRef.current,
+				threshold: 0.1
+			});
+			obs.observe(emptyContainerRef.current);
+			
+			query();
+			return ()=>{
+				setLoading(true);
+				updateSelectedReport(null);
+				updateReports([]);
+				obs.disconnect();
+			};
+		}, [sortType, include]);
+		
+		async function handleResolve(a) {
+			setIsProcessing(true);
+			const r = await app.f.post(`mod/mod_reports/${selectedReport?.id}/resolve`, { append: a });
+			if (r.status==="success") {
+				updateReports(draft=>{
+					const i = draft.findIndex(x=>x.id===selectedReport?.id);
+					if (i!==-1) {
+						draft.splice(i,1);
+					};
+				});
+				updateSelectedReport(null);
+			};
+			setIsProcessing(false);
+		};
+		
+		return <>
+		<style>{`
+		.rprts-123 {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+		}
+		@media (max-width: 700px) {
+			.rprts-123 {
+				display: flex;
+				flex-direction: column;
+				grid-template-columns: unset;
+			}
+		}
+		`}</style>
+		<div className="rprts-123" hidden={hidden}>
 			<div>
+				{/*
 				<fieldset>
 					<legend>Filters</legend>
-					<select name="status" multiple size="8">
+					<span><select name="filter">
 						<optgroup label="Active reports">
 							<option value="0">0</option>
 							<option value="1">1</option>
 							<option value="2">2</option>
 							<option value="*">*</option>
 						</optgroup>
+					</select> <select name="sort">
 						<optgroup label="Sort by">
 							<option value="0">Default</option>
-							<option value="1">Weight</option>
+							<option value="1">First updated</option>
 							<option value="2">Last updated</option>
+							<option value="3">Weight</option>
 						</optgroup>
-					</select>
-					<button className="btn app-button"></button>
+					</select></span>
+					<button className="btn app-button">#button.apply#</button>
 				</fieldset>
-				<select name="report" size="8">
-					<optgroup label="Active reports">
-						
-					</optgroup>
-				</select>
+				*/}
+				<fieldset>
+					<legend>Mass-Reports</legend>
+					<div style={{display: "flex", gap: 2, overflowY: "scroll", flexDirection: "column"}} ref={scrollContainerRef}>
+						{
+							reports.map(x=>(
+								<button disabled={selectedReport?.id===x.id || isProcessing} onClick={()=>updateSelectedReport(x)} className="app-buttonFromModals" key={x.id}>Report {x.id}</button>
+							))
+						}
+						<div ref={emptyContainerRef} style={{paddingBottom: 40}}>
+							{ loading && <app.components.Loading /> }
+							{ !loading && isEnding && <span>End</span> }
+						</div>
+					</div>
+				</fieldset>
 			</div>
 			<div>
 				<fieldset>
 					<legend>More information</legend>
 					<ul>
-						<li>Last updated: <b>in one day maybe</b></li>
-						<li>Status: <b>Active</b></li>
-						<li>EntityType: <b>Something</b></li>
-						<li>EntityId: <b>idk</b></li>
+						<li>ID: <b>{selectedReport?.id ?? "IDK"}</b></li>
+						<li>Last updated: <b>{selectedReport?.updated_at ? app.functions.ago(selectedReport.updated_at) : "IDK"}</b></li>
+						<li>Resolved at: <b>{selectedReport?.resolved_at ? app.functions.ago(selectedReport.resolved_at) : "IDK"}</b></li>
+						<li>Status: <b>{ReportStatusType[selectedReport?.status] ?? "IDK"}</b></li>
+						<li>Weight: <b>{String(selectedReport?.w)}</b></li>
+						<li>Report type: <b>{app.functions.report.reasons[selectedReport?.reportType] ?? "IDK"}</b></li>
+						<li>EntityType: <b>{selectedReport?.contentType ?? "IDK"}</b></li>
+						<li>EntityId: <b>{selectedReport?.contentId ?? "IDK"}</b></li>
 					</ul>
 				</fieldset>
-				<span><button className="btn btn-primary">Accept</button> <button className="btn btn-danger">Deny</button></span>
+				<span><button disabled={!selectedReport || isProcessing} onClick={()=>handleResolve(true)} className="btn btn-primary">Accept</button> <button disabled={!selectedReport || isProcessing} onClick={()=>handleResolve(false)} className="btn btn-danger">Deny</button></span>
 			</div>
-		</div>;
+		</div>
+		</>;
 	}},
 ];
