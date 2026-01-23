@@ -897,7 +897,7 @@ export default function MipuAdvPost({children, disabled, active, onDelete, setVe
 								<div>
 									<b>#uncategorized.url#</b>
 									<pre>{ document.location.origin + `/sprks/${id}` }</pre>
-									<div style={{ display: "flex", width: "100%", paddingInline: 5, gap: 5, alignItems: "center" }}>
+									<div style={{ display: "flex", width: "100%", paddingInline: 5, gap: 5, alignItems: "center", overflowX: "auto" }}>
 										{ /*
 											<button onClick={e=>handleShare("share")} className="btn app-button">#button.share#</button>
 											<button onClick={e=>handleShare("copy")} className="btn app-button">#button.copyurl#</button>
