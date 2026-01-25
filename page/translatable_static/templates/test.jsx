@@ -41,10 +41,10 @@ export default function TestPage() {
 	const [ failedProps, setFailedProps ] = useState(false);
 	const [ failedName, setFailedName ] = useState(false);
 	
-	const [ rndArt, setRndArt ] = useState("sillycat.gif");
+	const [ rndArt, setRndArt ] = useState("myrbxlavatar.jpg");
 	function showArt(a) {
 		setRndArt(now=>{
-			const pic = ['idkwhatisthis.png', 'mimi.png', 'myrbxlavatar.jpg', 'sillycat.gif', 'whythiscrahacteristooбледныйая.png', 'Без названия231.png', 'Без названия235.png'];
+			const pic = ['idkwhatisthis.png', 'myrbxlavatar.jpg', 'whythiscrahacteristooбледныйая.png', 'Без названия231.png', 'Без названия235.png'];
 			if (pic.includes(a)) return a;
 			
 			if (now) return null
