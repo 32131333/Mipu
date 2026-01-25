@@ -27,7 +27,7 @@ function getAllScripts(dir, r) {
 		"./page/translatable_static/modals.jsx", "./page/translatable_static/contextmenu.jsx",
 		"./page/translatable_static/router.jsx", "./page/translatable_static/nav.jsx", "./page/translatable_static/components.jsx",
 		"./page/translatable_static/imageCropper.jsx", "react-markdown", "emoji-mart", /*"react-popper",*/ "use-immer",
-		"remark-gfm", "slate", "slate-react", "is-hotkey", "@twemoji/parser",  "@twemoji/api", "@emotion/css", "react-lazy-load-image-component",
+		"remark-gfm", "slate", "slate-react", "is-hotkey", "@twemoji/parser",  "@twemoji/api", "react-lazy-load-image-component",
 		"remark-breaks", "./page/static/languages.json", "socket.io-client", "./page/translatable_static/socketio_client.js",
 		"@floating-ui/core", "@floating-ui/react", "./page/translatable_static/tooltip.jsx", "./page/static/timer.js",
 		"./page/translatable_static/toasts.jsx", "./page/translatable_static/miposts.jsx", "zustand", "./page/translatable_static/processoverlay.jsx"
