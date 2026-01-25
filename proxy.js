@@ -19,6 +19,7 @@ module.exports = function (app) {
 			};
 			
 			res.set("Content-Type", contentType);
+			res.set("Cache-Control", "public, max-age=31536000");
 			response.data.pipe(res);
 		} catch(e) {
 			res.status(500).send();

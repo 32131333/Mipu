@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const config = require('./configReader.js');
+
 const defaultLanguage = "ru";
 
 
@@ -46,8 +48,13 @@ function loadLanguages() {
 		const fileInfo = path.parse(`languages/${a}`);
 		if (require.resolve(`./languages/${a}`) in require.cache) delete require.cache[require.resolve(`./languages/${a}`)];
 		let l = require(`./languages/${a}`);
-		if (typeof l == "object") languages[fileInfo.name] = l
-		else if (typeof l == "function") {
+		if (typeof l == "object") {
+			languages[fileInfo.name] = l;
+			
+			if (config("frontend_apis")) {
+				Object.assign(l.apis, config("frontend_apis"));
+			};
+		} else if (typeof l == "function") {
 			scriptedLanguages[fileInfo.name] = l;
 		};
 	};

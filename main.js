@@ -8,7 +8,7 @@ const webpack = require("webpack");
 const webpackConf = require("./webpack.config.js");
 
 // Custom libs
-const reader = require("./read.js")
+const reader = require("./read.js");
 const { defaultLanguage, translate, languages, language_parse } = require("./language.js");
 
 const translationCache = {};
@@ -73,7 +73,7 @@ function readAndTranslate(fileName, lang) {
 	};
 };
 
-const rendererForSearchIndexing = require("./rendererForSearchIndexing");
+const rendererForSearchIndexing = require("./web10renderer.js");
 module.exports = function (app) {
 	app.use(function (req, res, next) {
 		if (req.headers['user-agent'].toLowerCase().includes("bot") || req.cookies.force_bot_mode) {

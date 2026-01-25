@@ -3,6 +3,8 @@ const { rateLimit } = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 
+const config = require('./configReader.js');
+
 const app = express();
 
 /*app.use("/pingtest", function (req, res, next) {
@@ -29,4 +31,4 @@ app.use(function(err, req, res, next) {
 
 //const server = require("http").createServer(app);
 //server.listen(80);
-app.listen(80);
+app.listen(config("frontend_host", 80));

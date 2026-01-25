@@ -1,5 +1,5 @@
 const { marked } = require('marked');
-
+const config = require('./configReader.js');
 
 const brandName = "Mipu";
 
@@ -380,5 +380,9 @@ module.exports.urls = [
 ];
 module.exports.blackList = ["/static/", "/favicon.ico", "/robots.txt"/*, "/sitemap.xml" */];
 
-module.exports.APIUrl = "http://localhost:6382/";
-module.exports.mediaStorageExternalURL = "http://localhost:6383/";
+const apis = config("frontend_apis", {
+	api: "http://localhost:6382/",
+	media: "http://localhost:6383/"
+});
+module.exports.APIUrl = apis.api;
+module.exports.mediaStorageExternalURL = config("frontend_media_external_url", apis.media);

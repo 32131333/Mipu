@@ -519,11 +519,12 @@ pages.login = {
 			</div>
 		};
 		
+		const disableEmailNotVerifiedAlert = true;
 		if (changingLogin) {
 			return <div className="app-pg-minimalisecutify"><LoginChangeForm /></div>;
 		} else {
 			return <div className="app-pg-minimalisecutify">
-				{!me.verifiedEmail && <app.components.WarningAlert 
+				{!disableEmailNotVerifiedAlert && !me.verifiedEmail && <app.components.WarningAlert 
 					text="#page.settings.unverified_email#"
 					onClick={/*processButton(*/async function() {
 						const result = await app.f.post("requireemailverify");
