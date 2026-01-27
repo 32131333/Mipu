@@ -591,10 +591,17 @@ function MediaCarousel({ children, audios, usedAudioAuthors, post, contentType, 
 	return <div className="playerlayer">
 		{ children && children.length > 1 &&
 			<div id="indicator">
-				<div isActive={ String( info.active == 0 ) } />
-				<div isActive={ String( info.active == 1 ) } />
-				{ children.length > 2 && <div isActive={ String( children.length > 3 ? (info.active != children.length-1 && info.active >= 2) : (info.active == 2) ) } /> }
-				{ children.length > 3 && <div isActive={ String ( info.active == children.length-1 ) } /> }
+				{/*
+					<div isActive={ String( info.active == 0 ) } />
+					<div isActive={ String( info.active == 1 ) } />
+					{ children.length > 2 && <div isActive={ String( children.length > 3 ? (info.active != children.length-1 && info.active >= 2) : (info.active == 2) ) } /> }
+					{ children.length > 3 && <div isActive={ String ( info.active == children.length-1 ) } /> }
+				*/}
+				{
+					children.map((x,i)=>(
+						<div key={i} isActive={ String ( info.active == i ) } />
+					))
+				}
 			</div>
 		}
 		<div ref={audiosRef} hidden>
