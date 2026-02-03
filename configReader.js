@@ -14,5 +14,14 @@ try {
 	console.error("[ERROR] Cannot read `./../config.json` > ", e);
 };
 
-module.exports = (key, defaultValue) => configFile?.[key] ?? process.env?.[key] ?? defaultValue;
+module.exports = (key, defaultValue) => {
+	if (configFile?.[key]) return configFile?.[key]
+	else if (process.env?.[key]) {
+		try {
+			return JSON.parse(process.env?.[key]);
+		} catch {
+			return process.env?.[key];
+		};
+	} else return defaultValue;
+};
 module.exports.conf = configFile;
