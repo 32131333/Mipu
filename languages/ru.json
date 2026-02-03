@@ -2,7 +2,7 @@
 	"clientName": "Mipu",
 	"slogan": "...",
 	"corporation": "r",
-	"version": "0.2.2a",
+	"version": "0.2.3",
 	"years": "20xx",
 	"langName": "Русский",
 	"langCode": "ru",
@@ -409,7 +409,7 @@
 			"client_error_sub": ""
 		},
 		"login_register": {
-			"youhavenotoneaccount": "Выберите ваш аккаунт",
+			"youhavenotoneaccount": "Выберите аккаунт",
 			"agreement": "Используя аккаунт, вы соглашаетесь с правилами #clientName# и условиями использования от #corporation#",
 			"login": "Авторизация #clientName#",
 			"register": "Регистрация #clientName#",
@@ -517,10 +517,12 @@
 			"postssuccess_info": "Твои идеи записаны! Теперь их увидят все!",
 			"mipuadvpostssuccess": "Круто! Запрос принят",
 			"mipuadvpostssuccess_info": "Пожалуйста, не покидай #clientName# во время загрузки. После успешной загрузки ваш пост станет доступен в вашем профиле",
-			"rewritealert": "Похоже, ты что-то ранее записывал на странице создания. Если это произойдет, то нынешние данные сотрутся. Ты действительно хочешь этого?"
+			"rewritealert": "Похоже, ты что-то ранее записывал на странице создания. Если это произойдет, то нынешние данные сотрутся. Ты действительно хочешь этого?",
+			"mipuadvsound": "Звук",
+			"mipuadvsounddesc": "Используйте звучания из любого видео в пространстве #MipuadvpostsName#, чтобы воспроизводить их в постах с картинкой"
 		},
 		"userinfomobile": {
-			"presstoredirect": "Нажмите, чтобы перейти на профиль",
+			"presstoredirect": "Нажми, чтобы перейти на профиль",
 			"settings": "Настройки",
 			"exit": "Выйти"
 		},

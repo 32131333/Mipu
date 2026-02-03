@@ -190,7 +190,7 @@ module.exports.urls = [
 		const authorName = escape(post.author?.name ?? ('@' + post.author?.tag));
 
 		return {
-			"title": `${authorName}: ${post.content.substring(0, 50)}...`,
+			"title": `${authorName}: ${post.content?.split("\n")?.[0]?.substring?.(0, 50)}...`,
 			"description": escape(post.content.substring(0, 150) + '...'),
 			"image": mainImageUrl, // Используем первое найденное изображение
 			"body": `
