@@ -1667,6 +1667,7 @@ app.components.NotificationsPopup.NotificationItem.getContent = function (notify
 			break;
 		case "NEW_CONTENT":
 			if (contentType=="posts") text = <><app.components.Username user={author} /> #notify.newpost#</>
+			else if (contentType=="mipuadv_posts") text = <><app.components.Username user={author} /> #notify.newmipuadvpost#</>
 			else text = <><app.components.Username user={author} /> #notify.newcontent#</>;
 			break;
 		case "YOUR_MIPUADV_POST_READY":
