@@ -76,10 +76,10 @@ module.exports.urls = [
 			const mapContent = result.content.content.map(x=>{
 				switch (x.id) {
 					case "image":
-						return `<img src="${module.exports.mediaStorageExternalURL + "posts/" + String(result.content.id) + "/" + x.url}">`;
+						return `<img src="${module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + x.url}">`;
 						break;
 					case "video":
-						return `<video controls src="${module.exports.mediaStorageExternalURL + "posts/" + String(result.content.id) + "/" + x.url}">`;
+						return `<video controls src="${module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + x.url}">`;
 						break;
 					default:
 						return false;
@@ -90,11 +90,11 @@ module.exports.urls = [
 				"title": result.content.user && `@${result.content.author?.tag}`,
 				"description": escape(result.content.description),
 				"type": isVideoPost ? "video.other" : "article",
-				"image": module.exports.mediaStorageExternalURL + "posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp"),
+				"image": module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp"),
 				"body": `
 					<a href="/user/${result.content.author?.id}">${escape( result.content.author?.name ?? ("@" + result.content.author?.tag) )}</a>
 					<div>${renderedDescription}</div>
-					<img src="${module.exports.mediaStorageExternalURL + "posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp")}">
+					<img src="${module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp")}">
 					${mapContent.join("")}
 				`,
 				"ld": {
@@ -104,7 +104,7 @@ module.exports.urls = [
 					"headline": (result.content.user && `@${result.content.author?.tag}`) || "Sparks",
 					"description": escape(result.content.description),
 					"url": `${req.protocol}://${req.headers.host}/${req.path}`,
-					"image": module.exports.mediaStorageExternalURL + "posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp"),
+					"image": module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp"),
 					"author": {
 						"@type": "Person",
 						"name": escape( result.content.author?.name ?? ('@' + result.content.author?.tag) )
@@ -112,7 +112,7 @@ module.exports.urls = [
 					"datePublished": `${new Date(result.content.created).toISOString()}`,
 					// ... остальные поля Schema.org ...
 					// Для VideoObject хорошо бы добавить duration, uploadDate, contentUrl
-					"contentUrl": isVideoPost ? (module.exports.mediaStorageExternalURL + "posts/" + String(result.content.id) + "/" + result.content.content[0].url) : undefined
+					"contentUrl": isVideoPost ? (module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + result.content.content[0].url) : undefined
 				}
 			};
 		} else {
@@ -138,7 +138,7 @@ module.exports.urls = [
 		if (post.medias && Array.isArray(post.medias)) {
 			post.medias.forEach(fileName => {
 				/*if (fileName.match(/\.(jpeg|jpg|png|gif|webp)$/i)) {*/ // Проверяем, что это изображение
-				const url = `${module.exports.mediaStorageExternalURL}${authorId}/${fileName}`;
+				const url = `${module.exports.mediaStorageExternalURL}/${authorId}/${fileName}`;
 				mediaHtmlArray.push(`<img src="${url}" alt="Изображение в посте">`);
 				if (!mainImageUrl) mainImageUrl = url;
 				/*}*/
@@ -153,7 +153,7 @@ module.exports.urls = [
 				if (!url.startsWith('/')) {
 					url = `${authorId}/${url}`;
 				}
-				const fullUrl = `${module.exports.mediaStorageExternalURL}${url.startsWith('/') ? url : `/${url}`}`;
+				const fullUrl = `${module.exports.mediaStorageExternalURL}/${url.startsWith('/') ? url : `/${url}`}`;
 				mediaHtmlArray.push(`<img src="${fullUrl}" alt="Изображение в посте">`);
 				if (!mainImageUrl) mainImageUrl = fullUrl;
 			}
@@ -235,7 +235,7 @@ module.exports.urls = [
 			if (item.id === "image" && item.url) {
 				let url = item.url;
 				if (!url.startsWith('/')) url = `/${url}`; 
-				return `<img src="${module.exports.mediaStorageExternalURL}${url}" alt="Изображение профиля">`;
+				return `<img src="${module.exports.mediaStorageExternalURL}/${url}" alt="Изображение профиля">`;
 			}
 			return '';
 		};
@@ -248,7 +248,7 @@ module.exports.urls = [
 					if (Array.isArray(mediaArray)) {
 						const html = mediaArray.map(processMediaItem).join('');
 						if (!mainImageUrl && mediaArray.length > 0) {
-							mainImageUrl = `${module.exports.mediaStorageExternalURL}${mediaArray[0].url.startsWith('/') ? mediaArray[0].url : `/${mediaArray[0].url}`}`;
+							mainImageUrl = `${module.exports.mediaStorageExternalURL}/${mediaArray[0].url.startsWith('/') ? mediaArray[0].url : `/${mediaArray[0].url}`}`;
 						}
 						return html;
 					}
