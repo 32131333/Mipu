@@ -120,6 +120,26 @@ function processButton(b, bu, workingText, errorText, successText, after, disabl
 	return thisfunction;
 };
 
+function getProbablyBrightnessFromImage(url) {
+	return new Promise((result, err)=>{
+		const img = new Image();
+		img.crossOrigin = "Anonymous"; 
+		img.src = url;
+		img.onload = function() {
+			const canvas = document.createElement('canvas');
+			const ctx = canvas.getContext('2d');
+			ctx.drawImage(img, 0, 0, 1, 1);
+			
+			const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+			// Формула яркости (YIQ)
+			const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+			
+			result(brightness >= 130 ? "light" : "dark");
+		};
+		img.onerror = err;
+	});
+};
+
 function rnd000(k = 0.5) {
 	return Math.random() <= k ? 1 : -1;
 };

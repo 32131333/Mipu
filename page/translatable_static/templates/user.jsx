@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback, memo, createElement, Fragment } from "react";
+import { useEffect, useState, useRef, useCallback, memo, createElement, Fragment, useLayoutEffect } from "react";
 import { BrowserRouter, Route, useParams, Link, NavLink, useLocation, Navigate, useLoaderData } from "react-router";
 
 const { LoadingPage, Avatar, Username, UserBackgroundStyleSetting, SubButton, Content } = app.components;
@@ -350,6 +350,14 @@ export default function UserPage() {
 	const { me } = app.reactstates.useInformationAboutMe();
 	
 	
+	const [ maybeBannerColor, setMaybeBannerColor ] = useState(null); 
+	useLayoutEffect(function () {
+		if (failed || loading || !user?.background?.media) return;
+		
+		getProbablyBrightnessFromImage?.(`${app.apis.mediastorage}/${user.id}/${user.background.media}`).then(x=>setMaybeBannerColor(x));
+	}, [ user, failed, loading ]);
+	
+	
 	function UhOh(val) {
 		const reasons = tryToReadJSON("#page.user.unvaliable#");
 		const isApiError = val.children.startsWith("api:");
@@ -492,7 +500,21 @@ export default function UserPage() {
 		align-items: center;
 		justify-content: space-between;
 		min-height: 520px;
+		color: var(--buttonsAndTextSecondaryColor);
 	}
+	.base-information.maybedark > .one {
+		color: var(--buttonsAndTextColor0);
+	}
+	.base-information.maybedark > .one .alphacoloredicon {
+		background-color: var(--buttonsAndTextColor0);
+	}
+	.base-information.maybelight > .one {
+		color: var(--fourthColor);
+	}
+	.base-information.maybelight > .one .alphacoloredicon {
+		background-color: var(--fourthColor);
+	}
+	
 	.base-information .app-userAvatar {
 		height: 135px;
 	}
@@ -510,7 +532,7 @@ export default function UserPage() {
 		background-size: cover;
 		background-position: center;
 		background-color: none;
-		box-shadow: inset 0px -300px 120px -90px var(--transparencyBlackColor);
+		/* box-shadow: inset 0px -300px 120px -90px var(--transparencyBlackColor); */
 	}
 	.base-information .lnks {
 		margin: 0;
@@ -607,7 +629,7 @@ export default function UserPage() {
 		return <>
 			{style}
 			<app.components.WebpageTitle>{user.name ? user.name : "@"+user.tag||"-"}</app.components.WebpageTitle>
-			<div className={user.background.media ? "base-information" : "base-information d"}>
+			<div className={[user.background.media ? "base-information" : "base-information d", maybeBannerColor && `maybe${maybeBannerColor}`].filter(x=>x!==false).join(" ")}>
 				<div className="bannerimg" style={{display: user.background.media ? "unset" : "none", backgroundImage: (user.background.media ? `url(${app.apis.mediastorage}/${user.id}/${user.background.media})` : null)}}/>
 				<div className="one">
 					<Avatar user={user}/>

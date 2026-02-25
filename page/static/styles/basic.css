@@ -1457,7 +1457,7 @@ a.app-dontModifyLink:link, a.app-dontModifyLink:hover, a.app-dontModifyLink:acti
 }
 
 .app-mipuadvpostcardpreview {
-	width: 185px;
+	width: 170px;
 	display: flex;
 	flex-direction: column;
 	align-content: center;

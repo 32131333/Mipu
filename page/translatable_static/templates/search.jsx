@@ -1,5 +1,5 @@
 import { Link, useParams, useLocation, useSearchParams, useNavigate } from "react-router";
-import { useEffect, useState, useCallback, useRef, Fragment } from "react";
+import { useEffect, useState, useCallback, useRef, Fragment, createElement } from "react";
 import React from "react";
 import { useImmer } from "use-immer";
 
@@ -74,6 +74,52 @@ const style = <style>{`
 }
 `}</style>;
 
+
+const renderResultItem = (item) => {
+	if (item.group) return <Group key={`group-${item.object}-${item.group[0]?.id}`} {...item}/>;
+	switch (item.object) {
+		case 'posts':
+			return <app.structures.Post post={item} canOpenFully key={`post-${item.id}`} />;
+		case 'users':
+			return <app.components.UserCard children={item} key={`user-${item.id}`} />;
+		case 'mipuadv_posts':
+			return <app.components.MipuAdvPostSearchCard children={item} key={`mipuadv-posts-${item.id}`} />;
+			default:
+				return (
+					<div key={`unknown-${item.id || Math.random()}`}>
+						#page.search.unknownobject#: {item.object}
+						<pre>{JSON.stringify(item, null, 2)}</pre>
+					</div>
+				);
+	}
+};
+
+const Group = (item) => {
+	const { group, object } = item;
+	return <div style={{ display: "flex", flexWrap: "wrap", width: "100%", justifyContent: "space-between", paddingBlock: 8 }}>{
+		group.map((x,i)=>createElement(renderResultItem, { ...x, object }))
+	}</div>;
+};
+
+const groupAbleContentTypes = ['mipuadv_posts'];
+	
+const sorts = [
+	["0", "#uncategorized.sorts.default#"],
+	["1", "#uncategorized.sorts.new#"],
+	["2", "#uncategorized.sorts.old#"],
+	["3", "#uncategorized.sorts.popularity#"],
+	["4", "#uncategorized.sorts.virality#"],
+	["5", "#uncategorized.sorts.actuality#"]
+];
+const includes = [
+	["all", "#page.search.default#"],
+	["users", "#page.search.includes.users#"],
+	["posts", "#page.search.includes.posts#"],
+	["mipuadv_posts", "#page.search.includes.mipuadv_posts#"]
+];
+
+
+
 function SearchPage() {
     // Получаем параметры из URL
     const [searchParams, setSearchParams] = useSearchParams();
@@ -104,13 +150,44 @@ function SearchPage() {
             const response = await app.f.get('search', params);
             const newResults = response.content || [];
 
-            if (isNewSearch) {
+            /*if (isNewSearch) {
                 setResults(newResults);
             } else {
                 setResults(prev => [...prev, ...newResults]);
-            }
+            }*/
             // Если API вернуло меньше, чем мы ожидаем на странице, или пустой массив, считаем что больше нет
             //setCanLoadMore(newResults.length > 0);
+			let r = [];
+			
+			let grName;
+			let gr = [];
+			newResults.forEach(x=>{
+				const { object } = x;
+				
+				if (grName && (grName !== object)) {
+					r.push({ group: gr, object: grName });
+					gr = [];
+					grName = null;
+				};
+				
+				if (groupAbleContentTypes.includes(object)) {
+					if (!grName) {
+						grName = object;
+					};
+					gr.push(x);
+				} else {
+					r.push(x);
+				};
+			});
+			if (grName) {
+				r.push({ group: gr, object: grName });
+			};
+
+            if (isNewSearch) {
+                setResults(r);
+            } else {
+                setResults(prev => [...prev, ...r]);
+            };
             
 			setCanLoadMore(newResults.length >= app.globalPageSize);
         } catch (err) {
@@ -165,39 +242,6 @@ function SearchPage() {
         setSearchParams({ query, type: newType, sort: newSort });
     };
 
-    const renderResultItem = (item) => {
-        switch (item.object) {
-            case 'posts':
-                return <app.structures.Post post={item} canOpenFully key={`post-${item.id}`} />;
-            case 'users':
-                return <app.components.UserCard children={item} key={`user-${item.id}`} />;
-			case 'mipuadv_posts':
-				return <app.components.MipuAdvPostSearchCard children={item} key={`mipuadv-posts-${item.id}`} />;
-            default:
-                return (
-                    <div key={`unknown-${item.id || Math.random()}`}>
-                        #page.search.unknownobject#: {item.object}
-                        <pre>{JSON.stringify(item, null, 2)}</pre>
-                    </div>
-                );
-        }
-    };
-
-	
-	const sorts = [
-		["0", "#uncategorized.sorts.default#"],
-		["1", "#uncategorized.sorts.new#"],
-		["2", "#uncategorized.sorts.old#"],
-		["3", "#uncategorized.sorts.popularity#"],
-		["4", "#uncategorized.sorts.virality#"],
-		["5", "#uncategorized.sorts.actuality#"]
-	];
-	const includes = [
-		["all", "#page.search.default#"],
-		["users", "#page.search.includes.users#"],
-		["posts", "#page.search.includes.posts#"],
-		["mipuadv_posts", "#page.search.includes.mipuadv_posts#"]
-	];
 
     return (
         <div className="search-page app-pg-simplecontent">

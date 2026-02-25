@@ -1,6 +1,6 @@
 {
   "name": "MipuClient_reborn",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Better days will never come",
   "main": "index.js",
   "scripts": {
