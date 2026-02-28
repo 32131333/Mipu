@@ -7,6 +7,12 @@
     {
       "source": "/media/:path*",
       "destination": "https://mipuwu.mooo.com/media/:path"
-    }
+    },
+    "redirects": [
+      {
+        "source": "/socket.io/:path*",
+        "destination": "https://mipuwu.mooo.com/api/socket.io/:path"
+      }
+    ]
   ]
 }
