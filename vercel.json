@@ -1,12 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://mipuwu.mooo.com/api*"
+      "source": "/api/:path",
+      "destination": "https://mipuwu.mooo.com/api/:path"
     },
     {
-      "source": "/media/:path*",
-      "destination": "https://mipuwu.mooo.com/media*"
+      "source": "/media/:path",
+      "destination": "https://mipuwu.mooo.com/media/:path"
     }
   ]
 }
