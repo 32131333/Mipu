@@ -6,6 +6,7 @@ const compression = require('compression');
 const config = require('./configReader.js');
 
 const app = express();
+app.set("trust proxy", "loopback");
 
 /*app.use("/pingtest", function (req, res, next) {
 	res.set("Content-type", "text/html").send("<title>Пинг</title><h2>Понг!! :3</h2><br>Это тестовая страница для проверки работоспособности. <a href='/'>Нажмите сюда</a>, чтобы открыть гл. страницу");
@@ -13,13 +14,12 @@ const app = express();
 
 const limiter = rateLimit({
 	windowMs: 30 * 1000,
-	limit: 300,
+	limit: 100,
 	standardHeaders: 'draft-7',
 	legacyHeaders: false
 });
 
-
-app.use(/*limiter, */cookieParser(), compression());
+app.use(limiter, cookieParser(), compression());
 
 require("./proxy.js")(app);
 require("./main.js")(app);
