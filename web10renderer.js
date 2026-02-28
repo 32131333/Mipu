@@ -1,4 +1,9 @@
-const { marked } = require('marked');
+//const { marked } = require('marked');
+let marked;
+import('marked').then(m => {
+	marked = m.marked;
+});
+
 const config = require('./configReader.js');
 
 const brandName = "Mipu";
