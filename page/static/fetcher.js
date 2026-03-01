@@ -55,7 +55,7 @@ class BFetch {
 		let bodyReader;
 		
 		try {
-			if (resp && resp.headers.get("transfer-encoding")!="chunked" && !resp.headers.get("content-type").includes("stream") && !resp.headers.get("x-is-chunked")) {
+			if (/*resp && resp.headers.get("transfer-encoding")!="chunked" && !resp.headers.get("content-type").includes("stream") && */!resp.headers.get("x-is-chunked")) {
 				text = await resp.text();
 				json = JSON.parse(text);
 			} else {
