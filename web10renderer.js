@@ -389,5 +389,5 @@ const apis = config("frontend_apis", {
 	api: "http://localhost:6382/",
 	media: "http://localhost:6383/"
 });
-module.exports.APIUrl = apis.api;
+module.exports.APIUrl = config("frontend_seo_backend_url", apis.api);
 module.exports.mediaStorageExternalURL = config("frontend_media_external_url", apis.media);
