@@ -1,12 +1,26 @@
 {
   "rewrites": [
     {
+      "source": "/api",
+      "destination": "https://mipuwu.mooo.com/api"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://mipuwu.mooo.com/api/:path*"
     },
     {
+      "source": "/media",
+      "destination": "https://mipuwu.mooo.com/media"
+    },
+    {
       "source": "/media/:path*",
       "destination": "https://mipuwu.mooo.com/media/:path*"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/socket.io",
+      "destination": "https://mipuwu.mooo.com/api/socket.io"
     },
     {
       "source": "/socket.io/:path*",
