@@ -14,7 +14,7 @@ const useFeedData = create(immer(
 	(set, get)=>({
 		feedData: [],
 		feedState: { activeIndex: 0 },
-		forYouModeInfo: { active: false, page: 1, canLoadMore: true, loading: false },
+		forYouModeInfo: { active: false, page: 1, canLoadMore: true, loading: false, viewedPostsIds: [] },
 		loading: false,
 		forYouActive: false,
 		error: null,
@@ -30,7 +30,7 @@ const useFeedData = create(immer(
 		reset: () => set(state=>{
 			state.feedData = [];
 			state.feedState = { activeIndex: 0 };
-			state.forYouModeInfo = { active: false, page: 1, canLoadMore: true, loading: false };
+			state.forYouModeInfo = { active: false, page: 1, canLoadMore: true, loading: false, viewedPostsIds: [] };
 			state.loading = false;
 			state.forYouActive = false;
 			state.error = null;
@@ -251,19 +251,34 @@ export default function VerticalFeed() {
 		const { activeIndex } = feedState;
 		
 		async function loadMore() {
-			const { page, canLoadMore, loading } = /*forYouInfoRef.current*/getForYouInfo();
+			const { page, canLoadMore, loading, viewedPostsIds } = /*forYouInfoRef.current*/getForYouInfo();
 			
 			if (loading) return;
 			setLoading(true);
 			
 			
-			const r = await app.f.get("vertical_feed", {page}); // На момент написания этой строки, feed не волнует, какую вы страницу просматриваете, но, вероятно, я в скором это исправлю
+			const r = await app.f.get("vertical_feed", {page, viewedPostsIds}); // На момент написания этой строки, feed не волнует, какую вы страницу просматриваете, но, вероятно, я в скором это исправлю
 			if (r.status == "success") {
 				updateFeedData(d=>{
 					d.push(...r.content);
 				});
-				if (r.content.length <= 0) updateForYouInfo(a=>{ a.canLoadMore = false });/*forYouInfoRef.current*///getForYouInfo().canLoadMore = false; 
-				updateForYouInfo(a=>{ a.page++ });/*forYouInfoRef.current*///getForYouInfo().page += 1;
+				/*forYouInfoRef.current*///getForYouInfo().canLoadMore = false; 
+				/*forYouInfoRef.current*///getForYouInfo().page += 1;
+				/*if (r.content.length <= 0) updateForYouInfo(a=>{ a.canLoadMore = false });
+				updateForYouInfo(a=>{ a.page++ });*/
+				updateForYouInfo(d=>{
+					d.page++; // На момент обновления, page так и не обрел смысл
+					
+					const newIds = Array.isArray(r.content) ? r.content.map(x => x.id) : [];
+					d.viewedPostsIds = [...d.viewedPostsIds, ...newIds].slice(-100);
+					
+					if (r.content.length <= 0) {
+						d.canLoadMore = false;
+					};
+					if (r.content.length <= 10) {
+						d.viewedPostsIds = []; // Походу, посты закончились, что, в моем случае, возможно
+					};
+				});
 			} else {
 				setError(typeof r == "string" ? r : r.error_code);
 				setForYouActive(false);
