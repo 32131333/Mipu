@@ -102,8 +102,9 @@ module.exports.urls = [
 				}
 			}).filter(x=>x);
 			
+			const authorName = result.content.author && escape(result.content.author?.name ?? ('@' + result.content.author?.tag));
 			return {
-				"title": result.content.author && `@${result.content.author?.tag}`,
+				"title": authorName,
 				"description": escape(result.content.description + `\n${getRating(result.content.rating)}`),
 				"type": isVideoPost ? "video.other" : "article",
 				"video": isVideoPost ? (module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + result.content.content[0]?.url) : false,
@@ -198,7 +199,7 @@ module.exports.urls = [
 
 		// 3. Обработка синтаксиса $[...] в контенте
 		// Находим все вхождения $[...] и пытаемся распарсить как JSON
-		const contentWithParsedMedia = escape(post.content).replace(/\$\[.+\]/g, (match) => {
+		const contentWithParsedMedia = post.content.replace(/\$\[.+\]/g, (match) => {
 			try {
 				const mediaArray = JSON.parse(match.slice(1));
 				if (Array.isArray(mediaArray)) {
@@ -225,7 +226,7 @@ module.exports.urls = [
 
 		return {
 			"title": `${authorName}: ${cleanContent?.split("\n")?.[0]?.substring?.(0, 50)}...`,
-			"description": escape(post.content.substring(0, 150) + '...' + `\n${getRating(post?.rating)}`),
+			"description": cleanContent.substring(0, 150) + '...' + `\n${getRating(post?.rating)}`,
 			"image": mainImageUrl, // Используем первое найденное изображение
 			"body": `
 				<article>
