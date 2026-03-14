@@ -21,7 +21,7 @@ function escape(unsafe) {
 
 
 // Некое общее
-const getRating = (r)=>`👍 ${r?.liked || 0} 🥰 ${r?.reactions?.length>0 && r?.reactions?.map(x=>x.count).reduce((a,c)=>a+c) || 0} 💬 ${r?.comments || 0}`;
+const getRating = (r)=>`💖 ${r?.liked || 0} • ✨ ${r?.reactions?.length>0 && r?.reactions?.map(x=>x.count).reduce((a,c)=>a+c) || 0} • 💬 ${r?.comments || 0}`;
 
 module.exports = async function (req, res, next) {
 	if (module.exports.blackList.find(x=>(typeof x == "string" ? req.path.includes(x) : x.test(req.path)))) return next();
@@ -32,10 +32,9 @@ module.exports = async function (req, res, next) {
 			const {
 				title, body,
 				description, image, type, ld,
-				video, video_type, doneAsYou
+				video, video_type
 			} = await rule[1](req,res);
 			
-			if (doneAsYou === true) return;
 			
 			return res.set("Content-type", "text/html").send(`<html>
 				<head>
@@ -61,7 +60,7 @@ module.exports = async function (req, res, next) {
 						${body}
 					</main>
 				</body>
-			</html>`.replace(/(^[\n	]*)|(\n*$)/g, ""))
+			</html>`.replace(/(^[\n	]*)|(\n*$)/g, ""));
 		} catch(e) {
 			console.error(e);
 			return res.status(500).send("<h1>500 - Internal Server Error</h1>");
