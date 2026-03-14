@@ -61,7 +61,7 @@ module.exports = async function (req, res, next) {
 						${body}
 					</main>
 				</body>
-			</html>`.replace(/(^[\n	]*)|(\n*$)/g, "")
+			</html>`.replace(/(^[\n	]*)|(\n*$)/g, ""))
 		} catch(e) {
 			console.error(e);
 			return res.status(500).send("<h1>500 - Internal Server Error</h1>");
