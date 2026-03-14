@@ -9,12 +9,18 @@ const webpackConf = require("./webpack.config.js");
 
 // Custom libs
 const reader = require("./read.js");
+const config = require("./configReader.js");
 const { defaultLanguage, translate, languages, language_parse } = require("./language.js");
 
 const translationCache = {};
 let enableBabel = true;
 
 async function webpackGen() {
+	if (config("frontend_disable_auto_build", false)) {
+		console.warn("[WARN] Auto build disabled. Make sure that you builded early via `npm run build`");
+		return;
+	};
+	
 	console.log("[INFO] Creating bundle.js");
 	webpack(webpackConf, function (err, stat) {
 		if (err || stat.hasErrors()) {
