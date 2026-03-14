@@ -14,7 +14,7 @@ app.set("trust proxy", "loopback");
 
 const limiter = rateLimit({
 	windowMs: 30 * 1000,
-	limit: 100,
+	limit: 10000,
 	standardHeaders: 'draft-7',
 	legacyHeaders: false
 });

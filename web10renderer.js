@@ -19,6 +19,10 @@ function escape(unsafe) {
 };
 
 
+
+// Некое общее
+const getRating = (r)=>`👍 ${r?.liked || 0} 🥰 ${r?.reactions?.length>0 && r?.reactions?.map(x=>x.count).reduce((a,c)=>a+c) || 0} 💬 ${r?.comments || 0}`;
+
 module.exports = async function (req, res, next) {
 	if (module.exports.blackList.find(x=>(typeof x == "string" ? req.path.includes(x) : x.test(req.path)))) return next();
 	
@@ -27,18 +31,24 @@ module.exports = async function (req, res, next) {
 		try {
 			const {
 				title, body,
-				description, image, type, ld
+				description, image, type, ld,
+				video, video_type, doneAsYou
 			} = await rule[1](req,res);
+			
+			if (doneAsYou === true) return;
 			
 			return res.set("Content-type", "text/html").send(`<html>
 				<head>
 					<meta charset="utf-8">
-					<title>${title ? title : ""}${title ? " - " : ""}${brandName}</title>
-					<meta property="og:title" content="${title ? title : ""}${title ? " - " : ""}${brandName}">
+					<title>${title ? title : ""}</title>
+					<meta property="og:site_name" content="${brandName}">
+					<meta property="og:title" content="${title ? title : ""}">
 					<meta property="og:url" content="${req.protocol}://${req.headers.host}/${req.path}">
 					<meta property="og:type" content="${type ?? "article"}">
 					${ description ? ('<meta property="og:description" content="' + description + '">') : "" }
 					${ image ? ('<meta property="og:image" content="' + image + '">') : "" }
+					${ video ? ('<meta property="og:video" content="' + video + '">') : "" }
+					${ video_type ? ('<meta property="og:video:type" content="' + video_type + '">') : "" }
 					
 					${ image ? '<meta name="twitter:card" content="summary_large_image">' : '' }
 					${ image ? ('<meta property="twitter:image" content="' + image + '">') : "" }
@@ -63,6 +73,7 @@ module.exports.headers = new Headers();
 module.exports.headers.set("Authorization", "guest");
 module.exports.headers.set("Client-Id", "frontendSEO");
 module.exports.headers.set("Content-Type", "application/json;");
+module.exports.headers.set("X-Ignore-RateLimit-Key", config("frontend_x_backend_seo_ratelimit_ignore_key", "unknown"));
 
 const headers = module.exports.headers;
 
@@ -93,8 +104,10 @@ module.exports.urls = [
 			
 			return {
 				"title": result.content.user && `@${result.content.author?.tag}`,
-				"description": escape(result.content.description),
+				"description": escape(result.content.description + `\n${getRating(result.content.rating)}`),
 				"type": isVideoPost ? "video.other" : "article",
+				"video": isVideoPost ? (module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + result.content.content[0]?.url) : false,
+				"video_type": isVideoPost ? "video/mp4" : false, // Обычно video/mp4
 				"image": module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp"),
 				"body": `
 					<a href="/user/${result.content.author?.id}">${escape( result.content.author?.name ?? ("@" + result.content.author?.tag) )}</a>
@@ -117,6 +130,20 @@ module.exports.urls = [
 					"datePublished": `${new Date(result.content.created).toISOString()}`,
 					// ... остальные поля Schema.org ...
 					// Для VideoObject хорошо бы добавить duration, uploadDate, contentUrl
+					"interactionStatistic": [
+						{
+							"@type": "InteractionCounter",
+							"interactionType": "https://schema.org/LikeAction",
+							"userInteractionCount": (result.content.rating?.liked || 0) + (result.content.rating?.reactions?.length>0 && result.content.rating?.reactions?.map(x=>x.count).reduce((acc,curr)=>acc+curr) || 0)
+						},
+						{
+							"@type": "InteractionCounter",
+							"interactionType": "https://schema.org/CommentAction",
+							"userInteractionCount": result.content.rating?.comments || 0
+						}
+					],
+					"thumbnailUrl": module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + (result.content.preview ?? "preview.webp"),
+					"uploadDate": `${new Date(result.content.created).toISOString()}`,
 					"contentUrl": isVideoPost ? (module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + result.content.content[0].url) : undefined
 				}
 			};
@@ -191,12 +218,12 @@ module.exports.urls = [
 		// --- Генерация HTML ---
 
 		// Используем marked для парсинга основного текста (теперь без $[...], они заменены HTML)
-		const postBodyHtml = marked(contentWithParsedMedia);
+		const postBodyHtml = escape(marked(contentWithParsedMedia));
 		const authorName = escape(post.author?.name ?? ('@' + post.author?.tag));
 
 		return {
-			"title": `${authorName}: ${post.content?.split("\n")?.[0]?.substring?.(0, 50)}...`,
-			"description": escape(post.content.substring(0, 150) + '...'),
+			"title": `${authorName}: ${contentWithParsedMedia?.split("\n")?.[0]?.substring?.(0, 50)}...`,
+			"description": escape(post.content.substring(0, 150) + '...' + `\n${getRating(post?.rating)}`),
 			"image": mainImageUrl, // Используем первое найденное изображение
 			"body": `
 				<article>
@@ -218,6 +245,18 @@ module.exports.urls = [
 					"name": authorName,
 					"url": `${req.protocol}://${req.headers.host}/user/${post.author?.id}`
 				},
+				"interactionStatistic": [
+					{
+						"@type": "InteractionCounter",
+						"interactionType": "https://schema.org/LikeAction",
+						"userInteractionCount": (result.content.rating?.liked || 0) + (result.content.rating?.reactions?.length>0 && result.content.rating?.reactions?.map(x=>x.count).reduce((acc,curr)=>acc+curr) || 0)
+					},
+					{
+						"@type": "InteractionCounter",
+						"interactionType": "https://schema.org/CommentAction",
+						"userInteractionCount": result.content.rating?.comments || 0
+					}
+				],
 				"datePublished": `${new Date(post.created).toISOString()}`
 			}
 		};
@@ -282,7 +321,7 @@ module.exports.urls = [
 		const searchUrl = new URL(module.exports.APIUrl + "search");
 		searchUrl.searchParams.set("author", user.id);
 		searchUrl.searchParams.set("sort", "1"); 
-		searchUrl.searchParams.set("pageLength", "150");
+		searchUrl.searchParams.set("pageLength", "300");
 		searchUrl.searchParams.set("parse", "posts,mipuadv_posts");
 		
 		const postsRes = await fetch(searchUrl, {headers});
@@ -301,7 +340,7 @@ module.exports.urls = [
 
 		// --- 4. Возвращение данных для шаблона ---
 		return {
-			"title": `@${escape(user.tag)} - ${authorName}`,
+			"title": `@${escape(user.tag)}`,
 			"description": userDescriptionText,
 			"image": mainImageUrl, 
 			"type": "profile", 
@@ -375,7 +414,7 @@ module.exports.urls = [
         // Возвращаем объект с данными для основного шаблона
         return {
             "title": `Главная лента`,
-            "description": `${brandName} - ...`,
+            "description": `Что-то`,
             "body": `
                 <h1>Добро пожаловать в ${brandName}!</h1>
                 ${postsListHtml}

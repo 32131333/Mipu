@@ -23,6 +23,12 @@
     {
       "source": "/media/:path*",
       "destination": "https://mipuwu.mooo.com/media/:path*"
+    },
+    {
+      "source": "/sitemap.xml", "destination": "https://mipuwu.mooo.com/sitemap.xml"
+    },
+    { 
+      "source": "/sitemap:id.xml", "destination": "https://mipuwu.mooo.com/sitemap:id.xml"
     }
   ],
   "redirects": [

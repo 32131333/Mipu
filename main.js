@@ -74,7 +74,9 @@ function readAndTranslate(fileName, lang) {
 };
 
 const rendererForSearchIndexing = require("./web10renderer.js");
+const sitemapGenerator = require("./sitemapxml.js");
 module.exports = function (app) {
+	sitemapGenerator(app);
 	app.use(function (req, res, next) {
 		if (req.headers['user-agent'].toLowerCase().includes("bot") || req.cookies.force_bot_mode) {
 			return rendererForSearchIndexing(req, res, next);
@@ -123,7 +125,10 @@ module.exports = function (app) {
 	});
 	
 	app.use("/favicon.ico", function (req, res) { res.redirect("static/fallingstar.ico") });
-	app.use("/robots.txt", function (req, res) { res.redirect("static/robots.txt") });
+	//app.use("/robots.txt", function (req, res) { res.redirect("static/robots.txt") });
+	app.use("/robots.txt", function (req, res) {
+		res.status(200).set("Content-Type", "text/plain").send(`User-agent: *\nAllow: /\nSitemap: ${req.protocol}://${req.headers.host}/sitemap.xml`);
+	});
 	
 	app.use("/static", express.static(path.join(__dirname, "page/static")), function (req, res, next) {
 		if (!res.headersSent) {
