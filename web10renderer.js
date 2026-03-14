@@ -61,7 +61,7 @@ module.exports = async function (req, res, next) {
 						${body}
 					</main>
 				</body>
-			</html>`.replaceAll("	", "").replaceAll("\n", ""))
+			</html>`.replace(/(^[\n	]*)|(\n*$)/g, "")
 		} catch(e) {
 			console.error(e);
 			return res.status(500).send("<h1>500 - Internal Server Error</h1>");
@@ -103,7 +103,7 @@ module.exports.urls = [
 			}).filter(x=>x);
 			
 			return {
-				"title": result.content.user && `@${result.content.author?.tag}`,
+				"title": result.content.author && `@${result.content.author?.tag}`,
 				"description": escape(result.content.description + `\n${getRating(result.content.rating)}`),
 				"type": isVideoPost ? "video.other" : "article",
 				"video": isVideoPost ? (module.exports.mediaStorageExternalURL + "/posts/" + String(result.content.id) + "/" + result.content.content[0]?.url) : false,
@@ -198,7 +198,7 @@ module.exports.urls = [
 
 		// 3. Обработка синтаксиса $[...] в контенте
 		// Находим все вхождения $[...] и пытаемся распарсить как JSON
-		const contentWithParsedMedia = post.content.replace(/\$\[.+\]/g, (match) => {
+		const contentWithParsedMedia = escape(post.content).replace(/\$\[.+\]/g, (match) => {
 			try {
 				const mediaArray = JSON.parse(match.slice(1));
 				if (Array.isArray(mediaArray)) {
@@ -214,15 +214,17 @@ module.exports.urls = [
 			}
 			return match; // Если ошибка, оставляем как есть
 		});
+		
+		const cleanContent = escape(post.content.replace(/\$\[.+\]/g, ""));
 
 		// --- Генерация HTML ---
 
 		// Используем marked для парсинга основного текста (теперь без $[...], они заменены HTML)
-		const postBodyHtml = escape(marked(contentWithParsedMedia));
+		const postBodyHtml = marked(contentWithParsedMedia);
 		const authorName = escape(post.author?.name ?? ('@' + post.author?.tag));
 
 		return {
-			"title": `${authorName}: ${contentWithParsedMedia?.split("\n")?.[0]?.substring?.(0, 50)}...`,
+			"title": `${authorName}: ${cleanContent?.split("\n")?.[0]?.substring?.(0, 50)}...`,
 			"description": escape(post.content.substring(0, 150) + '...' + `\n${getRating(post?.rating)}`),
 			"image": mainImageUrl, // Используем первое найденное изображение
 			"body": `
