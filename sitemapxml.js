@@ -35,20 +35,21 @@ async function getUrls() {
 		};
 		
 		r.content.forEach(x=>{
-			const lastMod = new Date(x.edited || x.created);
+			const lastMod = new Date(Math.max(x.edited || 0, x.created || 0));
+			const changeFreq = "monthly";
 			switch (x.object) {
 				case "mipuadv_posts":
-					result.push({ url: `/sprks/${x.id}`, changefreq: "monthly", lastMod  });
+					result.push({ url: `/sprks/${x.id}`, changeFreq, lastMod  });
 					break;
 				case "posts":
-					result.push({ url: `/post/${x.id}`, changefreq: "monthly", lastMod });
+					result.push({ url: `/post/${x.id}`, changeFreq, lastMod });
 					break;
 				case "users":
-					result.push({ url: `/user/@${x.tag}`, changefreq: "monthly", lastMod });
+					result.push({ url: `/user/@${x.tag}`, changeFreq, lastMod });
 					break;
 				default:
 					if (x.object && x.id) {
-						result.push({ url: `/${x.object}/${x.id}`, changefreq: "monthly", lastMod });
+						result.push({ url: `/${x.object}/${x.id}`, changeFreq, lastMod });
 					}
 					break;
 			}

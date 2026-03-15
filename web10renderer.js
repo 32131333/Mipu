@@ -21,7 +21,8 @@ function escape(unsafe) {
 
 
 // Некое общее
-const getRating = (r)=>`💖 ${r?.liked || 0} • ✨ ${r?.reactions?.length>0 && r?.reactions?.map(x=>x.count).reduce((a,c)=>a+c) || 0} • 💬 ${r?.comments || 0}`;
+const getRating = (r)=>`❤ ${r?.liked || 0} • 💬 ${r?.comments || 0} • ✨ ${r?.reactions?.length>0 && r?.reactions?.map(x=>x.count).reduce((a,c)=>a+c) || 0}`;
+
 
 module.exports = async function (req, res, next) {
 	if (module.exports.blackList.find(x=>(typeof x == "string" ? req.path.includes(x) : x.test(req.path)))) return next();
@@ -224,7 +225,7 @@ module.exports.urls = [
 		const authorName = escape(post.author?.name ?? ('@' + post.author?.tag));
 
 		return {
-			"title": `${authorName}: ${cleanContent?.split("\n")?.[0]?.substring?.(0, 50)}...`,
+			"title": authorName,
 			"description": cleanContent.substring(0, 150) + '...' + `\n${getRating(post?.rating)}`,
 			"image": mainImageUrl, // Используем первое найденное изображение
 			"body": `
