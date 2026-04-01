@@ -352,7 +352,7 @@ export default function UserPage() {
 	
 	const [ maybeBannerColor, setMaybeBannerColor ] = useState(null); 
 	useLayoutEffect(function () {
-		if (failed || loading || !user?.background?.media) return;
+		if (failed || loading || !user?.background?.media) return setMaybeBannerColor(null);
 		
 		getProbablyBrightnessFromImage?.(`${app.apis.mediastorage}/${user.id}/${user.background.media}`).then(x=>setMaybeBannerColor(x));
 	}, [ user, failed, loading ]);
