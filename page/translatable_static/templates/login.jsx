@@ -14,6 +14,17 @@ export default function LoginPage() {
 	let [ accountSelect, setAccountSelect ] = useState(null);
 	let [ formInfo, setFormInfo ] = useState({rememberme: true});
 	
+	const { type: themeType } = app.reactstates.useThemeInfo();
+	//app.reactstates.makeTopBarTranparency();
+	
+	const bckgnd = <img style={{
+		position: "absolute",
+		height: "100%",
+		width: "100%",
+		objectFit: "cover",
+		zIndex: -1
+	}} src={"/static/img/" + (themeType == "dark" ? "login_page_dark_sky" : "login_page_lavender_sky") + ".webp"}/>;
+	
 	if (LoginState >= 0) {
 		let elem;
 		let elem0;
@@ -34,7 +45,8 @@ export default function LoginPage() {
 			);
 		};
 		const rndClass = generateRndBtnId();
-		return (
+		return <>
+			{bckgnd}
 			<div className={rndClass}>
 				<style>
 				{`
@@ -99,7 +111,7 @@ export default function LoginPage() {
 					<p><Link to="/docview?path=/static/tos.txt">#page.login_register.tos#</Link>, <Link to="/docview?path=/static/rules.txt">#page.login_register.rules#</Link></p>
 				</fieldset>
 			</div>
-		);
+		</>;
 	} else {
 		if (LoginState===-1) {
 			if (accountSelect) {
@@ -120,7 +132,8 @@ export default function LoginPage() {
 					setAccountSelect(null);
 				} else {
 					const rndClass = generateRndBtnId();
-					return (
+					return <>
+						{bckgnd}
 						<div className={rndClass}>
 							<style>
 							{`
@@ -196,11 +209,12 @@ export default function LoginPage() {
 							</fieldset>
 							<button className="btn app-button" onClick={()=>{setLoginState(0);setErrorState(null)}}>#button.cancel#</button>
 						</div>
-					);
+					</>;
 				};
 			} else {
 				const rndId = generateRndBtnId();
-				return (
+				return <>
+					{bckgnd}
 					<div className={rndId}>
 						<UserBackgroundStyleSetting user={app.me} />
 						<style>
@@ -244,7 +258,7 @@ export default function LoginPage() {
 							<Link to="/" className="btn app-button">#button.ok#</Link>
 						</div>
 					</div>
-				);
+				</>;
 			};
 		};
 	};
