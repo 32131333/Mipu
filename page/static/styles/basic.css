@@ -1963,6 +1963,54 @@ body > .processoverlay #lst #progress {
 	filter: opacity(0.4) grayscale(1);
 }
 
+.app-centercard {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	height: 60px;
+	align-items: center;
+	padding: 6px;
+	color: var(--buttonsAndTextSecondaryColor);
+    border-radius: 5px;
+	gap: 10px;
+}
+.app-centercard #n {
+	font-size: 16px;
+	display: flex;
+	justify-content: space-between;
+}
+.app-centercard #n > *:first {
+	font-weight: 800;
+}
+.app-centercard .app-userAvatar {
+	height: 100%;
+	transform: scale(1.1);
+}
+.app-centercard > :nth-child(2) {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+	justify-content: center;
+}
+.app-centercard > :nth-child(3) {
+	aspect-ratio: 1 / 1;
+	height: 6px;
+	border-radius: 100%;
+	background-color: var(--redColor);
+}
+.app-centercard:link {
+	color: unset;
+	text-decoration: unset;
+}
+.app-centercard:hover {
+	background-color: var(--selectedColor);
+}
+
+.app-centercard.unread {
+	filter: opacity(0.8);
+}
 
 @media (max-width: 700px) {
 	.app-structure-post > .contentify,  .usercomment > .contentify, .app-mipuadvpostplayer > .toplayer > .postinfo > .contentify {

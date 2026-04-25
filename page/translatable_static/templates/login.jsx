@@ -19,8 +19,8 @@ export default function LoginPage() {
 	
 	const bckgnd = <img style={{
 		position: "absolute",
-		height: "100%",
-		width: "100%",
+		height: "100vh",
+		width: "100vw",
 		objectFit: "cover",
 		zIndex: -1
 	}} src={"/static/img/" + (themeType == "dark" ? "login_page_dark_sky" : "login_page_lavender_sky") + ".webp"}/>;
@@ -214,7 +214,6 @@ export default function LoginPage() {
 			} else {
 				const rndId = generateRndBtnId();
 				return <>
-					{bckgnd}
 					<div className={rndId}>
 						<UserBackgroundStyleSetting user={app.me} />
 						<style>
