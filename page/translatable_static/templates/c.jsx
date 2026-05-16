@@ -98,7 +98,7 @@ export default function Center() {
 				<span>chats</span>
 				<div>
 					{chats.length < 0 && <span>{"empty :<"}</span>}
-					{chats.length > 0 && chats.map(x=><ChatCard>{x}</ChatCard>)}
+					{chats.length > 0 && chats.map((x,i)=><ChatCard key={i}>{x}</ChatCard>)}
 				</div>
 			</div>
 		</div>
