@@ -1043,7 +1043,7 @@ app.components.Gallery.Objects = {
 		else {
 			const {result, failed, loading} = app.reactstates.useAsyncLoader(app.f.get(`${whatIsThis[0]}/${children.contentId}`));
 			if (loading) return <Result><app.components.Loading /></Result>
-			else if (failed) return <Result><app.structures.Post post={{content: "Failed"}}/></Result>
+			else if (failed || !result) return <Result><app.structures.Post post={{content: "Failed"}}/></Result>
 			else {
 				const Component = whatIsThis[1];
 				return <Result><Component micro canOpenFully>{result.content}</Component></Result>;

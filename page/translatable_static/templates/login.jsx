@@ -56,6 +56,7 @@ export default function LoginPage() {
 					align-content: center;
 					justify-content: center;
 					align-items: center;
+					overflow: hidden;
 				}
 				.${rndClass} {
 					display: flex;
@@ -143,6 +144,7 @@ export default function LoginPage() {
 								align-content: center;
 								justify-content: center;
 								align-items: center;
+								overflow: hidden;
 							}
 							.${rndClass} {
 								text-align: center;
@@ -225,6 +227,7 @@ export default function LoginPage() {
 							align-content: center;
 							justify-content: center;
 							align-items: center;
+							overflow: hidden;
 						}
 						.${rndId} {
 							display: flex;
