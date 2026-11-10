@@ -161,6 +161,15 @@ img.app-nonAvaliable {
 	box-shadow: none;
 	
 	color: inherit;
+	
+	field-sizing: content;
+	max-height: 40vh;
+	resize: none;
+	overflow-x: auto;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	-webkit-suze-adjust: 100%;
+	scroll-behavior: auto;
 }
 
 .app-galleryinput {

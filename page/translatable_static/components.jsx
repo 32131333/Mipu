@@ -2235,7 +2235,7 @@ app.components.MobileTextInput = forwardRef(function ({
 	}, [valueFromProps, valueIsControllable, updateGallery]);
 
 	// Автоматическое изменение высоты textarea
-	useEffect(() => {
+	/*useEffect(() => {
 		const element = textareaRef.current;
 		if (!element) return;
 		element.style.height = "auto";
@@ -2243,8 +2243,19 @@ app.components.MobileTextInput = forwardRef(function ({
 			const borderHeight = parseInt(getComputedStyle(element).borderBottomWidth, 10) || 0;
 			element.style.height = (element.scrollHeight + borderHeight * 2) + "px";
 		}
-	}, [text]); // Пересчитываем при изменении текста
-
+	}, [text]);*/ // Пересчитываем при изменении текста
+	/*useEffect(()=>{
+		const element = textareaRef.current;
+		if (!element) return;
+		element.style.height = "auto";
+		if (element.scrollHeight > 0) {
+			const borderHeight = parseInt(getComputedStyle(element).borderBottomWidth, 10) || 0;
+			const next = element.scrollHeight + borderHeight * 2;
+			if (Math.abs(element.scrollHeight - next) > 2) {
+				element.style.height = next + "px";
+			}
+		}
+	}, [text]);*/
 
 	
 	function handleGalleryAdd(e) {
@@ -2313,16 +2324,16 @@ app.components.MobileTextInput = forwardRef(function ({
 	
 	const cursorRef = useRef(null);
 	function onNativeChange(e) {
-		cursorRef.current = e.target.selectionStart;
+		//cursorRef.current = e.target.selectionStart;
 		setText(e.target.value);
 	};
 	
-	useLayoutEffect(() => {
+	/*useLayoutEffect(() => {
 		const input = textareaRef.current;
 		if (input && cursorRef.current != null) {
 			input.setSelectionRange(cursorRef.current, cursorRef.current);
 		};
-	}, [text]);
+	}, [text]);*/
 	
 	/* Короче, с contentEditable в мобильных версиях Chrome очень туго. Поэтому Slate вообще не подходит к мобильным устройствам */
 	return <>{warning && <app.components.WarnAlert>#uncategorized.mobile_input_unstable_warn#</app.components.WarnAlert>}
